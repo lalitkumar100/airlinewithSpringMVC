@@ -1,6 +1,9 @@
 package com.crimsonlogic.arilinemanangmentsystem.model;
 
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.WalletStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.time.LocalDateTime;
 
@@ -13,14 +16,18 @@ import java.time.LocalDateTime;
 public class Wallet {
 
     private String walletId;
+
+    @JsonBackReference
     private User user;
 
     private double balance;
     private String currency;
     private WalletStatus status;
 
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
     private boolean deleted;
 

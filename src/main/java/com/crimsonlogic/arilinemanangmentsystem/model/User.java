@@ -2,6 +2,8 @@ package com.crimsonlogic.arilinemanangmentsystem.model;
 
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.Gender;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.Role;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,7 +22,10 @@ public class User {
 
     private String firstName;
     private String lastName;
+    // Change pattern to match "yyyy-MM-dd"
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
+
     private Gender gender;
 
     private String email;
@@ -36,11 +41,16 @@ public class User {
     private List<String> upiIds = new ArrayList<>();
 
     // Loyalty wallet (implement later)
-    private Wallet Wallet;
+    @JsonManagedReference
+    private Wallet wallet;
+
+
     private  LoyaltyAccount loyaltyAccount;
 
     // Audit fields
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
     private boolean deleted;
 
@@ -358,7 +368,7 @@ public class User {
      */
 
     public Wallet getWallet() {
-        return Wallet;
+        return wallet;
     }
 
     /**
@@ -368,7 +378,7 @@ public class User {
      */
 
     public void setWallet(Wallet wallet) {
-        Wallet = wallet;
+        this.wallet = wallet;
     }
 
     /**

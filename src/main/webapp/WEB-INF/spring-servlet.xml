@@ -25,19 +25,15 @@
 
 
     <!-- ============================= -->
-    <!-- Spring MVC                    -->
+    <!-- Spring MVC & JSON Converter   -->
     <!-- ============================= -->
 
-    <mvc:annotation-driven/>
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
 
-
-    <!-- ============================= -->
-    <!-- Interceptor Configuration     -->
-    <!-- ============================= -->
-
-  <!-- ============================= -->
-    <!-- Interceptor Configuration     -->
-    <!-- ============================= -->
 
     <!-- ============================= -->
     <!-- Interceptor Configuration     -->
@@ -47,7 +43,6 @@
         <!-- 1. Interceptor for Regular Users & Flights -->
         <mvc:interceptor>
             <mvc:mapping path="/api/v1/user/**"/>
-            <mvc:mapping path="/api/v1/flight/**"/>
             <mvc:exclude-mapping path="/api/login"/>
             <bean class="com.crimsonlogic.arilinemanangmentsystem.interceptor.JwtInterceptor"/>
         </mvc:interceptor>
@@ -64,13 +59,9 @@
     <!-- View Resolver                 -->
     <!-- ============================= -->
 
-    <bean
-            class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/views/"/>
-
         <property name="suffix" value=".jsp"/>
-
     </bean>
 
 
@@ -103,13 +94,11 @@
     <bean id="sqlSessionFactory"
           class="org.mybatis.spring.SqlSessionFactoryBean">
 
-        <property name="dataSource"
-                  ref="dataSource"/>
+        <property name="dataSource" ref="dataSource"/>
 
         <property name="configuration">
             <bean class="org.apache.ibatis.session.Configuration">
-                <property name="mapUnderscoreToCamelCase"
-                          value="true"/>
+                <property name="mapUnderscoreToCamelCase" value="true"/>
             </bean>
         </property>
 
@@ -125,8 +114,8 @@
         <property name="basePackage"
                   value="com.crimsonlogic.arilinemanangmentsystem.dao"/>
 
-        <property name="sqlSessionFactory"
-                  ref="sqlSessionFactory"/>
+        <property name="sqlSessionFactoryBeanName"
+                  value="sqlSessionFactory"/>
 
     </bean>
 

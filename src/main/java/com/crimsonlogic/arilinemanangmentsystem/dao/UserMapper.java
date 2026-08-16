@@ -1,10 +1,7 @@
 package com.crimsonlogic.arilinemanangmentsystem.dao;
 
 import com.crimsonlogic.arilinemanangmentsystem.model.User;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.EnumTypeHandler;
 @Mapper
 public interface UserMapper {
@@ -30,4 +27,18 @@ public interface UserMapper {
             @Result(property = "role", column = "role", javaType = com.crimsonlogic.arilinemanangmentsystem.enumrator.Role.class, typeHandler = EnumTypeHandler.class)
     })
     User findByEmail(String email);
+
+
+    @Insert("""
+        INSERT INTO user (
+            id, first_name, last_name, date_of_birth, gender, 
+            email, phone_number, password_hash, created_at, 
+            updated_at, is_deleted, role
+        ) VALUES (
+            #{id}, #{firstName}, #{lastName}, #{dateOfBirth}, #{gender}, 
+            #{email}, #{phoneNumber}, #{password}, #{createdAt}, 
+            #{updatedAt}, #{deleted}, #{role}
+        )
+    """)
+    int insertUser(User user);
 }

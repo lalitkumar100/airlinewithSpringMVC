@@ -51,7 +51,7 @@ public class FlightServiceImpl implements FlightService {
 
 
     @Override
-    public String addNewFlight(Flight flight) {
+    public Flight addNewFlight(Flight flight) {
         if (flight == null) {
             throw new IllegalArgumentException("Error: Flight details cannot be null.");
         }
@@ -78,7 +78,8 @@ public class FlightServiceImpl implements FlightService {
 
         int rows = flightMapper.insertFlight(flight);
         if (rows > 0) {
-            return flight.getFlightId();
+            // Fetch and return the complete flight object from the database
+            return flightMapper.findById(flight.getFlightId());
         }
         throw new RuntimeException("Failed to insert the flight into the database.");
     }

@@ -1,7 +1,11 @@
 package com.crimsonlogic.arilinemanangmentsystem.controller;
 
+import com.crimsonlogic.arilinemanangmentsystem.model.Aircraft;
+import com.crimsonlogic.arilinemanangmentsystem.model.Airport;
 import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.FlightStatus;
+import com.crimsonlogic.arilinemanangmentsystem.service.AircraftService;
+import com.crimsonlogic.arilinemanangmentsystem.service.AirportService;
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,9 +19,23 @@ import java.util.List;
 @Controller
 @RequestMapping("/flights")
 public class FlightController {
+ @Autowired
+    private FlightService flightService;
+
 
     @Autowired
-    private FlightService flightService;
+    private AirportService airportService;
+
+    @Autowired
+    private AircraftService aircraftService;
+
+    public FlightController() {
+
+    }
+
+    public FlightController(AircraftService aircraftService) {
+        this.aircraftService = aircraftService;
+    }
 
     @GetMapping
     public String listFlights(Model model) {
@@ -47,5 +65,16 @@ public class FlightController {
                                      @RequestParam("status") FlightStatus status) {
         flightService.updateFlightStatus(id, status);
         return "redirect:/flights/" + id;
+    }
+
+    @GetMapping("/add")
+    public String showAddFlightPage(Model model) {
+
+        List<Airport> airports = airportService.getAllAirports();
+        List<Aircraft> aircrafts = aircraftService.findAllAircraft();
+
+        model.addAttribute("airports", airports);
+        model.addAttribute("aircrafts", aircrafts);
+        return "add-flight"; // Maps to add-flight.jsp
     }
 }

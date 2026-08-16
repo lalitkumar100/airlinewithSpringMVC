@@ -11,5 +11,5 @@ public interface FlightService {
     Flight getFlightById(String flightId);
     boolean updateFlightTime(String flightId, LocalDateTime departureTime, LocalDateTime arrivalTime);
     boolean updateFlightStatus(String flightId, FlightStatus status);
-    public String addNewFlight(Flight flight);
+    public Flight addNewFlight(Flight flight);
 }

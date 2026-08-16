@@ -1,6 +1,7 @@
 package com.crimsonlogic.arilinemanangmentsystem.model;
 
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.LoyaltyTier;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +19,9 @@ public class LoyaltyAccount {
 
     private LoyaltyTier tier;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
     private boolean deleted;
 
