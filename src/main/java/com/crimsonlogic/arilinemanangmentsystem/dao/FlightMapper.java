@@ -4,6 +4,7 @@ import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.FlightStatus;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -44,4 +45,17 @@ public interface FlightMapper {
     @Insert("INSERT INTO flight (flight_id, flight_code, source_airport, destination_airport, departure_time, arrival_time, aircraft_id, base_fare, status, created_at, updated_at, is_deleted) " +
             "VALUES (#{flightId}, #{flightCode}, #{source.airportCode}, #{destination.airportCode}, #{departureDateTime}, #{arrivalDateTime}, #{aircraft.aircraftId}, #{baseFare}, #{status}, NOW(), NOW(), 0)")
     int insertFlight(Flight flight);
+
+
+    @ResultMap("FlightResultMap")
+    @Select("SELECT flight_id, flight_code, source_airport, destination_airport, departure_time, arrival_time, aircraft_id, base_fare, status, created_at, updated_at, is_deleted " +
+            "FROM flight " +
+            "WHERE source_airport = #{sourceAirport} " +
+            "AND destination_airport = #{destinationAirport} " +
+            "AND DATE(departure_time) = #{departureDate} " +
+            "AND is_deleted = 0")
+    List<Flight> searchFlightsByDate(@Param("sourceAirport") String sourceAirport, 
+                                     @Param("destinationAirport") String destinationAirport, 
+                                     @Param("departureDate") java.time.LocalDate departureDate);
+    
 }

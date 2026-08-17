@@ -2,6 +2,7 @@ package com.crimsonlogic.arilinemanangmentsystem.model;
 
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.PaymentMethod;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.TransactionStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
@@ -26,8 +27,10 @@ public class Transaction {
 
     private double amount;
 
+
     private TransactionStatus status;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime transactionTime;
 
 
@@ -317,4 +320,7 @@ public class Transaction {
     public void setTransactionTime(LocalDateTime transactionTime) {
         this.transactionTime = transactionTime;
     }
+
+
+
 }

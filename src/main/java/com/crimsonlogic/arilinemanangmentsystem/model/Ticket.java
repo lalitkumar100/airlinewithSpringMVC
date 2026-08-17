@@ -2,6 +2,7 @@ package com.crimsonlogic.arilinemanangmentsystem.model;
 
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
@@ -26,7 +27,9 @@ public class Ticket {
     private String seatNumber;
 
     // Audit fields
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
     private boolean deleted;
 

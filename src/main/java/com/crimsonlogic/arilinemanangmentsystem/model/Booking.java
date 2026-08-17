@@ -2,6 +2,7 @@ package com.crimsonlogic.arilinemanangmentsystem.model;
 
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.BookingStatus;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,8 +36,10 @@ public class Booking implements Comparable<Booking> {
     private double amount;
 
     private Payment payment;
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
     private boolean deleted;
 

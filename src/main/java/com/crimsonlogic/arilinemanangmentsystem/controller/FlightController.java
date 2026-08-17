@@ -77,4 +77,30 @@ public class FlightController {
         model.addAttribute("aircrafts", aircrafts);
         return "add-flight"; // Maps to add-flight.jsp
     }
+    
+    @GetMapping("/search-form")
+    public String showSearchForm(Model model) {
+        List<Airport> airports = airportService.getAllAirports();
+        model.addAttribute("airports", airports);
+        return "flight-search"; // Maps to flight-search.jsp
+    }
+    
+    @GetMapping("/search")
+    public String searchFlights(
+            @RequestParam("source") String source,
+            @RequestParam("destination") String destination,
+            @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) java.time.LocalDate departureDate,
+            Model model) {
+        
+        List<Flight> flights = flightService.searchFlights(source, destination, departureDate);
+        List<Airport> airports = airportService.getAllAirports(); // To keep the search form populated if needed
+        
+        model.addAttribute("flights", flights);
+        model.addAttribute("airports", airports);
+        model.addAttribute("selectedSource", source);
+        model.addAttribute("selectedDestination", destination);
+        model.addAttribute("selectedDate", departureDate);
+        
+        return "flight-search-results"; // Maps to flight-search-results.jsp
+    }
 }

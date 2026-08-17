@@ -3,6 +3,7 @@ package com.crimsonlogic.arilinemanangmentsystem.controller;
 import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.FlightStatus;
 import com.crimsonlogic.arilinemanangmentsystem.service.AircraftService;
+import com.crimsonlogic.arilinemanangmentsystem.service.AirportService;
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -18,6 +19,8 @@ public class FlightRestController {
 
     @Autowired
     private FlightService flightService;
+
+
 
 
 
@@ -59,5 +62,15 @@ public class FlightRestController {
     @PostMapping
     Flight addFlight(@RequestBody Flight flight){
        return flightService.addNewFlight(flight);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Flight>> searchFlights(
+            @RequestParam("source") String source,
+            @RequestParam("destination") String destination,
+            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) java.time.LocalDate date) {
+
+        List<Flight> flights = flightService.searchFlights(source, destination, date);
+        return ResponseEntity.ok(flights);
     }
 }

@@ -11,6 +11,7 @@ import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -137,6 +138,16 @@ public class FlightServiceImpl implements FlightService {
         if (!departureTime.isBefore(arrivalTime)) {
             throw new IllegalArgumentException("Error: Departure time must be strictly before arrival time.");
         }
+    }
+
+    @Override
+    public List<Flight> searchFlights(String sourceAirport, String destinationAirport,  LocalDate departureDate) {
+        if (sourceAirport == null || sourceAirport.trim().isEmpty() ||
+                destinationAirport == null || destinationAirport.trim().isEmpty() ||
+                departureDate == null) {
+            throw new IllegalArgumentException("Error: Source airport, destination airport, and departure date are required.");
+        }
+        return flightMapper.searchFlightsByDate(sourceAirport.toUpperCase(), destinationAirport.toUpperCase(), departureDate);
     }
 
 }
