@@ -40,9 +40,11 @@
     <!-- ============================= -->
 
     <mvc:interceptors>
-        <!-- 1. Interceptor for Regular Users & Flights -->
+        <!-- 1. Interceptor for Regular Users & protected web routes -->
         <mvc:interceptor>
             <mvc:mapping path="/api/v1/user/**"/>
+            <mvc:mapping path="/bookings/**"/>
+            <mvc:mapping path="/flights/add"/>
             <mvc:exclude-mapping path="/api/login"/>
             <bean class="com.crimsonlogic.arilinemanangmentsystem.interceptor.JwtInterceptor"/>
         </mvc:interceptor>

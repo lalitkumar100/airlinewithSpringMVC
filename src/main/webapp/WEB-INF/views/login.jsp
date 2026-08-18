@@ -63,8 +63,11 @@
                         msgDiv.innerText = data.message || 'Login successful!';
                         document.getElementById('loginForm').reset();
                         
-                        // Optional: redirect after success
-                        // window.location.href = contextPath + '/flights/add';
+                        // Clear any old token
+                        localStorage.removeItem('jwtToken');
+                        
+                        // Redirect after success - the cookie is already set by the server
+                        window.location.href = contextPath + '/bookings/my-bookings';
                     });
                 } else {
                     return response.json().then(err => {

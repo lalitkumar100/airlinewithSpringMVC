@@ -22,7 +22,7 @@ public class AuthRestController {
     private JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest, javax.servlet.http.HttpServletResponse response) {
         // 1. Find user by email
         User user = userMapper.findByEmail(loginRequest.getEmail());
         if (user == null) {
@@ -38,8 +38,16 @@ public class AuthRestController {
         // 3. Generate Token containing email and role
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name());
 
-        // 4. Send response back to Postman
-        LoginResponse response = new LoginResponse(token, "Login successful");
-        return ResponseEntity.ok(response);
+        // 4. Create HttpOnly cookie for the JWT
+        javax.servlet.http.Cookie jwtCookie = new javax.servlet.http.Cookie("jwtToken", token);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setSecure(false); // Set to true if using HTTPS
+        jwtCookie.setPath("/");
+        jwtCookie.setMaxAge(86400); // 1 day
+        response.addCookie(jwtCookie);
+
+        // 5. Send response back to Postman/Frontend
+        LoginResponse loginResponse = new LoginResponse(token, "Login successful");
+        return ResponseEntity.ok(loginResponse);
     }
 }

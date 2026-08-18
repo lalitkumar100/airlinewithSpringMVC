@@ -86,10 +86,7 @@
                                 <td>$\${flight.baseFare}</td>
                                 <td><span class="badge bg-info">\${flight.status}</span></td>
                                 <td>
-                                    <form action="${pageContext.request.contextPath}/bookings/new" method="get">
-                                        <input type="hidden" name="flightId" value="\${flight.flightId}" />
-                                        <button type="submit" class="btn btn-success btn-sm">Book Flight</button>
-                                    </form>
+                                    <a href="${pageContext.request.contextPath}/bookings/new?flightId=\${flight.flightId}" class="btn btn-success btn-sm">Book Flight</a>
                                 </td>
                             `;
                             tableBody.appendChild(row);

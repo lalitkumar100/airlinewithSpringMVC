@@ -21,14 +21,32 @@ public class JwtInterceptor implements HandlerInterceptor {
             return true;
         }
 
+        String token = null;
+
+        // 1. Check Authorization Header
         String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            throw new CustomException("Missing or invalid Authorization header", HttpStatus.UNAUTHORIZED);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
         }
 
-        String token = authHeader.substring(7);
-        if (!jwtUtil.validateToken(token)) {
-            throw new CustomException("Invalid or expired JWT token", HttpStatus.UNAUTHORIZED);
+        // 2. Check Cookie if header is missing
+        if (token == null && request.getCookies() != null) {
+            for (javax.servlet.http.Cookie cookie : request.getCookies()) {
+                if ("jwtToken".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (token == null || !jwtUtil.validateToken(token)) {
+            // For API requests, throw exception
+            if (request.getRequestURI().contains("/api/")) {
+                throw new CustomException("Missing or invalid token", HttpStatus.UNAUTHORIZED);
+            }
+            // For web requests, redirect to login
+            response.sendRedirect(request.getContextPath() + "/users/login");
+            return false;
         }
 
         request.setAttribute("claims", jwtUtil.extractAllClaims(token));

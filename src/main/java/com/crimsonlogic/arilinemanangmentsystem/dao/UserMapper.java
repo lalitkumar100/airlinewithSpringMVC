@@ -6,8 +6,12 @@ import org.apache.ibatis.type.EnumTypeHandler;
 @Mapper
 public interface UserMapper {
 
+    @ResultMap("UserResultMap")
     @Select("SELECT * FROM user WHERE email = #{email} AND is_deleted = 0")
-    @Results({
+    User findByEmail(String email);
+
+    @Select("SELECT * FROM user WHERE id = #{id} AND is_deleted = 0")
+    @Results(id = "UserResultMap", value = {
             @Result(property = "id", column = "id"),
             @Result(property = "firstName", column = "first_name"),
             @Result(property = "lastName", column = "last_name"),
@@ -26,7 +30,7 @@ public interface UserMapper {
             // Correct mapping for Role enum
             @Result(property = "role", column = "role", javaType = com.crimsonlogic.arilinemanangmentsystem.enumrator.Role.class, typeHandler = EnumTypeHandler.class)
     })
-    User findByEmail(String email);
+    User findById(@Param("id") String id);
 
 
     @Insert("""
@@ -35,9 +39,11 @@ public interface UserMapper {
             email, phone_number, password_hash, created_at, 
             updated_at, is_deleted, role
         ) VALUES (
-            #{id}, #{firstName}, #{lastName}, #{dateOfBirth}, #{gender}, 
+            #{id}, #{firstName}, #{lastName}, #{dateOfBirth}, 
+            #{gender, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, 
             #{email}, #{phoneNumber}, #{password}, #{createdAt}, 
-            #{updatedAt}, #{deleted}, #{role}
+            #{updatedAt}, #{deleted}, 
+            #{role, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
         )
     """)
     int insertUser(User user);

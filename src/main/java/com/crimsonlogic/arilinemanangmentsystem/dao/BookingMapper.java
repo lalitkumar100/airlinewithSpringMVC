@@ -25,9 +25,9 @@ public interface BookingMapper {
             #{bookingId},
             #{flightBooked.flightId},
             #{bookingDateTime},
-            #{seatClass},
+            #{seatClass, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
             #{amount},
-            #{bookingStatus},
+            #{bookingStatus, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
             #{userbooked.id}
         )
         """)
@@ -95,13 +95,15 @@ public interface BookingMapper {
             ),
 
             @Result(
-                    property = "flightBooked.flightId",
-                    column = "flight_id"
+                    property = "flightBooked",
+                    column = "flight_id",
+                    one = @One(select = "com.crimsonlogic.arilinemanangmentsystem.dao.FlightMapper.findById")
             ),
 
             @Result(
-                    property = "userbooked.id",
-                    column = "user_id"
+                    property = "userbooked",
+                    column = "user_id",
+                    one = @One(select = "com.crimsonlogic.arilinemanangmentsystem.dao.UserMapper.findById")
             )
     })
     Booking getBookingById(String bookingId);
@@ -127,4 +129,15 @@ public interface BookingMapper {
         """)
     @ResultMap("BookingResultMap")
     List<Booking> getAllBookingsByUserId(String userId);
+
+    @Select("""
+        SELECT COUNT(p.passenger_id)
+        FROM passenger p
+        JOIN booking b ON p.booking_id = b.booking_id
+        WHERE b.flight_id = #{flightId}
+          AND b.seat_class = #{seatClass, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
+          AND b.is_deleted = 0
+          AND p.is_cancelled = 0
+        """)
+    int getBookedSeatCount(@Param("flightId") String flightId, @Param("seatClass") com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass seatClass);
 }

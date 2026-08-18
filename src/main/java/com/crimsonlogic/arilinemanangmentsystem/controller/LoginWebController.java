@@ -8,10 +8,27 @@ package com.crimsonlogic.arilinemanangmentsystem.controller;
 	@Controller
 	public class LoginWebController {
 
-	    @GetMapping("/users/login")
-	    public String showLoginPage() {
-	        return "login"; // Maps to login.jsp
-	    }
+     @GetMapping("/users/login")
+     public String showLoginPage() {
+         return "login"; // Maps to login.jsp
+     }
+
+     @GetMapping("/logout")
+     public String logout(javax.servlet.http.HttpServletRequest request, javax.servlet.http.HttpServletResponse response) {
+         javax.servlet.http.HttpSession session = request.getSession(false);
+         if (session != null) {
+             session.invalidate();
+         }
+         
+         // Clear JWT cookie
+         javax.servlet.http.Cookie jwtCookie = new javax.servlet.http.Cookie("jwtToken", null);
+         jwtCookie.setPath("/");
+         jwtCookie.setHttpOnly(true);
+         jwtCookie.setMaxAge(0);
+         response.addCookie(jwtCookie);
+         
+         return "redirect:/users/login";
+     }
 	}
 
 

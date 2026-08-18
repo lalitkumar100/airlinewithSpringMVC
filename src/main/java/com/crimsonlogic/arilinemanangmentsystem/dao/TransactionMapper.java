@@ -15,12 +15,12 @@ public interface TransactionMapper {
             "#{transactionId}, " +
             "#{sender.id}, " +
             "#{receiver.id}, " +
-            "#{fromPaymentMethod}, " +
-            "#{toPaymentMethod}, " +
+            "#{fromPaymentMethod, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, " +
+            "#{toPaymentMethod, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, " +
             "#{senderUpi}, " +
             "#{receiverUpi}, " +
             "#{amount}, " +
-            "#{status}, " +
+            "#{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, " +
             "#{transactionTime}" +
             ")")
     int insertTransaction(Transaction transaction);

@@ -7,6 +7,7 @@ import com.crimsonlogic.arilinemanangmentsystem.model.Aircraft;
 import com.crimsonlogic.arilinemanangmentsystem.model.Airport;
 import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.FlightStatus;
+import com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass;
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,9 @@ public class FlightServiceImpl implements FlightService {
 
     @Autowired
     private AirportMapper airportMapper;
+
+    @Autowired
+    private com.crimsonlogic.arilinemanangmentsystem.dao.BookingMapper bookingMapper;
 
 
 
@@ -148,6 +152,47 @@ public class FlightServiceImpl implements FlightService {
             throw new IllegalArgumentException("Error: Source airport, destination airport, and departure date are required.");
         }
         return flightMapper.searchFlightsByDate(sourceAirport.toUpperCase(), destinationAirport.toUpperCase(), departureDate);
+    }
+
+    @Override
+    public int getAvailableSeats(String flightId, SeatClass seatClass) {
+        Flight flight = flightMapper.findById(flightId);
+        if (flight == null) return 0;
+
+        int totalCapacity = flight.getAircraft().getCapacity();
+        int classCapacity = 0;
+
+        switch (seatClass) {
+            case FIRST_CLASS:
+                classCapacity = (int) (totalCapacity * 0.20);
+                break;
+            case BUSINESS_CLASS:
+                classCapacity = (int) (totalCapacity * 0.30);
+                break;
+            case ECONOMY_CLASS:
+                classCapacity = totalCapacity - (int) (totalCapacity * 0.20) - (int) (totalCapacity * 0.30);
+                break;
+        }
+
+        int bookedSeats = bookingMapper.getBookedSeatCount(flightId, seatClass);
+        return Math.max(0, classCapacity - bookedSeats);
+    }
+
+    @Override
+    public double calculateFare(String flightId, SeatClass seatClass) {
+        Flight flight = flightMapper.findById(flightId);
+        if (flight == null) return 0.0;
+
+        double baseFare = flight.getBaseFare();
+        switch (seatClass) {
+            case FIRST_CLASS:
+                return baseFare * 2.0;
+            case BUSINESS_CLASS:
+                return baseFare * 1.5;
+            case ECONOMY_CLASS:
+            default:
+                return baseFare * 1.0;
+        }
     }
 
 }

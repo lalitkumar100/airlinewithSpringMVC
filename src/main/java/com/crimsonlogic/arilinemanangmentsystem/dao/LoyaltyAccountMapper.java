@@ -13,7 +13,8 @@ public interface LoyaltyAccountMapper {
             loyalty_account_id, user_id, points, tier, 
             created_at, updated_at, is_deleted
         ) VALUES (
-            #{loyaltyAccountId}, #{userId}, #{account.points}, #{account.tier}, 
+            #{loyaltyAccountId}, #{userId}, #{account.points}, 
+            #{account.tier, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, 
             #{account.createdAt}, #{account.updatedAt}, #{account.deleted}
         )
     """)

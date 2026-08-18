@@ -4,6 +4,7 @@ import com.crimsonlogic.arilinemanangmentsystem.model.ErrorResponse;
 import com.crimsonlogic.arilinemanangmentsystem.utility.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -11,6 +12,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalRestExceptionHandler {
 
     private final boolean developmentMode = true; // Set to false in production
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponse> handleMissingParams(MissingServletRequestParameterException ex) {
+        ErrorResponse error;
+        String message = "Missing required parameter: " + ex.getParameterName();
+        if (developmentMode) {
+            String stackTrace = ExceptionUtils.getStackTraceAsString(ex);
+            error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), message, stackTrace);
+        } else {
+            error = new ErrorResponse(HttpStatus.BAD_REQUEST.value(), message);
+        }
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {

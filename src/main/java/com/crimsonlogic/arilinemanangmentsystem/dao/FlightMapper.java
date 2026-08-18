@@ -38,12 +38,12 @@ public interface FlightMapper {
     @Update("UPDATE flight SET departure_time = #{departureDateTime}, arrival_time = #{arrivalDateTime}, updated_at = NOW() WHERE flight_id = #{flightId}")
     int updateFlightTime(@Param("flightId") String flightId, @Param("departureDateTime") LocalDateTime departureDateTime, @Param("arrivalDateTime") LocalDateTime arrivalDateTime);
 
-    @Update("UPDATE flight SET status = #{status}, updated_at = NOW() WHERE flight_id = #{flightId}")
+    @Update("UPDATE flight SET status = #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, updated_at = NOW() WHERE flight_id = #{flightId}")
     int updateFlightStatus(@Param("flightId") String flightId, @Param("status") FlightStatus status);
 
 
     @Insert("INSERT INTO flight (flight_id, flight_code, source_airport, destination_airport, departure_time, arrival_time, aircraft_id, base_fare, status, created_at, updated_at, is_deleted) " +
-            "VALUES (#{flightId}, #{flightCode}, #{source.airportCode}, #{destination.airportCode}, #{departureDateTime}, #{arrivalDateTime}, #{aircraft.aircraftId}, #{baseFare}, #{status}, NOW(), NOW(), 0)")
+            "VALUES (#{flightId}, #{flightCode}, #{source.airportCode}, #{destination.airportCode}, #{departureDateTime}, #{arrivalDateTime}, #{aircraft.aircraftId}, #{baseFare}, #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, NOW(), NOW(), 0)")
     int insertFlight(Flight flight);
 
 

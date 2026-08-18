@@ -20,6 +20,9 @@ public class Payment {
 
     private Transaction transaction;
 
+    public Payment() {
+    }
+
     /**
 
      * Executes the Payment operation.

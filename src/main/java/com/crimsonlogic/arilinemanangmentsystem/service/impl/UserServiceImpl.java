@@ -91,4 +91,14 @@ public class UserServiceImpl implements UserService {
 
         return user;
     }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userMapper.findByEmail(email);
+    }
+
+    @Override
+    public User getUserById(String id) {
+        return userMapper.findById(id);
+    }
 }

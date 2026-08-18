@@ -6,6 +6,7 @@ import com.crimsonlogic.arilinemanangmentsystem.enumrator.FlightStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass;
 
 public interface FlightService {
     List<Flight> getAllFlights();
@@ -16,4 +17,6 @@ public interface FlightService {
 
     List<Flight> searchFlights(String sourceAirport, String destinationAirport, LocalDate departureDate);
 
+    int getAvailableSeats(String flightId, SeatClass seatClass);
+    double calculateFare(String flightId, SeatClass seatClass);
 }

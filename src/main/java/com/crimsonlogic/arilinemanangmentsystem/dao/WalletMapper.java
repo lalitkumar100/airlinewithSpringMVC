@@ -14,7 +14,8 @@ public interface WalletMapper {
             wallet_id, user_id, balance, currency, status, 
             created_at, updated_at, is_deleted
         ) VALUES (
-            #{walletId}, #{user.id}, #{balance}, #{currency}, #{status}, 
+            #{walletId}, #{user.id}, #{balance}, #{currency}, 
+            #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, 
             #{createdAt}, #{updatedAt}, #{deleted}
         )
     """)

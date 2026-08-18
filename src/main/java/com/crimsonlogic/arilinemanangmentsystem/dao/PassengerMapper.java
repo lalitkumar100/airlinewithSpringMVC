@@ -39,7 +39,7 @@ public interface PassengerMapper {
             #{createdAt}, 
             #{updatedAt}, 
             #{deleted}, 
-            #{cancel}
+            #{isCancelled}
         )
     """)
     int insertPassenger(Passenger passenger);
@@ -63,7 +63,6 @@ public interface PassengerMapper {
             p.is_deleted AS deleted,
             p.is_cancelled AS cancelled,
             b.booking_id AS b_bookingId,
-            b.flight_id AS b_flightId,
             b.booking_datetime AS b_bookingDatetime,
             b.seat_class AS b_seatClass,
             b.amount AS b_amount,
@@ -83,10 +82,9 @@ public interface PassengerMapper {
             @Result(property = "createdAt", column = "createdAt"),
             @Result(property = "updatedAt", column = "updatedAt"),
             @Result(property = "deleted", column = "deleted"),
-            @Result(property = "cancelled", column = "cancelled"),
+            @Result(property = "isCancelled", column = "cancelled"),
             @Result(property = "booking.bookingId", column = "b_bookingId"),
-            @Result(property = "booking.flightId", column = "b_flightId"),
-            @Result(property = "booking.bookingDatetime", column = "b_bookingDatetime"),
+            @Result(property = "booking.bookingDateTime", column = "b_bookingDatetime"),
             @Result(property = "booking.seatClass", column = "b_seatClass"),
             @Result(property = "booking.amount", column = "b_amount"),
             @Result(property = "booking.bookingStatus", column = "b_bookingStatus")
@@ -112,7 +110,6 @@ public interface PassengerMapper {
             p.is_deleted AS deleted,
             p.is_cancelled AS cancelled,
             b.booking_id AS b_bookingId,
-            b.flight_id AS b_flightId,
             b.booking_datetime AS b_bookingDatetime,
             b.seat_class AS b_seatClass,
             b.amount AS b_amount,

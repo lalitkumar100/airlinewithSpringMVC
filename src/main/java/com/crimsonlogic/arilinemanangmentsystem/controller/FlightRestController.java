@@ -66,9 +66,13 @@ public class FlightRestController {
 
     @GetMapping("/search")
     public ResponseEntity<List<Flight>> searchFlights(
-            @RequestParam("source") String source,
-            @RequestParam("destination") String destination,
-            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) java.time.LocalDate date) {
+            @RequestParam(value = "source", required = false) String source,
+            @RequestParam(value = "destination", required = false) String destination,
+            @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) java.time.LocalDate date) {
+
+        if (source == null || destination == null || date == null) {
+            return ResponseEntity.badRequest().build();
+        }
 
         List<Flight> flights = flightService.searchFlights(source, destination, date);
         return ResponseEntity.ok(flights);

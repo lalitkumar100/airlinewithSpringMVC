@@ -12,4 +12,6 @@ public interface UserService {
      * @return Registered User object populated with IDs and relations
      */
     User registerUser(User user) throws InvalidHumanException;
+    User getUserByEmail(String email);
+    User getUserById(String id);
 }

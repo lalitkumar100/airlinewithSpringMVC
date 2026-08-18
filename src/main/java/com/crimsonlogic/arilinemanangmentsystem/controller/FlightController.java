@@ -87,10 +87,14 @@ public class FlightController {
     
     @GetMapping("/search")
     public String searchFlights(
-            @RequestParam("source") String source,
-            @RequestParam("destination") String destination,
-            @RequestParam("departureDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) java.time.LocalDate departureDate,
+            @RequestParam(value = "source", required = false) String source,
+            @RequestParam(value = "destination", required = false) String destination,
+            @RequestParam(value = "departureDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) java.time.LocalDate departureDate,
             Model model) {
+        
+        if (source == null || destination == null || departureDate == null) {
+            return "redirect:/flights/search-form";
+        }
         
         List<Flight> flights = flightService.searchFlights(source, destination, departureDate);
         List<Airport> airports = airportService.getAllAirports(); // To keep the search form populated if needed
