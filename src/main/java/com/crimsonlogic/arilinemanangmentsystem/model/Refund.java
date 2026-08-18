@@ -31,6 +31,12 @@ public class Refund {
 
     private String reason;
 
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    private boolean deleted;
+
 
     /**
 
@@ -243,5 +249,29 @@ public class Refund {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

@@ -120,4 +120,7 @@ public interface PassengerMapper {
     """)
     @ResultMap("PassengerResultMap")
     List<Passenger> getPassengersByBookingId(String bookingId);
+
+    @Update("UPDATE passenger SET is_cancelled = 1, updated_at = NOW() WHERE passenger_id = #{passengerId}")
+    int cancelPassenger(@Param("passengerId") String passengerId);
 }

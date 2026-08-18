@@ -161,8 +161,19 @@ public class BookingRestController {
     public ResponseEntity<ApiResponse<String>> cancelBooking(
             @PathVariable("bookingId") String bookingId,
             HttpServletRequest request) {
-        // AUTH CHECK (simplified for demo as requested)
-        return ResponseEntity.ok(new ApiResponse<>("SUCCESS", "Cancellation request received for full booking: " + bookingId + ". Logic will be implemented later."));
+
+        String authHeader = request.getHeader("Authorization");
+
+        try {
+            bookingService.cancelBooking(authHeader, bookingId);
+            return ResponseEntity.ok(new ApiResponse<>("SUCCESS", "Booking " + bookingId + " cancelled and refund processed successfully."));
+        } catch (CustomException e) {
+            return ResponseEntity.status(e.getStatus())
+                    .body(new ApiResponse<>("ERROR", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>("ERROR", "An unexpected error occurred during cancellation: " + e.getMessage()));
+        }
     }
 
     @DeleteMapping("/{bookingId}/passengers/{passengerId}")
@@ -170,8 +181,19 @@ public class BookingRestController {
             @PathVariable("bookingId") String bookingId,
             @PathVariable("passengerId") String passengerId,
             HttpServletRequest request) {
-        // AUTH CHECK (simplified for demo as requested)
-        return ResponseEntity.ok(new ApiResponse<>("SUCCESS", "Cancellation request received for passenger: " + passengerId + " in booking: " + bookingId + ". Logic will be implemented later."));
+
+        String authHeader = request.getHeader("Authorization");
+
+        try {
+            bookingService.cancelPassenger(authHeader, bookingId, passengerId);
+            return ResponseEntity.ok(new ApiResponse<>("SUCCESS", "Passenger " + passengerId + " in booking " + bookingId + " cancelled and refund processed successfully."));
+        } catch (CustomException e) {
+            return ResponseEntity.status(e.getStatus())
+                    .body(new ApiResponse<>("ERROR", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>("ERROR", "An unexpected error occurred during passenger cancellation: " + e.getMessage()));
+        }
     }
 
     @PostMapping("/{bookingId}/check-in")

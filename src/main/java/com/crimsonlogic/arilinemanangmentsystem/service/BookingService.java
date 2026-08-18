@@ -8,4 +8,6 @@ public interface BookingService {
     Booking getBookingById(String bookingId);
     java.util.List<Booking> getAllBookingsForUser(String userId);
     void performCheckIn(String authHeader, String bookingId, String password);
+    void cancelBooking(String authHeader, String bookingId);
+    void cancelPassenger(String authHeader, String bookingId, String passengerId);
 }
