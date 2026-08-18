@@ -140,4 +140,13 @@ public interface BookingMapper {
           AND p.is_cancelled = 0
         """)
     int getBookedSeatCount(@Param("flightId") String flightId, @Param("seatClass") com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass seatClass);
+
+    @Update("""
+        UPDATE booking 
+        SET booking_status = #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, 
+            updated_at = NOW() 
+        WHERE booking_id = #{bookingId} 
+          AND is_deleted = 0
+        """)
+    int updateBookingStatus(@Param("bookingId") String bookingId, @Param("status") com.crimsonlogic.arilinemanangmentsystem.enumrator.BookingStatus status);
 }

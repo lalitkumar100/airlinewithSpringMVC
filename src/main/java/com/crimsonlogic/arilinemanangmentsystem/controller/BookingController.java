@@ -66,7 +66,7 @@ public class BookingController {
 
     @GetMapping("/detail")
     public String showBookingDetail(@RequestParam("bookingId") String bookingId, Model model) {
-        model.addAttribute("bookingId", bookingId);
+
         return "booking-detail";
     }
 

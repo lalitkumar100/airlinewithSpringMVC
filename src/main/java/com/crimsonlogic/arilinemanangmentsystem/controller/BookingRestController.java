@@ -3,9 +3,11 @@ package com.crimsonlogic.arilinemanangmentsystem.controller;
 import com.crimsonlogic.arilinemanangmentsystem.model.ApiResponse;
 import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
 import com.crimsonlogic.arilinemanangmentsystem.model.BookingRequest;
+import com.crimsonlogic.arilinemanangmentsystem.model.LoginRequest;
 import com.crimsonlogic.arilinemanangmentsystem.model.User;
 import com.crimsonlogic.arilinemanangmentsystem.service.BookingService;
 import com.crimsonlogic.arilinemanangmentsystem.service.UserService;
+import com.crimsonlogic.arilinemanangmentsystem.exception.CustomException;
 import com.crimsonlogic.arilinemanangmentsystem.utility.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,5 +172,25 @@ public class BookingRestController {
             HttpServletRequest request) {
         // AUTH CHECK (simplified for demo as requested)
         return ResponseEntity.ok(new ApiResponse<>("SUCCESS", "Cancellation request received for passenger: " + passengerId + " in booking: " + bookingId + ". Logic will be implemented later."));
+    }
+
+    @PostMapping("/{bookingId}/check-in")
+    public ResponseEntity<ApiResponse<String>> webCheckIn(
+            @PathVariable("bookingId") String bookingId,
+            @RequestBody LoginRequest checkInRequest,
+            HttpServletRequest request) {
+
+        String authHeader = request.getHeader("Authorization");
+
+        try {
+            bookingService.performCheckIn(authHeader, bookingId, checkInRequest.getPassword());
+            return ResponseEntity.ok(new ApiResponse<>("SUCCESS", "Check-in successful for booking: " + bookingId));
+        } catch (CustomException e) {
+            return ResponseEntity.status(e.getStatus())
+                    .body(new ApiResponse<>("ERROR", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse<>("ERROR", "An unexpected error occurred during check-in"));
+        }
     }
 }

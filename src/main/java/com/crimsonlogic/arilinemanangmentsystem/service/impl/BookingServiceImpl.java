@@ -3,10 +3,12 @@ package com.crimsonlogic.arilinemanangmentsystem.service.impl;
 import com.crimsonlogic.arilinemanangmentsystem.dao.BookingMapper;
 import com.crimsonlogic.arilinemanangmentsystem.dao.PaymentMapper;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.BookingStatus;
+import com.crimsonlogic.arilinemanangmentsystem.enumrator.FlightStatus;
 import com.crimsonlogic.arilinemanangmentsystem.exception.CustomException;
 import com.crimsonlogic.arilinemanangmentsystem.model.*;
 import com.crimsonlogic.arilinemanangmentsystem.service.*;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
+import com.crimsonlogic.arilinemanangmentsystem.utility.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,12 @@ public class BookingServiceImpl implements BookingService {
 
     @Autowired
     private PaymentMapper paymentMapper;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @Override
     @Transactional
@@ -108,5 +116,50 @@ public class BookingServiceImpl implements BookingService {
             }
         }
         return bookings;
+    }
+
+    @Override
+    @Transactional
+    public void performCheckIn(String authHeader, String bookingId, String password) {
+        // 1. JWT Security Verification
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new CustomException("Missing Authorization header", HttpStatus.UNAUTHORIZED);
+        }
+
+        String token = authHeader.substring(7);
+        if (!jwtUtil.validateToken(token)) {
+            throw new CustomException("Invalid or expired token", HttpStatus.UNAUTHORIZED);
+        }
+
+        // 2. User Authentication
+        String email = jwtUtil.extractAllClaims(token).getSubject();
+        User user = userService.getUserByEmail(email);
+        if (user == null) {
+            throw new CustomException("User not found", HttpStatus.UNAUTHORIZED);
+        }
+
+        // 3. Password Verification
+        if (!user.verifyPassword(password)) {
+            throw new CustomException("Incorrect password", HttpStatus.UNAUTHORIZED);
+        }
+
+        // 4. Fetch and Validate Booking Ownership
+        Booking booking = bookingMapper.getBookingById(bookingId);
+        if (booking == null || !booking.getUserbooked().getId().equals(user.getId())) {
+            throw new CustomException("Booking not found or access denied", HttpStatus.NOT_FOUND);
+        }
+
+        // 5. Business Rules (Flight Status Check)
+        Flight flight = booking.getFlightBooked();
+        if (flight.getStatus() != FlightStatus.CHECK_IN_STARTED) {
+            throw new CustomException("Check-in is not open. Flight status: " + flight.getStatus(), HttpStatus.BAD_REQUEST);
+        }
+
+        if (booking.getBookingStatus() == BookingStatus.CHECKED_IN) {
+            throw new CustomException("Already checked in", HttpStatus.BAD_REQUEST);
+        }
+
+        // 6. Database Update
+        bookingMapper.updateBookingStatus(bookingId, BookingStatus.CHECKED_IN);
     }
 }
