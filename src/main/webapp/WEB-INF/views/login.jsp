@@ -3,85 +3,148 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <title>User Login</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input { width: 100%; padding: 8px; box-sizing: border-box; }
-        button { padding: 10px 15px; background-color: #007bff; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        #message { margin-top: 15px; font-weight: bold; }
-    </style>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
 </head>
-<body>
 
-    <h2>User Login</h2>
-    
-    <div id="message"></div>
+<body class="bg-light">
 
-    <form id="loginForm">
-        <div class="form-group">
-            <label for="email">Email Address:</label>
-            <input type="email" id="email" required>
+<div class="container">
+    <div class="row justify-content-center align-items-center min-vh-100">
+
+        <div class="col-12 col-sm-10 col-md-6 col-lg-4">
+
+            <div class="card shadow border-0 rounded-4">
+
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">Welcome Back</h2>
+                        <p class="text-muted mb-0">Login to your account</p>
+                    </div>
+
+                    <div id="message"></div>
+
+                    <form id="loginForm">
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label for="email" class="form-label fw-semibold">
+                                Email Address
+                            </label>
+
+                            <input type="email"
+                                   class="form-control form-control-lg"
+                                   id="email"
+                                   placeholder="Enter your email"
+                                   required>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-4">
+                            <label for="password" class="form-label fw-semibold">
+                                Password
+                            </label>
+
+                            <input type="password"
+                                   class="form-control form-control-lg"
+                                   id="password"
+                                   placeholder="Enter your password"
+                                   required>
+                        </div>
+
+                        <!-- Login Button -->
+                        <div class="d-grid">
+                            <button type="submit"
+                                    class="btn btn-primary btn-lg">
+                                Login
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+            <p class="text-center text-muted mt-3 small">
+                Airline Management System
+            </p>
+
         </div>
+    </div>
+</div>
 
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" required>
-        </div>
 
-        <button type="submit">Login</button>
-    </form>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
 
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        e.preventDefault();
 
-            const loginData = {
-                email: document.getElementById('email').value,
-                password: document.getElementById('password').value
-            };
+        const messageDiv = document.getElementById('message');
 
-            const contextPath = '${pageContext.request.contextPath}';
+        const loginData = {
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value
+        };
 
-            fetch(contextPath + '/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(loginData)
-            })
+        const contextPath = '${pageContext.request.contextPath}';
+
+        fetch(contextPath + '/api/login', {
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify(loginData)
+        })
+
             .then(response => {
-                const msgDiv = document.getElementById('message');
-                if (response.ok) {
-                    return response.json().then(data => {
-                        // Store the JWT token in localStorage
-                        localStorage.setItem('jwtToken', data.token);
 
-                        msgDiv.style.color = 'green';
-                        msgDiv.innerText = data.message || 'Login successful!';
-                        document.getElementById('loginForm').reset();
-                        
-                        // Clear any old token
-                        localStorage.removeItem('jwtToken');
-                        
-                        // Redirect after success - the cookie is already set by the server
-                        window.location.href = contextPath + '/bookings/my-bookings';
-                    });
-                } else {
-                    return response.json().then(err => {
-                        throw new Error(err.message || 'Invalid email or password');
-                    });
+                if (response.ok) {
+                    return response.json();
                 }
+
+                return response.json().then(err => {
+                    throw new Error(err.message || 'Invalid email or password');
+                });
             })
+
+            .then(data => {
+
+                // Store JWT token
+                if (data.token) {
+                    localStorage.setItem('jwtToken', data.token);
+                }
+
+                messageDiv.innerHTML =
+                    '<div class="alert alert-success text-center">' +
+                    (data.message || 'Login successful!') +
+                    '</div>';
+
+                document.getElementById('loginForm').reset();
+
+                // Redirect after successful login
+                setTimeout(function() {
+                    window.location.href =
+                        contextPath + '/bookings/my-bookings';
+                }, 500);
+            })
+
             .catch(error => {
-                const msgDiv = document.getElementById('message');
-                msgDiv.style.color = 'red';
-                msgDiv.innerText = 'Error: ' + error.message;
+
+                messageDiv.innerHTML =
+                    '<div class="alert alert-danger">' +
+                    error.message +
+                    '</div>';
             });
-        });
-    </script>
+    });
+</script>
 
 </body>
 </html>

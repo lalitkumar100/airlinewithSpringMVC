@@ -784,8 +784,7 @@
                                 <button
                                         type="button"
                                         class="details-btn"
-                                        data-toggle="modal"
-                                        data-target="#details-${booking.bookingId}">
+                                        onclick="window.location.href='${pageContext.request.contextPath}/bookings/detail?bookingId=${booking.bookingId}'">
 
                                     View Details
 

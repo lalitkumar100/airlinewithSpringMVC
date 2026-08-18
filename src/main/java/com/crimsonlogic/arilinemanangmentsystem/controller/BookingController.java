@@ -64,6 +64,12 @@ public class BookingController {
         return "show-bookings";
     }
 
+    @GetMapping("/detail")
+    public String showBookingDetail(@RequestParam("bookingId") String bookingId, Model model) {
+        model.addAttribute("bookingId", bookingId);
+        return "booking-detail";
+    }
+
     // Redirect old endpoints to the new unified flow to prevent 400 errors from old links
     @GetMapping("/passenger-form")
     public String redirectOldPassengerForm(@RequestParam(value = "flightId", required = false) String flightId) {
