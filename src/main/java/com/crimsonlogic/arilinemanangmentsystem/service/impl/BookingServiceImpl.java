@@ -888,7 +888,7 @@ public class BookingServiceImpl implements BookingService {
 
         // Identifier of the platform airline wallet.
         String platformAirlineUserId =
-                "USR365589";
+                "USR693190";
 
         // Transfer the refund from the airline wallet
         // to the customer's wallet.

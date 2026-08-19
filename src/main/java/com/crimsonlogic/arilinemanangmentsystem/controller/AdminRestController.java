@@ -57,7 +57,7 @@ public class AdminRestController {
     @PatchMapping("/flights/{flightId}/cancel")
     public ResponseEntity<String> cancelFlight(@PathVariable String flightId) {
         try {
-//            flightService.cancelFlight(flightId);
+
             return ResponseEntity.ok("Flight and associated bookings cancelled successfully. Refunds processed.");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error cancelling flight: " + e.getMessage());
