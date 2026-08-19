@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass;
+import com.crimsonlogic.arilinemanangmentsystem.model.RevenueReport;
 
 public interface FlightService {
     List<Flight> getAllFlights();
@@ -21,5 +22,8 @@ public interface FlightService {
     int getAvailableSeats(String flightId, SeatClass seatClass);
     double calculateFare(String flightId, SeatClass seatClass);
     List<Booking> getFlightBookings(String flightId);
-    com.crimsonlogic.arilinemanangmentsystem.model.RevenueReport getFlightRevenueReport(String flightId);
+    RevenueReport getFlightRevenueReport(String flightId);
+
+
+
 }

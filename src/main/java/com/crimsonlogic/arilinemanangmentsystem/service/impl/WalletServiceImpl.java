@@ -24,7 +24,7 @@ public class WalletServiceImpl implements WalletService {
 
     // Fetching receiver ID for bookings from environment properties (e.g., application.properties)
 //    @Value("${booking.receiver.user.id}")
-    private String platformReceiverUserId ="USR365589";
+    private String platformReceiverUserId ="USR693190";
 
     @Autowired
     public WalletServiceImpl(WalletMapper walletMapper, TransactionService transactionService) {

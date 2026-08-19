@@ -22,8 +22,6 @@ public class FlightRestController {
     @Autowired
     private FlightService flightService;
 
-    @Autowired
-    private TicketService ticketService;
 
 
 
@@ -83,18 +81,4 @@ public class FlightRestController {
         return ResponseEntity.ok(flights);
     }
 
-    @PostMapping("/{id}/generate-tickets")
-    public ResponseEntity<Void> generateTickets(@PathVariable("id") String id) {
-        Flight flight = flightService.getFlightById(id);
-        if (flight != null) {
-            ticketService.generateTickets(flight);
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    @GetMapping("/{id}/tickets")
-    public ResponseEntity<List<Ticket>> getTicketsByFlight(@PathVariable("id") String id) {
-        return ResponseEntity.ok(ticketService.getTicketsByFlight(id));
-    }
 }

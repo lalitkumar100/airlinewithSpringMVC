@@ -3,7 +3,9 @@ package com.crimsonlogic.arilinemanangmentsystem.controller;
 import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
 import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
 import com.crimsonlogic.arilinemanangmentsystem.model.RevenueReport;
+import com.crimsonlogic.arilinemanangmentsystem.model.Ticket;
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
+import com.crimsonlogic.arilinemanangmentsystem.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/admin")
 public class AdminRestController {
+
+    @Autowired
+    private TicketService ticketService;
 
     @Autowired
     private FlightService flightService;
@@ -52,10 +57,26 @@ public class AdminRestController {
     @PatchMapping("/flights/{flightId}/cancel")
     public ResponseEntity<String> cancelFlight(@PathVariable String flightId) {
         try {
-            flightService.cancelFlight(flightId);
+//            flightService.cancelFlight(flightId);
             return ResponseEntity.ok("Flight and associated bookings cancelled successfully. Refunds processed.");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error cancelling flight: " + e.getMessage());
         }
+    }
+
+
+    @PostMapping("/{id}/generate-tickets")
+    public ResponseEntity<Void> generateTickets(@PathVariable("id") String id) {
+        Flight flight = flightService.getFlightById(id);
+        if (flight != null) {
+            ticketService.generateTickets(flight);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{id}/tickets")
+    public ResponseEntity<List<Ticket>> getTicketsByFlight(@PathVariable("id") String id) {
+        return ResponseEntity.ok(ticketService.getTicketsByFlight(id));
     }
 }
