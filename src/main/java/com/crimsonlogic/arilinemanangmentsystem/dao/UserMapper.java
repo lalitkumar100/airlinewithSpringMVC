@@ -6,30 +6,25 @@ import org.apache.ibatis.type.EnumTypeHandler;
 @Mapper
 public interface UserMapper {
 
-    @ResultMap("UserResultMap")
-    @Select("SELECT * FROM user WHERE email = #{email} AND is_deleted = 0")
-    User findByEmail(String email);
-
-    @Select("SELECT * FROM user WHERE id = #{id} AND is_deleted = 0")
     @Results(id = "UserResultMap", value = {
             @Result(property = "id", column = "id"),
             @Result(property = "firstName", column = "first_name"),
             @Result(property = "lastName", column = "last_name"),
             @Result(property = "dateOfBirth", column = "date_of_birth"),
-
-            // Correct mapping for Gender enum
             @Result(property = "gender", column = "gender", javaType = com.crimsonlogic.arilinemanangmentsystem.enumrator.Gender.class, typeHandler = EnumTypeHandler.class),
-
             @Result(property = "email", column = "email"),
             @Result(property = "phoneNumber", column = "phone_number"),
             @Result(property = "password", column = "password_hash"),
             @Result(property = "createdAt", column = "created_at"),
             @Result(property = "updatedAt", column = "updated_at"),
             @Result(property = "deleted", column = "is_deleted"),
-
-            // Correct mapping for Role enum
             @Result(property = "role", column = "role", javaType = com.crimsonlogic.arilinemanangmentsystem.enumrator.Role.class, typeHandler = EnumTypeHandler.class)
     })
+    @Select("SELECT * FROM user WHERE email = #{email} AND is_deleted = 0")
+    User findByEmail(String email);
+
+    @ResultMap("UserResultMap")
+    @Select("SELECT * FROM user WHERE id = #{id} AND is_deleted = 0")
     User findById(@Param("id") String id);
 
 

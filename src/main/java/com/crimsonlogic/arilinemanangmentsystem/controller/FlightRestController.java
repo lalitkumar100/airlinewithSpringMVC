@@ -2,9 +2,11 @@ package com.crimsonlogic.arilinemanangmentsystem.controller;
 
 import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.FlightStatus;
+import com.crimsonlogic.arilinemanangmentsystem.model.Ticket;
 import com.crimsonlogic.arilinemanangmentsystem.service.AircraftService;
 import com.crimsonlogic.arilinemanangmentsystem.service.AirportService;
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
+import com.crimsonlogic.arilinemanangmentsystem.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,9 @@ public class FlightRestController {
 
     @Autowired
     private FlightService flightService;
+
+    @Autowired
+    private TicketService ticketService;
 
 
 
@@ -76,5 +81,20 @@ public class FlightRestController {
 
         List<Flight> flights = flightService.searchFlights(source, destination, date);
         return ResponseEntity.ok(flights);
+    }
+
+    @PostMapping("/{id}/generate-tickets")
+    public ResponseEntity<Void> generateTickets(@PathVariable("id") String id) {
+        Flight flight = flightService.getFlightById(id);
+        if (flight != null) {
+            ticketService.generateTickets(flight);
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{id}/tickets")
+    public ResponseEntity<List<Ticket>> getTicketsByFlight(@PathVariable("id") String id) {
+        return ResponseEntity.ok(ticketService.getTicketsByFlight(id));
     }
 }

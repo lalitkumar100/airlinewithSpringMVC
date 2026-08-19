@@ -23,7 +23,7 @@ public interface FlightMapper {
             @Result(property = "aircraft", column = "aircraft_id",
                     one = @One(select = "com.crimsonlogic.arilinemanangmentsystem.dao.AircraftMapper.findById")),
             @Result(property = "baseFare", column = "base_fare"),
-            @Result(property = "status", column = "status"),
+            @Result(property = "status", column = "status", javaType = com.crimsonlogic.arilinemanangmentsystem.enumrator.FlightStatus.class, typeHandler = org.apache.ibatis.type.EnumTypeHandler.class),
             @Result(property = "createdAt", column = "created_at"),
             @Result(property = "updatedAt", column = "updated_at"),
             @Result(property = "deleted", column = "is_deleted")

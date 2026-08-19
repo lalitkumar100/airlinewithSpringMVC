@@ -33,7 +33,7 @@ public interface PassengerMapper {
             #{firstName}, 
             #{lastName}, 
             #{dateOfBirth}, 
-            #{gender}, 
+            #{gender, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, 
             #{email}, 
             #{phoneNumber}, 
             #{createdAt}, 
@@ -76,7 +76,7 @@ public interface PassengerMapper {
             @Result(property = "firstName", column = "firstName"),
             @Result(property = "lastName", column = "lastName"),
             @Result(property = "dateOfBirth", column = "dateOfBirth"),
-            @Result(property = "gender", column = "gender"),
+            @Result(property = "gender", column = "gender", javaType = com.crimsonlogic.arilinemanangmentsystem.enumrator.Gender.class, typeHandler = org.apache.ibatis.type.EnumTypeHandler.class),
             @Result(property = "email", column = "email"),
             @Result(property = "phoneNumber", column = "phoneNumber"),
             @Result(property = "createdAt", column = "createdAt"),
@@ -85,9 +85,9 @@ public interface PassengerMapper {
             @Result(property = "isCancelled", column = "cancelled"),
             @Result(property = "booking.bookingId", column = "b_bookingId"),
             @Result(property = "booking.bookingDateTime", column = "b_bookingDatetime"),
-            @Result(property = "booking.seatClass", column = "b_seatClass"),
+            @Result(property = "booking.seatClass", column = "b_seatClass", javaType = com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass.class, typeHandler = org.apache.ibatis.type.EnumTypeHandler.class),
             @Result(property = "booking.amount", column = "b_amount"),
-            @Result(property = "booking.bookingStatus", column = "b_bookingStatus")
+            @Result(property = "booking.bookingStatus", column = "b_bookingStatus", javaType = com.crimsonlogic.arilinemanangmentsystem.enumrator.BookingStatus.class, typeHandler = org.apache.ibatis.type.EnumTypeHandler.class)
     })
     Passenger getPassengerById(String passengerId);
 

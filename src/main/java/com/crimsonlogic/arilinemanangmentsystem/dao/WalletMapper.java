@@ -45,7 +45,7 @@ public interface WalletMapper {
             @Result(property = "walletId", column = "walletId"),
             @Result(property = "balance", column = "balance"),
             @Result(property = "currency", column = "currency"),
-            @Result(property = "status", column = "status"),
+            @Result(property = "status", column = "status", javaType = com.crimsonlogic.arilinemanangmentsystem.enumrator.WalletStatus.class, typeHandler = org.apache.ibatis.type.EnumTypeHandler.class),
             @Result(property = "createdAt", column = "createdAt"),
             @Result(property = "updatedAt", column = "updatedAt"),
             @Result(property = "deleted", column = "deleted"),

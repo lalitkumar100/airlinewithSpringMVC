@@ -66,7 +66,9 @@ public interface BookingMapper {
 
             @Result(
                     property = "seatClass",
-                    column = "seat_class"
+                    column = "seat_class",
+                    javaType = com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass.class,
+                    typeHandler = org.apache.ibatis.type.EnumTypeHandler.class
             ),
 
             @Result(
@@ -76,7 +78,9 @@ public interface BookingMapper {
 
             @Result(
                     property = "bookingStatus",
-                    column = "booking_status"
+                    column = "booking_status",
+                    javaType = com.crimsonlogic.arilinemanangmentsystem.enumrator.BookingStatus.class,
+                    typeHandler = org.apache.ibatis.type.EnumTypeHandler.class
             ),
 
             @Result(
@@ -149,4 +153,23 @@ public interface BookingMapper {
           AND is_deleted = 0
         """)
     int updateBookingStatus(@Param("bookingId") String bookingId, @Param("status") com.crimsonlogic.arilinemanangmentsystem.enumrator.BookingStatus status);
+
+    @Select("""
+        SELECT
+            booking_id,
+            flight_id,
+            booking_datetime,
+            seat_class,
+            amount,
+            booking_status,
+            created_at,
+            updated_at,
+            is_deleted,
+            user_id
+        FROM booking
+        WHERE flight_id = #{flightId}
+          AND is_deleted = 0
+        """)
+    @ResultMap("BookingResultMap")
+    List<Booking> getBookingsByFlightId(@Param("flightId") String flightId);
 }

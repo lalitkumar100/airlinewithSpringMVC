@@ -3,9 +3,17 @@ package com.crimsonlogic.arilinemanangmentsystem.service.impl;
 import com.crimsonlogic.arilinemanangmentsystem.dao.AircraftMapper;
 import com.crimsonlogic.arilinemanangmentsystem.dao.AirportMapper;
 import com.crimsonlogic.arilinemanangmentsystem.dao.FlightMapper;
+import com.crimsonlogic.arilinemanangmentsystem.dao.PassengerMapper;
+import com.crimsonlogic.arilinemanangmentsystem.dao.PaymentMapper;
+import com.crimsonlogic.arilinemanangmentsystem.dao.RefundMapper;
 import com.crimsonlogic.arilinemanangmentsystem.model.Aircraft;
 import com.crimsonlogic.arilinemanangmentsystem.model.Airport;
+import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
 import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
+import com.crimsonlogic.arilinemanangmentsystem.model.Passenger;
+import com.crimsonlogic.arilinemanangmentsystem.model.Payment;
+import com.crimsonlogic.arilinemanangmentsystem.model.Refund;
+import com.crimsonlogic.arilinemanangmentsystem.model.RevenueReport;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.FlightStatus;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass;
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
@@ -14,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,6 +39,15 @@ public class FlightServiceImpl implements FlightService {
 
     @Autowired
     private com.crimsonlogic.arilinemanangmentsystem.dao.BookingMapper bookingMapper;
+
+    @Autowired
+    private PassengerMapper passengerMapper;
+
+    @Autowired
+    private PaymentMapper paymentMapper;
+
+    @Autowired
+    private RefundMapper refundMapper;
 
 
 
@@ -193,6 +211,45 @@ public class FlightServiceImpl implements FlightService {
             default:
                 return baseFare * 1.0;
         }
+    }
+
+    @Override
+    public List<Booking> getFlightBookings(String flightId) {
+        List<Booking> bookings = bookingMapper.getBookingsByFlightId(flightId);
+        if (bookings != null) {
+            for (Booking booking : bookings) {
+                // Populate passengers for each booking
+                List<Passenger> passengers = passengerMapper.getPassengersByBookingId(booking.getBookingId());
+                booking.setPassengers(new ArrayList<>(passengers));
+            }
+        }
+        return bookings;
+    }
+
+    @Override
+    public RevenueReport getFlightRevenueReport(String flightId) {
+        List<Booking> bookings = bookingMapper.getBookingsByFlightId(flightId);
+        double totalBookingAmount = 0;
+        double totalRefundAmount = 0;
+
+        if (bookings != null) {
+            for (Booking booking : bookings) {
+                // Only count confirmed or checked-in bookings for revenue? 
+                // Usually, the 'amount' in booking is the intended revenue.
+                // Let's check payments.
+                Payment payment = paymentMapper.getPaymentByBookingId(booking.getBookingId());
+                if (payment != null && payment.isPaid()) {
+                    totalBookingAmount += payment.getAmount();
+                }
+
+                Refund refund = refundMapper.getRefundByBookingId(booking.getBookingId());
+                if (refund != null) {
+                    totalRefundAmount += refund.getAmount();
+                }
+            }
+        }
+
+        return new RevenueReport(flightId, totalBookingAmount, totalRefundAmount);
     }
 
 }

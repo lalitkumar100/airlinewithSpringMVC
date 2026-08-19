@@ -1,5 +1,6 @@
 package com.crimsonlogic.arilinemanangmentsystem.service;
 
+import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
 import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.FlightStatus;
 
@@ -19,4 +20,6 @@ public interface FlightService {
 
     int getAvailableSeats(String flightId, SeatClass seatClass);
     double calculateFare(String flightId, SeatClass seatClass);
+    List<Booking> getFlightBookings(String flightId);
+    com.crimsonlogic.arilinemanangmentsystem.model.RevenueReport getFlightRevenueReport(String flightId);
 }
