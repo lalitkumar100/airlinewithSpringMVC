@@ -7,6 +7,9 @@ import com.crimsonlogic.arilinemanangmentsystem.dao.PassengerMapper;
 import com.crimsonlogic.arilinemanangmentsystem.dao.PaymentMapper;
 import com.crimsonlogic.arilinemanangmentsystem.dao.RefundMapper;
 import com.crimsonlogic.arilinemanangmentsystem.dto.AddFlightRequest;
+import com.crimsonlogic.arilinemanangmentsystem.dto.UpdateFlightStatusRequest;
+import com.crimsonlogic.arilinemanangmentsystem.dto.UpdateFlightScheduleRequest;
+import com.crimsonlogic.arilinemanangmentsystem.exception.DBException;
 import com.crimsonlogic.arilinemanangmentsystem.exception.NullValueException;
 import com.crimsonlogic.arilinemanangmentsystem.exception.RecordNotFoundException;
 import com.crimsonlogic.arilinemanangmentsystem.model.Aircraft;
@@ -22,6 +25,7 @@ import com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass;
 import com.crimsonlogic.arilinemanangmentsystem.service.*;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -42,8 +46,6 @@ public class FlightServiceImpl implements FlightService {
     @Autowired
     private AircraftService aircraftService;
 
-    @Autowired
-    private BookingService bookingService;
 
     @Autowired
     private PaymentService paymentService;
@@ -80,13 +82,31 @@ public class FlightServiceImpl implements FlightService {
 
 
     @Override
-    public boolean updateFlightTime(String flightId, LocalDateTime departureTime, LocalDateTime arrivalTime) {
-        return flightMapper.updateFlightTime(flightId, departureTime, arrivalTime) > 0;
+    public boolean updateFlightSchedule(String flightId, UpdateFlightScheduleRequest request) {
+        // This is now orchestrated by FlightOrchestratorService
+        throw new UnsupportedOperationException("Use FlightOrchestratorService for schedule updates");
     }
 
     @Override
-    public boolean updateFlightStatus(String flightId, FlightStatus status) {
-        return flightMapper.updateFlightStatus(flightId, status) > 0;
+    public boolean updateFlightStatus(String flightId, UpdateFlightStatusRequest request) {
+        // This is now orchestrated by FlightOrchestratorService
+        throw new UnsupportedOperationException("Use FlightOrchestratorService for status updates");
+    }
+
+    @Override
+    public boolean updateStatusOnly(String flightId, FlightStatus status) {
+        if (flightMapper.updateFlightStatus(flightId, status) == 0) {
+            throw new DBException("Failed to update flight status in database");
+        }
+        return true;
+    }
+
+    @Override
+    public boolean updateScheduleOnly(String flightId, UpdateFlightScheduleRequest request) {
+        if (flightMapper.updateFlightSchedule(flightId, request.getDepartureTime(), request.getArrivalTime(), request.getAircraftId()) == 0) {
+            throw new DBException("Failed to update flight schedule in database");
+        }
+        return true;
     }
 
 
@@ -143,33 +163,6 @@ public class FlightServiceImpl implements FlightService {
         return flightMapper.searchFlightsByDate(sourceAirport.toUpperCase(), destinationAirport.toUpperCase(), departureDate);
     }
 
-    @Override
-    public int getAvailableSeats(String flightId, SeatClass seatClass) {
-
-        Flight flight =getFlightById(flightId);
-
-        int totalCapacity = flight.getAircraft().getCapacity();
-        int classCapacity = 0;
-
-        switch (seatClass) {
-            case FIRST_CLASS:
-                classCapacity = (int) (totalCapacity * 0.20);
-                break;
-            case BUSINESS_CLASS:
-                classCapacity = (int) (totalCapacity * 0.30);
-                break;
-            case ECONOMY_CLASS:
-                classCapacity = totalCapacity - (int) (totalCapacity * 0.20) - (int) (totalCapacity * 0.30);
-                break;
-        }
-
-        int bookedSeats =
-                bookingService.getBookedSeatCount(
-                        flightId,
-                        seatClass
-                );
-        return Math.max(0, classCapacity - bookedSeats);
-    }
 
     @Override
     public double calculateFare(String flightId, SeatClass seatClass) {
@@ -191,51 +184,6 @@ public class FlightServiceImpl implements FlightService {
 
 
 
-    @Override
-    public RevenueReport getFlightRevenueReport(String flightId) {
-
-        if (flightId == null || flightId.isBlank()) {
-            throw new NullValueException(
-                    "Flight ID cannot be null or empty."
-            );
-        }
-
-        List<Booking> bookings =
-                bookingService.getFlightBookings(flightId);
-
-        double totalBookingAmount = 0;
-        double totalRefundAmount = 0;
-
-        if (bookings != null) {
-
-            for (Booking booking : bookings) {
-
-                Payment payment =
-                        paymentService.getPaymentByBookingId(
-                                booking.getBookingId()
-                        );
-
-                if (payment != null && payment.isPaid()) {
-                    totalBookingAmount += payment.getAmount();
-                }
-
-                Refund refund =
-                        refundService.getRefundByBookingId(
-                                booking.getBookingId()
-                        );
-
-                if (refund != null) {
-                    totalRefundAmount += refund.getAmount();
-                }
-            }
-        }
-
-        return new RevenueReport(
-                flightId,
-                totalBookingAmount,
-                totalRefundAmount
-        );
-    }
 
     private void validateFlightDateTime(LocalDateTime departureTime, LocalDateTime arrivalTime) {
         LocalDateTime now = LocalDateTime.now();

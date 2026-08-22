@@ -12,6 +12,7 @@ import com.crimsonlogic.arilinemanangmentsystem.model.User;
 import com.crimsonlogic.arilinemanangmentsystem.model.Refund;
 import com.crimsonlogic.arilinemanangmentsystem.model.Payment;
 import com.crimsonlogic.arilinemanangmentsystem.service.BookingService;
+import com.crimsonlogic.arilinemanangmentsystem.service.FlightReportService;
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
 import com.crimsonlogic.arilinemanangmentsystem.service.PassengerService;
 import com.crimsonlogic.arilinemanangmentsystem.service.WalletService;
@@ -57,6 +58,9 @@ public class BookingServiceImpl implements BookingService {
      */
     @Autowired
     private FlightService flightService;
+
+    @Autowired
+    private FlightReportService flightReportService;
 
     /**
      * Service responsible for passenger-related business operations.
@@ -159,7 +163,7 @@ public class BookingServiceImpl implements BookingService {
                 passengers.size();
 
         int availableSeats =
-                flightService.getAvailableSeats(
+                flightReportService.getAvailableSeats(
                         flight.getFlightId(),
                         booking.getSeatClass()
                 );
@@ -1059,6 +1063,21 @@ public class BookingServiceImpl implements BookingService {
         }
 
         return bookings;
+    }
+
+    @Override
+    public void updateBookingStatus(String bookingId, BookingStatus status) {
+        if (bookingId == null || bookingId.isBlank()) {
+            throw new NullValueException("Booking ID cannot be null or empty.");
+        }
+        if (status == null) {
+            throw new NullValueException("Booking status cannot be null.");
+        }
+
+        int rows = bookingMapper.updateBookingStatus(bookingId, status);
+        if (rows <= 0) {
+            throw new DBException("Failed to update booking status");
+        }
     }
 
     private  void cancelFullBooking(String bookingId){

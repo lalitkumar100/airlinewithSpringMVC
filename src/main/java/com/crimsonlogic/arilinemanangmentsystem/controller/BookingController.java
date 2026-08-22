@@ -2,6 +2,7 @@ package com.crimsonlogic.arilinemanangmentsystem.controller;
 
 import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass;
+import com.crimsonlogic.arilinemanangmentsystem.service.FlightReportService;
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,9 @@ public class BookingController {
 
     @Autowired
     private FlightService flightService;
+
+    @Autowired
+    private FlightReportService flightReportService;
 
     @Autowired
     private com.crimsonlogic.arilinemanangmentsystem.service.BookingService bookingService;
@@ -33,9 +37,9 @@ public class BookingController {
         model.addAttribute("flight", flight);
         
         // Seat availability
-        model.addAttribute("economyAvailable", flightService.getAvailableSeats(flightId, SeatClass.ECONOMY_CLASS));
-        model.addAttribute("businessAvailable", flightService.getAvailableSeats(flightId, SeatClass.BUSINESS_CLASS));
-        model.addAttribute("firstAvailable", flightService.getAvailableSeats(flightId, SeatClass.FIRST_CLASS));
+        model.addAttribute("economyAvailable", flightReportService.getAvailableSeats(flightId, SeatClass.ECONOMY_CLASS));
+        model.addAttribute("businessAvailable", flightReportService.getAvailableSeats(flightId, SeatClass.BUSINESS_CLASS));
+        model.addAttribute("firstAvailable", flightReportService.getAvailableSeats(flightId, SeatClass.FIRST_CLASS));
         
         // Fares
         model.addAttribute("economyFare", flightService.calculateFare(flightId, SeatClass.ECONOMY_CLASS));

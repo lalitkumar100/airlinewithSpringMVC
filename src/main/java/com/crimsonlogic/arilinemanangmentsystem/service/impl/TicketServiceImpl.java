@@ -1,6 +1,5 @@
 package com.crimsonlogic.arilinemanangmentsystem.service.impl;
 
-import com.crimsonlogic.arilinemanangmentsystem.dao.BookingMapper;
 import com.crimsonlogic.arilinemanangmentsystem.dao.TicketMapper;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.BookingStatus;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass;
@@ -8,6 +7,7 @@ import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
 import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
 import com.crimsonlogic.arilinemanangmentsystem.model.Passenger;
 import com.crimsonlogic.arilinemanangmentsystem.model.Ticket;
+import com.crimsonlogic.arilinemanangmentsystem.service.BookingService;
 import com.crimsonlogic.arilinemanangmentsystem.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class TicketServiceImpl implements TicketService {
     private TicketMapper ticketMapper;
 
     @Autowired
-    private BookingMapper bookingMapper;
+    private BookingService bookingService;
 
     @Override
     @Transactional
@@ -33,7 +33,7 @@ public class TicketServiceImpl implements TicketService {
             return;
         }
 
-        List<Booking> allBookings = bookingMapper.getBookingsByFlightId(flight.getFlightId());
+        List<Booking> allBookings = bookingService.getFlightBookings(flight.getFlightId());
         
         int totalCapacity = flight.getAircraft().getCapacity();
         int firstClassCapacity = (int) (totalCapacity * 0.20);
@@ -94,11 +94,14 @@ public class TicketServiceImpl implements TicketService {
                     ticketMapper.insertTicket(ticket);
                 }
                 booking.setBookingStatus(BookingStatus.CONFIRMED);
-                bookingMapper.updateBookingStatus(booking.getBookingId(), BookingStatus.CONFIRMED);
+                bookingService.updateBookingStatus(booking.getBookingId(), BookingStatus.CONFIRMED);
                 totalAssigned += passengers.size();
             } else {
-                booking.setBookingStatus(BookingStatus.WAITLISTED);
-                bookingMapper.updateBookingStatus(booking.getBookingId(), BookingStatus.WAITLISTED);
+                bookingService.cancelBooking(
+                        booking.getBookingId(),
+                        "Seat unavailable during ticket generation",
+                        1.0f
+                );
             }
         }
     }

@@ -1,12 +1,16 @@
 package com.crimsonlogic.arilinemanangmentsystem.controller.restcontroller;
 
 import com.crimsonlogic.arilinemanangmentsystem.dto.ApiResponse;
+import com.crimsonlogic.arilinemanangmentsystem.dto.UpdateFlightStatusRequest;
+import com.crimsonlogic.arilinemanangmentsystem.dto.UpdateFlightScheduleRequest;
 import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
+import com.crimsonlogic.arilinemanangmentsystem.service.FlightOrchestratorService;
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
 
 
 import java.time.LocalDate;
@@ -19,6 +23,9 @@ public class FlightRestController {
 
     @Autowired
     private FlightService flightService;
+
+    @Autowired
+    private FlightOrchestratorService flightOrchestratorService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<Flight>>> getAllFlights() {
@@ -47,13 +54,22 @@ public class FlightRestController {
         );
     }
 
-    @PutMapping("/{id}/time")
-    public ResponseEntity<Void> updateFlightTime(@PathVariable("id") String FlightId,
-                                                 @RequestParam("departure") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime departure,
-                                                 @RequestParam("arrival") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime arrival) {
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<ApiResponse<Void>> updateFlightStatus(@PathVariable("id") String flightId,
+                                                               @Valid @RequestBody UpdateFlightStatusRequest request) {
+        flightOrchestratorService.updateFlightStatus(flightId, request);
+        return ResponseEntity.ok(
+                new ApiResponse<>("SUCCESS", "Flight status updated successfully", null)
+        );
+    }
 
-        flightService.updateFlightTime(FlightId, departure, arrival);
-        return ResponseEntity.ok().build();
+    @PatchMapping("/{id}/schedule")
+    public ResponseEntity<ApiResponse<Void>> updateFlightSchedule(@PathVariable("id") String flightId,
+                                                                 @Valid @RequestBody UpdateFlightScheduleRequest request) {
+        flightOrchestratorService.updateFlightSchedule(flightId, request);
+        return ResponseEntity.ok(
+                new ApiResponse<>("SUCCESS", "Flight schedule updated successfully", null)
+        );
     }
 
     @GetMapping("/search")

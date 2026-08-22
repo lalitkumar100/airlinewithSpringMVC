@@ -36,8 +36,8 @@ public interface FlightMapper {
     @Select("SELECT flight_id, flight_code, source_airport, destination_airport, departure_time, arrival_time, aircraft_id, base_fare, status, created_at, updated_at, is_deleted FROM flight WHERE flight_id = #{flightId} AND is_deleted = 0")
     Flight findById(@Param("flightId") String flightId);
 
-    @Update("UPDATE flight SET departure_time = #{departureDateTime}, arrival_time = #{arrivalDateTime}, updated_at = NOW() WHERE flight_id = #{flightId}")
-    int updateFlightTime(@Param("flightId") String flightId, @Param("departureDateTime") LocalDateTime departureDateTime, @Param("arrivalDateTime") LocalDateTime arrivalDateTime);
+    @Update("UPDATE flight SET departure_time = #{departureDateTime}, arrival_time = #{arrivalDateTime}, aircraft_id = #{aircraftId}, updated_at = NOW() WHERE flight_id = #{flightId}")
+    int updateFlightSchedule(@Param("flightId") String flightId, @Param("departureDateTime") LocalDateTime departureDateTime, @Param("arrivalDateTime") LocalDateTime arrivalDateTime, @Param("aircraftId") String aircraftId);
 
     @Update("UPDATE flight SET status = #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, updated_at = NOW() WHERE flight_id = #{flightId}")
     int updateFlightStatus(@Param("flightId") String flightId, @Param("status") FlightStatus status);

@@ -9,6 +9,7 @@ import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
 import com.crimsonlogic.arilinemanangmentsystem.model.RevenueReport;
 import com.crimsonlogic.arilinemanangmentsystem.model.Ticket;
 import com.crimsonlogic.arilinemanangmentsystem.service.BookingService;
+import com.crimsonlogic.arilinemanangmentsystem.service.FlightReportService;
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
 import com.crimsonlogic.arilinemanangmentsystem.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class AdminRestController {
 
     @Autowired
     private FlightService flightService;
+
+    @Autowired
+    private FlightReportService flightReportService;
 
     @Autowired
     private BookingService bookingService;
@@ -76,7 +80,7 @@ public class AdminRestController {
 
     @GetMapping("/flights/{flightId}/revenue")
     public ResponseEntity<ApiResponse<RevenueReport>> getFlightRevenue(@PathVariable String flightId) {
-        RevenueReport report = flightService.getFlightRevenueReport(flightId);
+        RevenueReport report = flightReportService.getFlightRevenueReport(flightId);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
