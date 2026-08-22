@@ -1,5 +1,6 @@
 package com.crimsonlogic.arilinemanangmentsystem.service.impl;
 
+import com.crimsonlogic.arilinemanangmentsystem.exception.RecordNotFoundException;
 import com.crimsonlogic.arilinemanangmentsystem.service.AircraftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,14 @@ public class AircraftServiceImpl implements AircraftService {
 
     @Override
     public Aircraft findById(String aircraftId) {
-        return aircraftMapper.findById(aircraftId);
+
+        Aircraft aircraft =
+                aircraftMapper.findById(aircraftId);
+
+        if (aircraft == null) {
+            throw new RecordNotFoundException("Aircraft not found with ID: " + aircraftId);
+        }
+
+        return aircraft;
     }
 }

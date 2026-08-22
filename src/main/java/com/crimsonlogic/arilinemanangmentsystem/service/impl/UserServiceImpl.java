@@ -1,20 +1,24 @@
 package com.crimsonlogic.arilinemanangmentsystem.service.impl;
 
-import com.crimsonlogic.arilinemanangmentsystem.enumrator.Role;
-import com.crimsonlogic.arilinemanangmentsystem.enumrator.WalletStatus;
-import com.crimsonlogic.arilinemanangmentsystem.dao.LoyaltyAccountMapper;
 import com.crimsonlogic.arilinemanangmentsystem.dao.UserMapper;
-import com.crimsonlogic.arilinemanangmentsystem.dao.WalletMapper;
+import com.crimsonlogic.arilinemanangmentsystem.dto.RegistrationRequest;
+import com.crimsonlogic.arilinemanangmentsystem.enumrator.Role;
 import com.crimsonlogic.arilinemanangmentsystem.exception.InvalidHumanException;
+import com.crimsonlogic.arilinemanangmentsystem.exception.RecordNotFoundException;
+import com.crimsonlogic.arilinemanangmentsystem.exception.UserException;
 import com.crimsonlogic.arilinemanangmentsystem.model.LoyaltyAccount;
 import com.crimsonlogic.arilinemanangmentsystem.model.User;
 import com.crimsonlogic.arilinemanangmentsystem.model.Wallet;
+import com.crimsonlogic.arilinemanangmentsystem.service.LoyaltyAccountSerivce;
 import com.crimsonlogic.arilinemanangmentsystem.service.UserService;
+import com.crimsonlogic.arilinemanangmentsystem.service.WalletService;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
 import com.crimsonlogic.arilinemanangmentsystem.utility.ValidatorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 
@@ -22,83 +26,167 @@ import java.time.LocalDateTime;
 public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
-    private final WalletMapper walletMapper;
-    private final LoyaltyAccountMapper loyaltyAccountMapper;
 
     @Autowired
-    public UserServiceImpl(UserMapper userMapper,
-                           WalletMapper walletMapper,
-                           LoyaltyAccountMapper loyaltyAccountMapper) {
+    private WalletService walletService;
+
+    @Autowired
+    private LoyaltyAccountSerivce loyaltyAccountSerivce;
+
+
+    @Autowired
+    public UserServiceImpl(UserMapper userMapper) {
         this.userMapper = userMapper;
-        this.walletMapper = walletMapper;
-        this.loyaltyAccountMapper = loyaltyAccountMapper;
     }
 
     @Override
     @Transactional
-    public User registerUser(User user) throws InvalidHumanException {
+    public User registerUser(
+            RegistrationRequest request)
+            throws InvalidHumanException {
+
         LocalDateTime now = LocalDateTime.now();
 
-        ValidatorUtil.validateEmail(user.getEmail());
-        ValidatorUtil.validatePhone(user.getPhoneNumber());
-        ValidatorUtil.validateAge(user.getDateOfBirth());
-        ValidatorUtil.validatePassword(user.getPassword());
+        /*
+         * Validate request
+         */
+        ValidatorUtil.validateEmail(request.getEmail());
 
-
-       //id gentation
-      user.setId(IdGenerator.generateUserId());
-
-      if (user.getRole() == null) {
-          user.setRole(Role.USER);
+        if (isEmailExists(request.getEmail())) {
+            throw new UserException(
+                    "Email is already registered.", HttpStatus.BAD_REQUEST);
         }
+        ValidatorUtil.validateName(request.getFirstName());
+        ValidatorUtil.validateName(request.getLastName());
+        ValidatorUtil.validatePhone(request.getPhoneNumber());
+        ValidatorUtil.validateAgeAdult(request.getDateOfBirth());
+        ValidatorUtil.validatePassword(request.getPassword());
+
+        /*
+         * Create User entity
+         */
+        User user = new User();
+
+        user.setId(IdGenerator.generateUserId());
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setDateOfBirth(request.getDateOfBirth());
+        user.setGender(request.getGender());
+        user.setEmail(request.getEmail());
+        user.setPhoneNumber(request.getPhoneNumber());
+
+        /*
+         * Never take role from registration request.
+         * Every normal registration creates USER.
+         */
+        user.setRole(Role.USER);
+
         user.setCreatedAt(now);
         user.setUpdatedAt(now);
         user.setDeleted(false);
 
-        // Hash raw password
-         user.setPassword(User.hashPassword(user.getPassword()));
+        /*
+         * Hash password before storing
+         */
+        user.setPassword(
+                User.hashPassword(request.getPassword())
+        );
 
-
-        // Insert User entity into DB
+        /*
+         * Insert User
+         */
         userMapper.insertUser(user);
 
-        // 2. Create and initialize Wallet entity
-        Wallet wallet = new Wallet();
-        wallet.setWalletId(IdGenerator.generateWalletId());
-        wallet.setUser(user);
-        wallet.setBalance(0.00);
-        wallet.setCurrency("INR");
-        wallet.setStatus(WalletStatus.ACTIVE);
-        wallet.setCreatedAt(now);
-        wallet.setUpdatedAt(now);
-        wallet.setDeleted(false);
+        /*
+         * Create Wallet
+         */
+        Wallet wallet = walletService.createWallet(user,now);
 
-        // Insert Wallet into DB & link to User
-        walletMapper.insertWallet(wallet);
         user.setWallet(wallet);
 
-        // 3. Create and initialize LoyaltyAccount entity
-        LoyaltyAccount loyaltyAccount = new LoyaltyAccount(); // Defaults: points=0, tier=SILVER
-        loyaltyAccount.setCreatedAt(now);
-        loyaltyAccount.setUpdatedAt(now);
-        loyaltyAccount.setDeleted(false);
+        /*
+         * Create Loyalty Account
+         */
+        LoyaltyAccount loyaltyAccount = loyaltyAccountSerivce.createLoyaltyAccount(user,now);
 
-        String loyaltyAccountId = IdGenerator.generateLoyaltyId();
-
-        // Insert LoyaltyAccount into DB & link to User
-        loyaltyAccountMapper.insertLoyaltyAccount(loyaltyAccountId, user.getId(), loyaltyAccount);
         user.setLoyaltyAccount(loyaltyAccount);
+        user.setPassword("*******");
+
+        /*
+         * Convert User entity to Response DTO
+         */
+        return user;
+    }
+
+
+
+    @Override
+    public User getUserByEmail(String email) {
+
+        if (email == null || email.isBlank()) {
+            throw new RecordNotFoundException(
+                    "User email cannot be empty."
+            );
+        }
+
+        User user = userMapper.findByEmail(email);
+
+        if (user == null) {
+            throw new RecordNotFoundException(
+                    "User not found with email: " + email
+            );
+        }
 
         return user;
     }
 
     @Override
-    public User getUserByEmail(String email) {
-        return userMapper.findByEmail(email);
+    public User getUserById(String id) {
+
+        if (id == null || id.isBlank()) {
+            throw new RecordNotFoundException(
+                    "User ID cannot be empty."
+            );
+        }
+
+        User user = userMapper.findById(id);
+
+        if (user == null) {
+            throw new RecordNotFoundException(
+                    "User not found with ID: " + id
+            );
+        }
+
+        return user;
+    }
+
+
+    @Override
+    public boolean isEmailExists(String email) {
+
+        if (email == null || email.isBlank()) {
+            return false;
+        }
+
+        User user = userMapper.findByEmail(email);
+
+        return user != null;
     }
 
     @Override
-    public User getUserById(String id) {
-        return userMapper.findById(id);
+    public void UpdateLoginTime(User user, LocalDateTime time) {
+        if (user == null) {
+            throw new RecordNotFoundException(
+                    "User not found."
+            );
+        }
+
+        if (time == null) {
+            time = LocalDateTime.now();
+        }
+
+        userMapper.updateLastLogin(user.getId(), time);
     }
+
+
 }

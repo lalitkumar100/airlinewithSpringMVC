@@ -3,11 +3,15 @@ package com.crimsonlogic.arilinemanangmentsystem.service.impl;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.PaymentMethod;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.TransactionStatus;
 import com.crimsonlogic.arilinemanangmentsystem.dao.TransactionMapper;
+import com.crimsonlogic.arilinemanangmentsystem.exception.NullValueException;
+import com.crimsonlogic.arilinemanangmentsystem.exception.RecordNotFoundException;
+import com.crimsonlogic.arilinemanangmentsystem.exception.TransactionException;
 import com.crimsonlogic.arilinemanangmentsystem.model.Transaction;
 import com.crimsonlogic.arilinemanangmentsystem.model.User;
 import com.crimsonlogic.arilinemanangmentsystem.service.TransactionService;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,16 +39,16 @@ public class TransactionServiceImpl implements TransactionService {
 
         // 1. Validation checks
         if (sender == null || receiver == null) {
-            throw new IllegalArgumentException("Sender and Receiver cannot be null.");
+            throw new NullValueException("Sender and Receiver cannot be null.");
         }
         if (amount <= 0) {
-            throw new IllegalArgumentException("Amount must be greater than zero.");
+            throw new NullValueException("Amount must be greater than zero.");
         }
 
         // 2. Validate payment-specific inputs based on methods (Wallet vs UPI)
         if (fromMethod == PaymentMethod.UPI) {
             if (senderUpiId == null || senderUpiId.trim().isEmpty()) {
-                throw new IllegalArgumentException("Sender UPI ID is mandatory for UPI transactions.");
+                throw new NullValueException("Sender UPI ID is mandatory for UPI transactions.");
             }
         } else {
             senderUpiId = null; // Ensure clean data mapping if Wallet
@@ -52,7 +56,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         if (toMethod == PaymentMethod.UPI) {
             if (receiverUpiId == null || receiverUpiId.trim().isEmpty()) {
-                throw new IllegalArgumentException("Receiver UPI ID is mandatory for UPI transactions.");
+                throw new NullValueException("Receiver UPI ID is mandatory for UPI transactions.");
             }
         } else {
             receiverUpiId = null; // Ensure clean data mapping if Wallet
@@ -74,7 +78,7 @@ public class TransactionServiceImpl implements TransactionService {
         // 4. Persist to DB using MyBatis Mapper
         int rowsInserted = transactionMapper.insertTransaction(transaction);
         if (rowsInserted <= 0) {
-            throw new RuntimeException("Failed to record the transaction in the database.");
+            throw new TransactionException("Failed to record the transaction in the database.");
         }
 
         return transaction;

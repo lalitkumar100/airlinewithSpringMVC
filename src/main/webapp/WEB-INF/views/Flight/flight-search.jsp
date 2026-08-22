@@ -1,4 +1,3 @@
-```jsp
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -123,11 +122,10 @@
 
                             <select name="source"
                                     id="source"
-                                    class="form-select"
-                                    required>
+                                    class="form-select">
 
-                                <option value="" disabled selected>
-                                    Select Source Airport
+                                <option value="" selected>
+                                    -- Select Source --
                                 </option>
 
                                 <c:forEach var="airport" items="${airports}">
@@ -159,11 +157,10 @@
 
                             <select name="destination"
                                     id="destination"
-                                    class="form-select"
-                                    required>
+                                    class="form-select">
 
-                                <option value="" disabled selected>
-                                    Select Destination Airport
+                                <option value="" selected>
+                                    -- Select Destination --
                                 </option>
 
                                 <c:forEach var="airport" items="${airports}">
@@ -196,8 +193,7 @@
                             <input type="date"
                                    name="departureDate"
                                    id="departureDate"
-                                   class="form-control"
-                                   required>
+                                   class="form-control">
 
                             <div class="airport-help mt-1">
                                 Select your travel date
@@ -218,7 +214,7 @@
 
                                 </button>
 
-                                <a href="${pageContext.request.contextPath}/flights"
+                                <a href="${pageContext.request.contextPath}/flights/search"
                                    class="btn btn-outline-navy px-4">
 
                                     View All Flights
@@ -261,7 +257,7 @@
             const destination =
                 document.getElementById('destination');
 
-            if (this.value === destination.value) {
+            if (this.value && this.value === destination.value) {
                 destination.value = "";
             }
 
@@ -273,7 +269,7 @@
             const source =
                 document.getElementById('source');
 
-            if (this.value === source.value) {
+            if (this.value && this.value === source.value) {
                 source.value = "";
             }
 
@@ -291,4 +287,3 @@
 
 </body>
 </html>
-```

@@ -29,11 +29,10 @@ public class User {
     private Gender gender;
 
     private String email;
+
     private String phoneNumber;
 
     private Role role;
-
-
 
     private String password;
 
@@ -52,6 +51,12 @@ public class User {
     private LocalDateTime createdAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private  LocalDateTime lastLoginAt;
+
+
+
     private boolean deleted;
 
 
@@ -467,5 +472,13 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public LocalDateTime getLastLoginAt() {
+        return lastLoginAt;
+    }
+
+    public void setLastLoginAt(LocalDateTime lastLoginAt) {
+        this.lastLoginAt = lastLoginAt;
     }
 }

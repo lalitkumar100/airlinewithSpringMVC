@@ -3,10 +3,14 @@ package com.crimsonlogic.arilinemanangmentsystem.service.impl;
 
 import com.crimsonlogic.arilinemanangmentsystem.exception.CustomException;
 import com.crimsonlogic.arilinemanangmentsystem.dao.PassengerMapper;
+import com.crimsonlogic.arilinemanangmentsystem.exception.DBException;
+import com.crimsonlogic.arilinemanangmentsystem.exception.NullValueException;
+import com.crimsonlogic.arilinemanangmentsystem.exception.RecordNotFoundException;
 import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
 import com.crimsonlogic.arilinemanangmentsystem.model.Passenger;
 import com.crimsonlogic.arilinemanangmentsystem.service.PassengerService;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
+import com.crimsonlogic.arilinemanangmentsystem.utility.ValidatorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -40,18 +44,21 @@ public class PassengerServiceImpl implements PassengerService {
 
         // 3. Iterate, map booking and insert each passenger
         for (Passenger passenger : passengers) {
-            // Generate unique passenger ID if not already present
-            if (passenger.getPassengerId() == null || passenger.getPassengerId().isEmpty()) {
-                passenger.setPassengerId(IdGenerator.generatePassengerId());
-            }
 
-            // Associate the booking reference
-            passenger.setBooking(booking);
+            // Generate unique passenger ID if not already present
+                ValidatorUtil.validateName(passenger.getFirstName());
+                ValidatorUtil.validateName(passenger.getLastName());
+                ValidatorUtil.validatePhone(passenger.getPhoneNumber());
+                ValidatorUtil.validateAge(passenger.getDateOfBirth());
+                passenger.setPassengerId(IdGenerator.generatePassengerId());
+
+                // Associate the booking reference
+                passenger.setBooking(booking);
 
             // Insert into the database
             int rowsAffected = passengerMapper.insertPassenger(passenger);
             if (rowsAffected <= 0) {
-                throw new CustomException("Failed to save passenger: " + passenger.getFirstName(), HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new DBException("Failed to save passenger: " + passenger.getFirstName());
             }
         }
 
@@ -62,9 +69,14 @@ public class PassengerServiceImpl implements PassengerService {
 
     @Override
     public Passenger getPassengerById(String passengerId) {
+
+        if (passengerId == null || passengerId.isBlank()) {
+            throw new NullValueException( "Passenger ID cannot be null or empty");
+        }
+
         Passenger passenger = passengerMapper.getPassengerById(passengerId);
         if (passenger == null) {
-            throw new CustomException("Passenger not found with ID: " + passengerId, HttpStatus.NOT_FOUND);
+            throw new RecordNotFoundException("Passenger not found with ID: " + passengerId);
         }
         return passenger;
     }
@@ -72,5 +84,21 @@ public class PassengerServiceImpl implements PassengerService {
     @Override
     public List<Passenger> getPassengersByBookingId(String bookingId) {
         return passengerMapper.getPassengersByBookingId(bookingId);
+    }
+
+    @Override
+    public void cancelPassenger(String passengerId) {
+
+        if (passengerId == null || passengerId.isBlank()) {
+            throw new NullValueException(
+                    "Passenger ID cannot be null or empty"
+            );
+        }
+
+        int rows = passengerMapper.cancelPassenger(passengerId);
+
+        if (rows <= 0) {
+            throw new DBException( "Failed to cancel passenger" );
+        }
     }
 }

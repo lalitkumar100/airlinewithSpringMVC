@@ -6,7 +6,7 @@ package com.crimsonlogic.arilinemanangmentsystem.controller;
 	import org.springframework.web.bind.annotation.GetMapping;
 
 	@Controller
-	public class LoginWebController {
+	public class LoginController {
 
      @GetMapping("/users/login")
      public String showLoginPage() {

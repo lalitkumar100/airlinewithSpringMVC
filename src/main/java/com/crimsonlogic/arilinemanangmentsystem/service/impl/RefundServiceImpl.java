@@ -2,6 +2,7 @@ package com.crimsonlogic.arilinemanangmentsystem.service.impl;
 
 import com.crimsonlogic.arilinemanangmentsystem.dao.RefundMapper;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.RefundStatus;
+import com.crimsonlogic.arilinemanangmentsystem.exception.NullValueException;
 import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
 import com.crimsonlogic.arilinemanangmentsystem.model.Refund;
 import com.crimsonlogic.arilinemanangmentsystem.model.Transaction;
@@ -41,5 +42,16 @@ public class RefundServiceImpl implements RefundService {
         refundMapper.insertRefund(refund);
 
         return refund;
+    }
+    @Override
+    public Refund getRefundByBookingId(String bookingId) {
+
+        if (bookingId == null || bookingId.isBlank()) {
+            throw new NullValueException(
+                    "Booking ID cannot be null or empty."
+            );
+        }
+
+        return refundMapper.getRefundByBookingId(bookingId);
     }
 }

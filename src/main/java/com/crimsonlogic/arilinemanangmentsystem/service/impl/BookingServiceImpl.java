@@ -1,22 +1,19 @@
 package com.crimsonlogic.arilinemanangmentsystem.service.impl;
 
 import com.crimsonlogic.arilinemanangmentsystem.dao.BookingMapper;
-import com.crimsonlogic.arilinemanangmentsystem.dao.PassengerMapper;
-import com.crimsonlogic.arilinemanangmentsystem.enumrator.BookingStatus;
-import com.crimsonlogic.arilinemanangmentsystem.enumrator.CancelType;
-import com.crimsonlogic.arilinemanangmentsystem.enumrator.FlightStatus;
-import com.crimsonlogic.arilinemanangmentsystem.enumrator.Role;
-import com.crimsonlogic.arilinemanangmentsystem.exception.CustomException;
+import com.crimsonlogic.arilinemanangmentsystem.dto.BookingConfirmationResponse;
+import com.crimsonlogic.arilinemanangmentsystem.dto.BookingRequest;
+import com.crimsonlogic.arilinemanangmentsystem.enumrator.*;
+import com.crimsonlogic.arilinemanangmentsystem.exception.*;
 import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
 import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
 import com.crimsonlogic.arilinemanangmentsystem.model.Passenger;
-import com.crimsonlogic.arilinemanangmentsystem.model.Transaction;
 import com.crimsonlogic.arilinemanangmentsystem.model.User;
+import com.crimsonlogic.arilinemanangmentsystem.model.Refund;
+import com.crimsonlogic.arilinemanangmentsystem.model.Payment;
 import com.crimsonlogic.arilinemanangmentsystem.service.BookingService;
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
 import com.crimsonlogic.arilinemanangmentsystem.service.PassengerService;
-import com.crimsonlogic.arilinemanangmentsystem.service.PaymentService;
-import com.crimsonlogic.arilinemanangmentsystem.service.RefundService;
 import com.crimsonlogic.arilinemanangmentsystem.service.WalletService;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,11 +64,6 @@ public class BookingServiceImpl implements BookingService {
     @Autowired
     private PassengerService passengerService;
 
-    /**
-     * Data access object used to perform passenger-related database operations.
-     */
-    @Autowired
-    private PassengerMapper passengerMapper;
 
     /**
      * Service responsible for wallet transactions and money transfers.
@@ -79,17 +71,6 @@ public class BookingServiceImpl implements BookingService {
     @Autowired
     private WalletService walletService;
 
-    /**
-     * Service responsible for creating and managing payment records.
-     */
-    @Autowired
-    private PaymentService paymentService;
-
-    /**
-     * Service responsible for creating and managing refund records.
-     */
-    @Autowired
-    private RefundService refundService;
 
 
     // =========================================================
@@ -105,7 +86,7 @@ public class BookingServiceImpl implements BookingService {
      * saves the passengers and finally creates the payment record.
      * </p>
      *
-     * @param booking booking information supplied by the user
+     * @param bookingRequest booking information supplied by the user
      * @param user authenticated user creating the booking
      * @return the newly created booking
      * @throws CustomException if the flight is not found, passenger limit is
@@ -114,89 +95,57 @@ public class BookingServiceImpl implements BookingService {
      */
     @Override
     @Transactional
-    public Booking createBooking(
-            Booking booking,
+    public BookingConfirmationResponse createBooking(
+            BookingRequest bookingRequest,
             User user) {
 
-        // Validate the authenticated user.
-        if (user == null) {
-            throw new CustomException(
-                    "User not found",
-                    HttpStatus.UNAUTHORIZED
+        // 1. Validate request
+        if (bookingRequest == null) {
+            throw new NullValueException(
+                    "Booking request cannot be null."
             );
         }
 
-        // Validate the booking request.
-        if (booking == null ||
-                booking.getFlightBooked() == null) {
+        if (bookingRequest.getSeatClass() == null) {
+            throw new NullValueException(
+                    "Seat class is required."
+            );
+        }
 
+        // 2. Validate passengers
+        List<Passenger> passengers =
+                bookingRequest.getPassengers();
+
+        if (passengers == null || passengers.isEmpty()) {
             throw new CustomException(
-                    "Invalid booking request",
+                    "At least one passenger is required.",
                     HttpStatus.BAD_REQUEST
             );
         }
 
-        // Retrieve the requested flight.
+        // 3. Get flight
         Flight flight =
                 flightService.getFlightById(
-                        booking.getFlightBooked().getFlightId()
+                        bookingRequest.getFlightId()
                 );
 
-        if (flight == null) {
-            throw new CustomException(
-                    "Flight not found",
-                    HttpStatus.NOT_FOUND
+        // 4. Validate flight status
+        if (flight.getStatus() != FlightStatus.SCHEDULED) {
+
+            throw new FlgihtException(
+                    "Cannot book the flight because its current status is: "
+                            + flight.getStatus(),
+                    HttpStatus.CONFLICT
             );
         }
+
+        // 5. Create booking
+        Booking booking = new Booking();
 
         booking.setFlightBooked(flight);
-
-        // Validate passenger information.
-        if (booking.getPassengers() == null ||
-                booking.getPassengers().isEmpty()) {
-
-            throw new CustomException(
-                    "At least one passenger is required",
-                    HttpStatus.BAD_REQUEST
-            );
-        }
-
-        int passengerCount =
-                booking.getPassengers().size();
-
-        // A maximum of nine passengers can be booked
-        // in a single booking.
-        if (passengerCount > 9) {
-            throw new CustomException(
-                    "Cannot book more than 9 seats at once",
-                    HttpStatus.BAD_REQUEST
-            );
-        }
-
-        // Check seat availability for the selected class.
-        int availableSeats =
-                flightService.getAvailableSeats(
-                        flight.getFlightId(),
-                        booking.getSeatClass()
-                );
-
-        if (availableSeats < passengerCount) {
-            throw new CustomException(
-                    "Not enough seats available in "
-                            + booking.getSeatClass(),
-                    HttpStatus.BAD_REQUEST
-            );
-        }
-
-        // Calculate the total booking amount.
-        double totalAmount =
-                flightService.calculateFare(
-                        flight.getFlightId(),
-                        booking.getSeatClass()
-                ) * passengerCount;
-
-        // Populate booking information.
-        booking.setAmount(totalAmount);
+        booking.setSeatClass(
+                bookingRequest.getSeatClass()
+        );
         booking.setUserbooked(user);
         booking.setBookingId(
                 IdGenerator.generateBookingId()
@@ -204,50 +153,143 @@ public class BookingServiceImpl implements BookingService {
         booking.setBookingDateTime(
                 LocalDateTime.now()
         );
-        booking.setBookingStatus(
-                BookingStatus.CONFIRMED
-        );
 
-        // Process payment before storing the booking.
-        Transaction transaction =
-                walletService.payForBooking(
-                        user.getId(),
-                        totalAmount
+        // 6. Check seat availability
+        int passengerCount =
+                passengers.size();
+
+        int availableSeats =
+                flightService.getAvailableSeats(
+                        flight.getFlightId(),
+                        booking.getSeatClass()
                 );
 
-        if (transaction == null) {
-            throw new CustomException(
-                    "Payment failed",
-                    HttpStatus.INTERNAL_SERVER_ERROR
+        // =========================================================
+        // INSUFFICIENT SEATS
+        // =========================================================
+
+        if (availableSeats < passengerCount) {
+
+            // Waitlist is allowed ONLY for one passenger
+            if (passengerCount > 1) {
+
+                throw new CustomException(
+                        "Waitlist is available only for single-passenger bookings.",
+                        HttpStatus.CONFLICT
+                );
+            }
+
+            // =====================================================
+            // SINGLE PASSENGER WAITLIST
+            // =====================================================
+
+            double farePerPassenger =
+                    flightService.calculateFare(
+                            flight.getFlightId(),
+                            booking.getSeatClass()
+                    );
+
+            double totalAmount =
+                    farePerPassenger * passengerCount;
+
+            booking.setAmount(totalAmount);
+
+            booking.setBookingStatus(
+                    BookingStatus.WAITLISTED
+            );
+
+            // Payment is required for waitlisted booking
+            Payment payment =
+                    walletService.payForBooking(
+                            booking,
+                            totalAmount,
+                            user
+                    );
+
+            booking.setPayment(payment);
+
+            // Save waitlisted booking
+            int rows =
+                    bookingMapper.insertBooking(
+                            booking
+                    );
+
+            if (rows <= 0) {
+
+                throw new DBException(
+                        "Failed to save waitlisted booking."
+                );
+            }
+
+            // Save passenger
+            passengerService.savePassengersForBooking(
+                    booking,
+                    passengers
+            );
+
+            return new BookingConfirmationResponse(
+                    booking.getBookingId(),
+                    booking.getAmount(),
+                    booking.getBookingStatus()
             );
         }
 
-        // Persist the booking.
+        // =========================================================
+        // CONFIRMED BOOKING
+        // =========================================================
+
+        double farePerPassenger =
+                flightService.calculateFare(
+                        flight.getFlightId(),
+                        booking.getSeatClass()
+                );
+
+        double totalAmount =
+                farePerPassenger * passengerCount;
+
+        booking.setAmount(totalAmount);
+
+        booking.setBookingStatus(
+                BookingStatus.CONFIRMED_NOT_CHECKED_IN
+        );
+
+        // Process payment
+        Payment payment =
+                walletService.payForBooking(
+                        booking,
+                        totalAmount,
+                        user
+                );
+
+
+
+        booking.setPayment(payment);
+
+        // Save confirmed booking
         int rows =
-                bookingMapper.insertBooking(booking);
+                bookingMapper.insertBooking(
+                        booking
+                );
 
         if (rows <= 0) {
-            throw new CustomException(
-                    "Failed to save booking",
-                    HttpStatus.INTERNAL_SERVER_ERROR
+
+            throw new DBException(
+                    "Failed to save booking."
             );
         }
 
-        // Persist passengers associated with the booking.
+        // Save passengers
         passengerService.savePassengersForBooking(
                 booking,
-                booking.getPassengers()
+                passengers
         );
 
-        // Create the payment record after the booking
-        // and payment transaction have been successfully processed.
-        paymentService.createPayment(
-                booking,
-                transaction,
-                totalAmount
+        // Return confirmation
+        return new BookingConfirmationResponse(
+                booking.getBookingId(),
+                booking.getAmount(),
+                booking.getBookingStatus()
         );
-
-        return booking;
     }
 
 
@@ -265,19 +307,25 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking getBookingById(String bookingId) {
 
-        Booking booking =
-                bookingMapper.getBookingById(bookingId);
+        if (bookingId == null || bookingId.isBlank()) {
+            throw new NullValueException("Booking ID cannot be null or empty.");
+        }
 
-        if (booking != null) {
+        Booking booking = bookingMapper.getBookingById(bookingId);
 
-            List<Passenger> passengers =
-                    passengerService.getPassengersByBookingId(
-                            bookingId
-                    );
-
-            booking.setPassengers(
-                    new ArrayList<>(passengers)
+        if (booking == null) {
+            throw new RecordNotFoundException(
+                    "Booking not found with ID: " + bookingId
             );
+        }
+
+        List<Passenger> passengers =
+                passengerService.getPassengersByBookingId(bookingId);
+
+        if (passengers != null) {
+            booking.setPassengers(new ArrayList<>(passengers));
+        } else {
+            booking.setPassengers(new ArrayList<>());
         }
 
         return booking;
@@ -333,7 +381,7 @@ public class BookingServiceImpl implements BookingService {
      * in the {@link FlightStatus#CHECK_IN_STARTED} state.
      * </p>
      *
-     * @param booking booking to be checked in
+     * @param bookingId String to be checked in
      * @param user authenticated user performing the check-in
      * @param password user's password used for verification
      * @throws CustomException if the user is invalid, password verification
@@ -344,66 +392,31 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public void performCheckIn(
-            Booking booking,
+            String bookingId,
             User user,
             String password) {
 
         // Validate the authenticated user.
         if (user == null) {
-            throw new CustomException(
-                    "User not found",
-                    HttpStatus.UNAUTHORIZED
-            );
+            throw new NullValueException("User not found");
         }
+
+        //get booking by bookingId
+        Booking booking = getBookingById(bookingId);
+
+        //verify that it booking is beyond to this user or not
+        verifyUserBooking(booking,user);
 
         // Verify the user's password.
-        if (!user.verifyPassword(password)) {
-            throw new CustomException(
-                    "Incorrect password",
-                    HttpStatus.UNAUTHORIZED
-            );
-        }
-
-        // Validate the booking.
-        if (booking == null) {
-            throw new CustomException(
-                    "Booking not found",
-                    HttpStatus.NOT_FOUND
-            );
-        }
-
-        // Ensure that the authenticated user owns the booking.
-        if (booking.getUserbooked() == null ||
-                !booking.getUserbooked()
-                        .getId()
-                        .equals(user.getId())) {
-
-            throw new CustomException(
-                    "You are not authorized to check in for this booking",
-                    HttpStatus.FORBIDDEN
-            );
-        }
+        verifyUserPassword(user,password);
 
         // Retrieve the flight associated with the booking.
-        Flight flight =
-                booking.getFlightBooked();
+        Flight flight = booking.getFlightBooked();
 
-        if (flight == null) {
-            throw new CustomException(
-                    "Flight not found for this booking",
-                    HttpStatus.NOT_FOUND
-            );
-        }
 
         // Check whether check-in is currently available.
-        if (flight.getStatus() !=
-                FlightStatus.CHECK_IN_STARTED) {
-
-            throw new CustomException(
-                    "Check-in is not open. Flight status: "
-                            + flight.getStatus(),
-                    HttpStatus.BAD_REQUEST
-            );
+        if (flight.getStatus() !=FlightStatus.CHECK_IN_STARTED) {
+            throw new FlgihtException( "Check-in is not open. Flight status: " + flight.getStatus(),HttpStatus.BAD_REQUEST );
         }
 
         // Prevent duplicate check-in operations.
@@ -457,21 +470,14 @@ public class BookingServiceImpl implements BookingService {
             String reason,
             float refundPercentage) {
 
-        // Validate the refund percentage.
+        // 1. Validate refund percentage
         validateRefundPercentage(refundPercentage);
 
-        // Retrieve the booking.
-        Booking booking =
-                bookingMapper.getBookingById(bookingId);
+        // 2. Retrieve booking
+        Booking booking = getBookingById(bookingId);
 
-        if (booking == null) {
-            throw new CustomException(
-                    "Booking not found",
-                    HttpStatus.NOT_FOUND
-            );
-        }
 
-        // Prevent duplicate cancellation.
+        // 3. Prevent duplicate cancellation
         if (booking.getBookingStatus() ==
                 BookingStatus.CANCELLED) {
 
@@ -481,30 +487,33 @@ public class BookingServiceImpl implements BookingService {
             );
         }
 
-        // Calculate the refund amount.
+        // 4. Calculate refund amount
         double refundAmount =
                 booking.getAmount() * refundPercentage;
 
-        // Process the refund transaction.
-        Transaction transaction =
-                createRefundTransaction(
+        // 5. Process refund through WalletService
+        // WalletService handles:
+        // - Platform wallet → Customer wallet
+        // - Transaction creation
+        // - Refund creation
+        Refund refund =
+                walletService.refundForBooking(
                         booking,
-                        refundAmount
+                        refundAmount,
+                        booking.getUserbooked(),
+                        reason
                 );
 
-        // Create the refund record.
-        refundService.createRefund(
-                booking,
-                transaction,
-                refundAmount,
-                reason
-        );
+        // 6. Validate refund
+        if (refund == null) {
+            throw new CustomException(
+                    "Refund failed",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
 
-        // Update the booking status after successful refund processing.
-        bookingMapper.updateBookingStatus(
-                bookingId,
-                BookingStatus.CANCELLED
-        );
+        // 7. Cancel booking
+        cancelFullBooking(bookingId);
     }
 
 
@@ -541,38 +550,21 @@ public class BookingServiceImpl implements BookingService {
             String reason,
             float refundPercentage) {
 
-        // Validate the refund percentage.
+        // 1. Validate refund percentage
         validateRefundPercentage(refundPercentage);
 
-        // Retrieve the booking.
-        Booking booking =
-                bookingMapper.getBookingById(bookingId);
+        // 2. Retrieve booking
+        Booking booking =getBookingById(bookingId);
 
-        if (booking == null) {
-            throw new CustomException(
-                    "Booking not found",
-                    HttpStatus.NOT_FOUND
-            );
-        }
 
-        // Retrieve the passenger.
-        Passenger passenger =
-                passengerMapper.getPassengerById(passengerId);
+        // 3. Retrieve passenger
+        Passenger passenger =passengerService.getPassengerById(passengerId);
 
-        if (passenger == null) {
-            throw new CustomException(
-                    "Passenger not found",
-                    HttpStatus.NOT_FOUND
-            );
-        }
 
-        // Retrieve all passengers belonging to the booking.
-        List<Passenger> passengers =
-                passengerMapper.getPassengersByBookingId(
-                        bookingId
-                );
+        // 4. Retrieve all passengers in the booking
+        List<Passenger> passengers = passengerService.getPassengersByBookingId(bookingId);
 
-        // Verify that the passenger belongs to this booking.
+        // 5. Check passenger belongs to booking
         boolean passengerBelongsToBooking =
                 passengers.stream()
                         .anyMatch(p ->
@@ -581,47 +573,45 @@ public class BookingServiceImpl implements BookingService {
                         );
 
         if (!passengerBelongsToBooking) {
-            throw new CustomException(
-                    "Passenger does not belong to this booking",
-                    HttpStatus.BAD_REQUEST
+            throw new PassengerException(
+                    "Passenger ("+passengerId+") does not belong to this booking can't be cancel",
+                    HttpStatus.FORBIDDEN
             );
         }
 
-        // Prevent duplicate passenger cancellation.
+        // 6. Prevent duplicate cancellation
         if (passenger.isCancelled()) {
-            throw new CustomException(
+            throw new PassengerException(
                     "Passenger is already cancelled",
                     HttpStatus.BAD_REQUEST
             );
         }
 
-        // Calculate the passenger's share of the booking amount.
+        // 7. Calculate passenger amount
         double passengerAmount =
                 booking.getAmount() / passengers.size();
 
-        // Calculate the actual refund amount.
+        // 8. Calculate refund amount
         double refundAmount =
                 passengerAmount * refundPercentage;
 
-        // Process the refund transaction.
-        Transaction transaction =
-                createRefundTransaction(
+        // 9. Process refund through WalletService
+        // WalletService handles:
+        // - Platform wallet → Customer wallet
+        // - Transaction creation
+        // - Refund creation
+        Refund refund =
+                walletService.refundForBooking(
                         booking,
-                        refundAmount
+                        refundAmount,
+                        booking.getUserbooked(),
+                        reason
                 );
 
-        // Create the refund record.
-        refundService.createRefund(
-                booking,
-                transaction,
-                refundAmount,
-                reason
-        );
+        // 10. Mark passenger as cancelled
+        passengerService.cancelPassenger(passengerId);
 
-        // Mark the passenger as cancelled.
-        passengerMapper.cancelPassenger(passengerId);
-
-        // Count the remaining active passengers.
+        // 11. Count remaining active passengers
         long activePassengers =
                 passengers.stream()
                         .filter(p ->
@@ -631,14 +621,10 @@ public class BookingServiceImpl implements BookingService {
                         )
                         .count();
 
-        // If no active passengers remain,
-        // cancel the complete booking.
+        // 12. If no active passengers remain,
+        // cancel the complete booking
         if (activePassengers == 0) {
-
-            bookingMapper.updateBookingStatus(
-                    bookingId,
-                    BookingStatus.CANCELLED
-            );
+           cancelFullBooking(bookingId);
         }
     }
 
@@ -675,67 +661,90 @@ public class BookingServiceImpl implements BookingService {
             String password,
             CancelType cancelType) {
 
-        // Validate the authenticated user.
+        // 1. Validate user
         validateUser(user);
 
-        // Verify the user's password.
+        // 2. Verify password
         verifyUserPassword(user, password);
 
-        // Validate the cancellation type.
+        // 3. Validate cancellation type
         if (cancelType == null) {
+
             throw new CustomException(
                     "Cancellation type is required",
                     HttpStatus.BAD_REQUEST
             );
         }
 
-        // Retrieve the booking.
+        // 4. Retrieve booking
         Booking booking =
-                bookingMapper.getBookingById(bookingId);
+                getBookingById(bookingId);
 
-        if (booking == null) {
-            throw new CustomException(
-                    "Booking not found",
-                    HttpStatus.NOT_FOUND
-            );
-        }
-
-        // Determine whether the user owns the booking.
+        // 5. Check booking ownership
         boolean isOwner =
                 booking.getUserbooked() != null &&
                         booking.getUserbooked()
                                 .getId()
                                 .equals(user.getId());
 
-        // Determine whether the user is an administrator.
+        // 6. Check admin role
         boolean isAdmin =
                 user.getRole() == Role.ADMIN;
 
-        // Handle complete booking cancellation.
+        // =========================================================
+        // FULL BOOKING CANCELLATION
+        // =========================================================
+
         if (cancelType == CancelType.FULL_BOOKING) {
 
+            // Only booking owner or admin can cancel
             if (!isOwner && !isAdmin) {
+
                 throw new CustomException(
                         "You are not authorized to cancel this booking",
                         HttpStatus.FORBIDDEN
                 );
             }
 
-            cancelBooking(
-                    bookingId,
+            String reason =
                     isAdmin
                             ? "Booking cancelled by administrator"
-                            : "Customer requested booking cancellation",
-                    1.0f
+                            : "Customer requested booking cancellation";
+
+            float refundPercentage;
+
+            // Admin gets 100% refund
+            if (isAdmin) {
+
+                refundPercentage = 1.0f;
+
+            } else {
+
+                // Customer refund depends on flight status
+                refundPercentage =
+                        getCancellationRefundPercentage(
+                                booking.getFlightBooked().getStatus()
+                        );
+            }
+
+            // Perform cancellation
+            cancelBooking(
+                    bookingId,
+                    reason,
+                    refundPercentage
             );
 
             return;
         }
 
-        // Flight cancellation must be handled by FlightService.
+        // =========================================================
+        // FLIGHT CANCELLATION
+        // =========================================================
+
         if (cancelType == CancelType.FLIGHT) {
 
             if (!isAdmin) {
+
                 throw new CustomException(
                         "Only admin can cancel a flight",
                         HttpStatus.FORBIDDEN
@@ -748,8 +757,10 @@ public class BookingServiceImpl implements BookingService {
             );
         }
 
-        // Passenger cancellation requires the overloaded method
-        // containing passengerId.
+        // =========================================================
+        // PASSENGER CANCELLATION
+        // =========================================================
+
         if (cancelType == CancelType.PASSENGER) {
 
             throw new CustomException(
@@ -758,6 +769,10 @@ public class BookingServiceImpl implements BookingService {
             );
         }
 
+        // =========================================================
+        // INVALID CANCELLATION TYPE
+        // =========================================================
+
         throw new CustomException(
                 "Invalid cancellation type",
                 HttpStatus.BAD_REQUEST
@@ -765,10 +780,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
 
-    // =========================================================
-    // GLOBAL CANCELLATION
-    // PASSENGER
-    // =========================================================
+
 
     /**
      * Performs authorization and cancels a specific passenger
@@ -838,81 +850,100 @@ public class BookingServiceImpl implements BookingService {
                     HttpStatus.FORBIDDEN
             );
         }
-
+       String reason = isAdmin
+               ? "Passenger cancelled by administrator"
+               : "Customer requested passenger cancellation";
+        float precentage =isAdmin ?1.0f :07.f;
         // Perform the actual passenger cancellation.
         cancelBookingForPassenger(
                 passengerId,
                 bookingId,
-                isAdmin
-                        ? "Passenger cancelled by administrator"
-                        : "Customer requested passenger cancellation",
-                1.0f
+                reason,
+                precentage
         );
     }
 
 
-    // =========================================================
-    // REFUND TRANSACTION HELPER
-    // =========================================================
 
-    /**
-     * Creates a wallet transaction for refunding a booking.
-     *
-     * <p>
-     * The platform airline wallet acts as the source wallet and
-     * the booking owner's wallet acts as the destination wallet.
-     * </p>
-     *
-     * @param booking booking for which the refund is being processed
-     * @param refundAmount amount to be refunded
-     * @return completed refund transaction, or {@code null} when
-     *         the refund amount is zero
-     * @throws CustomException if the booking user is missing or
-     *                         the refund transaction fails
-     */
-    private Transaction createRefundTransaction(
-            Booking booking,
-            double refundAmount) {
+    @Override
+    @Transactional
+    public void cancelFlightAndRefundAllBookings(String flightId) {
 
-        // No wallet transaction is required for a zero refund.
-        if (refundAmount == 0) {
-            return null;
-        }
+        // ---------------------------------------------------------
+        // 1. Validate flight ID
+        // ---------------------------------------------------------
 
-        if (booking.getUserbooked() == null) {
+        if (flightId == null || flightId.trim().isEmpty()) {
             throw new CustomException(
-                    "Booking user not found",
-                    HttpStatus.INTERNAL_SERVER_ERROR
+                    "Flight ID is required",
+                    HttpStatus.BAD_REQUEST
             );
         }
 
-        // Identifier of the platform airline wallet.
-        String platformAirlineUserId =
-                "USR693190";
 
-        // Transfer the refund from the airline wallet
-        // to the customer's wallet.
-        Transaction transaction =
-                walletService.transferWalletToWallet(
-                        platformAirlineUserId,
-                        booking.getUserbooked().getId(),
-                        refundAmount
+        // ---------------------------------------------------------
+        // 2. Get flight
+        // ---------------------------------------------------------
+
+        Flight flight =
+                flightService.getFlightById(flightId);
+
+        if (flight == null) {
+            throw new CustomException(
+                    "Flight not found",
+                    HttpStatus.NOT_FOUND
+            );
+        }
+
+
+        // ---------------------------------------------------------
+        // 3. Check if flight is already cancelled
+        // ---------------------------------------------------------
+
+        if (flight.getStatus() == FlightStatus.CANCELLED) {
+            throw new CustomException(
+                    "Flight is already cancelled",
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
+
+        // ---------------------------------------------------------
+        // 4. Get all bookings for this flight
+        // ---------------------------------------------------------
+
+        List<Booking> bookings =
+                bookingMapper.getBookingsByFlightId(flightId);
+
+
+        // ---------------------------------------------------------
+        // 5. Cancel every booking and give full refund
+        // ---------------------------------------------------------
+
+        if (bookings != null) {
+
+            for (Booking booking : bookings) {
+
+                // Skip already cancelled bookings
+                if (booking.getBookingStatus() ==
+                        BookingStatus.CANCELLED) {
+
+                    continue;
+                }
+
+                // Existing cancellation method
+                // 1.0f = 100% refund
+                cancelBooking(
+                        booking.getBookingId(),
+                        "Flight cancelled by airline",
+                        1.0f
                 );
-
-        if (transaction == null) {
-            throw new CustomException(
-                    "Refund transaction failed",
-                    HttpStatus.INTERNAL_SERVER_ERROR
-            );
+            }
         }
-
-        return transaction;
     }
 
 
-    // =========================================================
-    // USER VALIDATION HELPER
-    // =========================================================
+
 
     /**
      * Validates the authenticated user object.
@@ -923,44 +954,9 @@ public class BookingServiceImpl implements BookingService {
     private void validateUser(User user) {
 
         if (user == null) {
-            throw new CustomException(
-                    "User not found",
-                    HttpStatus.UNAUTHORIZED
-            );
+            throw new NullValueException("User not found");
         }
     }
-
-
-    // =========================================================
-    // PASSWORD VALIDATION HELPER
-    // =========================================================
-
-    /**
-     * Verifies the supplied password against the authenticated user's
-     * stored password hash.
-     *
-     * @param user authenticated user whose password should be verified
-     * @param password plain-text password supplied for verification
-     * @throws CustomException if the password is incorrect
-     */
-    private void verifyUserPassword(
-            User user,
-            String password) {
-
-        if (password == null ||
-                !user.verifyPassword(password)) {
-
-            throw new CustomException(
-                    "Incorrect password",
-                    HttpStatus.UNAUTHORIZED
-            );
-        }
-    }
-
-
-    // =========================================================
-    // REFUND PERCENTAGE VALIDATION HELPER
-    // =========================================================
 
     /**
      * Validates the refund percentage.
@@ -989,5 +985,120 @@ public class BookingServiceImpl implements BookingService {
                     HttpStatus.BAD_REQUEST
             );
         }
+    }
+
+    /**
+     * Verifies the supplied password against the authenticated user's
+     * stored password hash.
+     *
+     * @param user authenticated user whose password should be verified
+     * @param password plain-text password supplied for verification
+     * @throws PasswordVerificationException if the password is incorrect
+     */
+    private void verifyUserPassword(User user, String password) {
+
+        if (password == null || !user.verifyPassword(password)) {
+            throw new PasswordVerificationException(
+                    "Incorrect password"
+            );
+        }
+    }
+
+    private  void verifyUserBooking(Booking booking ,User user){
+        // Ensure that the authenticated user owns the booking.
+        if (booking.getUserbooked() == null ||
+                !booking.getUserbooked()
+                        .getId()
+                        .equals(user.getId())) {
+
+            throw new BookingAuthorizationException("You are not authorized to check in for this booking");
+        }
+    }
+
+    @Override
+    public int getBookedSeatCount(String flightId, SeatClass seatClass) {
+
+        if (flightId == null || flightId.isBlank()) {
+            throw new NullValueException("Flight ID cannot be null or empty.");
+        }
+
+        if (seatClass == null) {
+            throw new NullValueException("Seat class cannot be null.");
+        }
+
+        return bookingMapper.getBookedSeatCount(flightId, seatClass);
+    }
+
+    @Override
+    public List<Booking> getFlightBookings(String flightId) {
+
+        flightService.getFlightById(flightId);
+
+        List<Booking> bookings =
+                bookingMapper.getBookingsByFlightId(flightId);
+
+        if (bookings != null) {
+
+            for (Booking booking : bookings) {
+
+                List<Passenger> passengers =
+                        passengerService.getPassengersByBookingId(
+                                booking.getBookingId()
+                        );
+
+                if (passengers != null) {
+                    booking.setPassengers(
+                            new ArrayList<>(passengers)
+                    );
+                } else {
+                    booking.setPassengers(
+                            new ArrayList<>()
+                    );
+                }
+            }
+        }
+
+        return bookings;
+    }
+
+    private  void cancelFullBooking(String bookingId){
+
+        if (bookingId == null || bookingId.isBlank()) {
+            throw new NullValueException("Booking ID cannot be null or empty.");
+        }
+
+        int bookingRows =
+                bookingMapper.updateBookingStatus(
+                        bookingId,
+                        BookingStatus.CANCELLED
+                );
+
+        if (bookingRows <= 0) {
+            throw new DBException("Failed to cancel booking");
+        }
+    }
+
+    private float getCancellationRefundPercentage(FlightStatus flightStatus) {
+
+        if (flightStatus == null) {
+            throw new CustomException(
+                    "Flight status is required",
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
+        if (flightStatus == FlightStatus.SCHEDULED) {
+            return 0.70f;
+        }
+
+        if (flightStatus == FlightStatus.CHECK_IN_STARTED) {
+            return 0.50f;
+        }
+
+        throw new CustomException(
+                "Ticket cancellation is not allowed when flight status is: "
+                        + flightStatus,
+                HttpStatus.CONFLICT
+        );
     }
 }

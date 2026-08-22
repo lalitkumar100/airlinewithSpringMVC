@@ -6,6 +6,9 @@ import com.crimsonlogic.arilinemanangmentsystem.dao.FlightMapper;
 import com.crimsonlogic.arilinemanangmentsystem.dao.PassengerMapper;
 import com.crimsonlogic.arilinemanangmentsystem.dao.PaymentMapper;
 import com.crimsonlogic.arilinemanangmentsystem.dao.RefundMapper;
+import com.crimsonlogic.arilinemanangmentsystem.dto.AddFlightRequest;
+import com.crimsonlogic.arilinemanangmentsystem.exception.NullValueException;
+import com.crimsonlogic.arilinemanangmentsystem.exception.RecordNotFoundException;
 import com.crimsonlogic.arilinemanangmentsystem.model.Aircraft;
 import com.crimsonlogic.arilinemanangmentsystem.model.Airport;
 import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
@@ -16,9 +19,11 @@ import com.crimsonlogic.arilinemanangmentsystem.model.Refund;
 import com.crimsonlogic.arilinemanangmentsystem.model.RevenueReport;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.FlightStatus;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass;
-import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
+import com.crimsonlogic.arilinemanangmentsystem.service.*;
+import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -32,34 +37,47 @@ public class FlightServiceImpl implements FlightService {
     private FlightMapper flightMapper;
 
     @Autowired
-    private AircraftMapper aircraftMapper;
+    private  AirportService airportService;
 
     @Autowired
-    private AirportMapper airportMapper;
+    private AircraftService aircraftService;
 
     @Autowired
-    private com.crimsonlogic.arilinemanangmentsystem.dao.BookingMapper bookingMapper;
+    private BookingService bookingService;
 
     @Autowired
-    private PassengerMapper passengerMapper;
+    private PaymentService paymentService;
 
     @Autowired
-    private PaymentMapper paymentMapper;
+    private RefundService refundService;
 
-    @Autowired
-    private RefundMapper refundMapper;
+;
 
 
 
     @Override
     public List<Flight> getAllFlights() {
-        return flightMapper.findAllFlights();
+        List<Flight> flights = flightMapper.findAllFlights();
+        if (flights == null || flights.isEmpty()) {
+            throw new RecordNotFoundException("No flights found in the system.");
+        }
+        return flights;
     }
 
     @Override
     public Flight getFlightById(String flightId) {
-        return flightMapper.findById(flightId);
+
+        if (flightId == null || flightId.isBlank()) {
+            throw new  NullValueException("Flgiht ID cannot be null or empty.");
+        }
+        Flight flight = flightMapper.findById(flightId);
+        if (flight == null) {
+            throw new RecordNotFoundException("Flight not found with ID: " + flightId);
+        }
+        return flight;
     }
+
+
 
     @Override
     public boolean updateFlightTime(String flightId, LocalDateTime departureTime, LocalDateTime arrivalTime) {
@@ -74,92 +92,45 @@ public class FlightServiceImpl implements FlightService {
 
 
     @Override
-    public Flight addNewFlight(Flight flight) {
-        if (flight == null) {
-            throw new IllegalArgumentException("Error: Flight details cannot be null.");
-        }
+    public Flight addNewFlight(AddFlightRequest addFlightRequest) {
+
+        Flight newFlight = new Flight();
+        String newFlightId =    IdGenerator.generateFlightId();
+
+        newFlight.setFlightId(newFlightId);
 
         // 1. Verify and populate Source & Destination Airports
-        validateAndSetAirports(flight);
+        newFlight.setSource(
+                airportService.getAirportByCode(
+                        addFlightRequest.getSourceAirportCode()
+                )
+        );
 
-        // 2. Verify and populate Aircraft
-        validateAndSetAircraft(flight);
+        newFlight.setDestination(
+                airportService.getAirportByCode(
+                        addFlightRequest.getDestinationAirportCode()
+                )
+        );
 
         // 3. Verify Date and Time rules
-        validateFlightDateTime(flight.getDepartureDateTime(), flight.getArrivalDateTime());
+        validateFlightDateTime(
+                addFlightRequest.getDepartureDateTime(),
+                addFlightRequest.getArrivalDateTime()
+        );
 
-        // 4. Generate Unique ID and Flight Code automatically if missing
-        if (flight.getFlightId() == null || flight.getFlightId().isEmpty()) {
-            flight.setFlightId("FLT" + (int)(Math.random() * 900000 + 100000));
-        }
 
-        flight.generateFlightCode();
+        newFlight.setDepartureDateTime(addFlightRequest.getDepartureDateTime());
+        newFlight.setArrivalDateTime(addFlightRequest.getArrivalDateTime());
+        newFlight.generateFlightCode();
+        newFlight.setStatus(FlightStatus.SCHEDULED);
 
-        if (flight.getStatus() == null) {
-            flight.setStatus(FlightStatus.SCHEDULED);
-        }
 
-        int rows = flightMapper.insertFlight(flight);
+        int rows = flightMapper.insertFlight(newFlight);
         if (rows > 0) {
             // Fetch and return the complete flight object from the database
-            return flightMapper.findById(flight.getFlightId());
+            return  getFlightById(newFlightId);
         }
         throw new RuntimeException("Failed to insert the flight into the database.");
-    }
-
-    /**
-     * Helper method to verify and set source and destination airports.
-     */
-    private void validateAndSetAirports(Flight flight) {
-        if (flight.getSource() == null || flight.getSource().getAirportCode() == null) {
-            throw new IllegalArgumentException("Error: Source airport code is required.");
-        }
-
-        Airport sourceAirport = airportMapper.findById(flight.getSource().getAirportCode());
-        if (sourceAirport == null) {
-            throw new IllegalArgumentException("Error: Source airport does not exist in the database.");
-        }
-        flight.setSource(sourceAirport);
-
-        if (flight.getDestination() == null || flight.getDestination().getAirportCode() == null) {
-            throw new IllegalArgumentException("Error: Destination airport code is required.");
-        }
-        Airport destinationAirport = airportMapper.findById(flight.getDestination().getAirportCode());
-        if (destinationAirport == null) {
-            throw new IllegalArgumentException("Error: Destination airport does not exist in the database.");
-        }
-        flight.setDestination(destinationAirport);
-    }
-
-    /**
-     * Helper method to verify and set the aircraft from the database.
-     */
-    private void validateAndSetAircraft(Flight flight) {
-        if (flight.getAircraft() == null || flight.getAircraft().getAircraftId() == null) {
-            throw new IllegalArgumentException("Error: Aircraft ID is required.");
-        }
-        Aircraft aircraft = aircraftMapper.findById(flight.getAircraft().getAircraftId());
-        if (aircraft == null) {
-            throw new IllegalArgumentException("Error: Aircraft does not exist in the database.");
-        }
-        flight.setAircraft(aircraft);
-    }
-
-    /**
-     * Helper method to verify departure and arrival date/time rules.
-     */
-    private void validateFlightDateTime(LocalDateTime departureTime, LocalDateTime arrivalTime) {
-        LocalDateTime now = LocalDateTime.now();
-
-        if (departureTime == null || departureTime.isBefore(now)) {
-            throw new IllegalArgumentException("Error: Departure time must be specified and in the future.");
-        }
-        if (arrivalTime == null || arrivalTime.isBefore(now)) {
-            throw new IllegalArgumentException("Error: Arrival time must be specified and in the future.");
-        }
-        if (!departureTime.isBefore(arrivalTime)) {
-            throw new IllegalArgumentException("Error: Departure time must be strictly before arrival time.");
-        }
     }
 
     @Override
@@ -174,8 +145,8 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public int getAvailableSeats(String flightId, SeatClass seatClass) {
-        Flight flight = flightMapper.findById(flightId);
-        if (flight == null) return 0;
+
+        Flight flight =getFlightById(flightId);
 
         int totalCapacity = flight.getAircraft().getCapacity();
         int classCapacity = 0;
@@ -192,7 +163,11 @@ public class FlightServiceImpl implements FlightService {
                 break;
         }
 
-        int bookedSeats = bookingMapper.getBookedSeatCount(flightId, seatClass);
+        int bookedSeats =
+                bookingService.getBookedSeatCount(
+                        flightId,
+                        seatClass
+                );
         return Math.max(0, classCapacity - bookedSeats);
     }
 
@@ -213,43 +188,68 @@ public class FlightServiceImpl implements FlightService {
         }
     }
 
-    @Override
-    public List<Booking> getFlightBookings(String flightId) {
-        List<Booking> bookings = bookingMapper.getBookingsByFlightId(flightId);
-        if (bookings != null) {
-            for (Booking booking : bookings) {
-                // Populate passengers for each booking
-                List<Passenger> passengers = passengerMapper.getPassengersByBookingId(booking.getBookingId());
-                booking.setPassengers(new ArrayList<>(passengers));
-            }
-        }
-        return bookings;
-    }
+
+
 
     @Override
     public RevenueReport getFlightRevenueReport(String flightId) {
-        List<Booking> bookings = bookingMapper.getBookingsByFlightId(flightId);
+
+        if (flightId == null || flightId.isBlank()) {
+            throw new NullValueException(
+                    "Flight ID cannot be null or empty."
+            );
+        }
+
+        List<Booking> bookings =
+                bookingService.getFlightBookings(flightId);
+
         double totalBookingAmount = 0;
         double totalRefundAmount = 0;
 
         if (bookings != null) {
+
             for (Booking booking : bookings) {
-                // Only count confirmed or checked-in bookings for revenue? 
-                // Usually, the 'amount' in booking is the intended revenue.
-                // Let's check payments.
-                Payment payment = paymentMapper.getPaymentByBookingId(booking.getBookingId());
+
+                Payment payment =
+                        paymentService.getPaymentByBookingId(
+                                booking.getBookingId()
+                        );
+
                 if (payment != null && payment.isPaid()) {
                     totalBookingAmount += payment.getAmount();
                 }
 
-                Refund refund = refundMapper.getRefundByBookingId(booking.getBookingId());
+                Refund refund =
+                        refundService.getRefundByBookingId(
+                                booking.getBookingId()
+                        );
+
                 if (refund != null) {
                     totalRefundAmount += refund.getAmount();
                 }
             }
         }
 
-        return new RevenueReport(flightId, totalBookingAmount, totalRefundAmount);
+        return new RevenueReport(
+                flightId,
+                totalBookingAmount,
+                totalRefundAmount
+        );
     }
+
+    private void validateFlightDateTime(LocalDateTime departureTime, LocalDateTime arrivalTime) {
+        LocalDateTime now = LocalDateTime.now();
+
+        if (departureTime == null || departureTime.isBefore(now)) {
+            throw new IllegalArgumentException("Error: Departure time must be specified and in the future.");
+        }
+        if (arrivalTime == null || arrivalTime.isBefore(now)) {
+            throw new IllegalArgumentException("Error: Arrival time must be specified and in the future.");
+        }
+        if (!departureTime.isBefore(arrivalTime)) {
+            throw new IllegalArgumentException("Error: Departure time must be strictly before arrival time.");
+        }
+    }
+
 
 }

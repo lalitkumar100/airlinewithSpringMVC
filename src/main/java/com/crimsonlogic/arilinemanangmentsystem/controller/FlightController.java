@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -89,7 +90,7 @@ public class FlightController {
     public String searchFlights(
             @RequestParam(value = "source", required = false) String source,
             @RequestParam(value = "destination", required = false) String destination,
-            @RequestParam(value = "departureDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) java.time.LocalDate departureDate,
+            @RequestParam(value = "departureDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate departureDate,
             Model model) {
         
         if (source == null || destination == null || departureDate == null) {

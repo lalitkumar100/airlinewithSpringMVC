@@ -12,4 +12,6 @@ public interface RefundService {
             double amount,
             String reason
     );
+
+    Refund getRefundByBookingId(String bookingId);
 }

@@ -31,6 +31,7 @@ public interface FlightMapper {
     @Select("SELECT flight_id, flight_code, source_airport, destination_airport, departure_time, arrival_time, aircraft_id, base_fare, status, created_at, updated_at, is_deleted FROM flight WHERE is_deleted = 0")
     List<Flight> findAllFlights();
 
+
     @ResultMap("FlightResultMap")
     @Select("SELECT flight_id, flight_code, source_airport, destination_airport, departure_time, arrival_time, aircraft_id, base_fare, status, created_at, updated_at, is_deleted FROM flight WHERE flight_id = #{flightId} AND is_deleted = 0")
     Flight findById(@Param("flightId") String flightId);

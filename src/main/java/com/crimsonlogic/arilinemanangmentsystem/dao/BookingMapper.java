@@ -135,15 +135,24 @@ public interface BookingMapper {
     List<Booking> getAllBookingsByUserId(String userId);
 
     @Select("""
-        SELECT COUNT(p.passenger_id)
-        FROM passenger p
-        JOIN booking b ON p.booking_id = b.booking_id
-        WHERE b.flight_id = #{flightId}
-          AND b.seat_class = #{seatClass, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
-          AND b.is_deleted = 0
-          AND p.is_cancelled = 0
-        """)
-    int getBookedSeatCount(@Param("flightId") String flightId, @Param("seatClass") com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass seatClass);
+    SELECT COUNT(p.passenger_id)
+    FROM passenger p
+    JOIN booking b ON p.booking_id = b.booking_id
+    WHERE b.flight_id = #{flightId}
+      AND b.seat_class = #{seatClass, typeHandler=org.apache.ibatis.type.EnumTypeHandler}
+      AND b.is_deleted = 0
+      AND p.is_cancelled = 0
+      AND b.booking_status IN (
+          'CONFIRMED',
+          'CONFIRMED_NOT_CHECKED_IN',
+          'CHECKED_IN'
+      )
+    """)
+    int getBookedSeatCount(
+            @Param("flightId") String flightId,
+            @Param("seatClass")
+            com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass seatClass
+    );
 
     @Update("""
         UPDATE booking 

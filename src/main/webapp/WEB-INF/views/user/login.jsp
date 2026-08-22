@@ -10,6 +10,9 @@
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
+
+    <!-- Bootstrap Icons for Show/Hide Password -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <body class="bg-light">
@@ -51,11 +54,16 @@
                                 Password
                             </label>
 
-                            <input type="password"
-                                   class="form-control form-control-lg"
-                                   id="password"
-                                   placeholder="Enter your password"
-                                   required>
+                            <div class="input-group">
+                                <input type="password"
+                                       class="form-control form-control-lg"
+                                       id="password"
+                                       placeholder="Enter your password"
+                                       required>
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                    <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Login Button -->
@@ -81,6 +89,20 @@
 
 
 <script>
+    /*
+     * Toggle Password Visibility Functionality
+     */
+    const togglePassword = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+    const togglePasswordIcon = document.getElementById('togglePasswordIcon');
+
+    togglePassword.addEventListener('click', function () {
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        togglePasswordIcon.classList.toggle('bi-eye');
+        togglePasswordIcon.classList.toggle('bi-eye-slash');
+    });
+
     document.getElementById('loginForm').addEventListener('submit', function(e) {
 
         e.preventDefault();

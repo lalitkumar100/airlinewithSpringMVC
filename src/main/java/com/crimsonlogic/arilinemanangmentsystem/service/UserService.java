@@ -1,7 +1,10 @@
 package com.crimsonlogic.arilinemanangmentsystem.service;
 
+import com.crimsonlogic.arilinemanangmentsystem.dto.RegistrationRequest;
 import com.crimsonlogic.arilinemanangmentsystem.exception.InvalidHumanException;
 import com.crimsonlogic.arilinemanangmentsystem.model.User;
+
+import java.time.LocalDateTime;
 
 public interface UserService {
 
@@ -11,7 +14,13 @@ public interface UserService {
      * @param user User object containing registration details
      * @return Registered User object populated with IDs and relations
      */
-    User registerUser(User user) throws InvalidHumanException;
+    User registerUser(RegistrationRequest registrationRequest) throws InvalidHumanException;
     User getUserByEmail(String email);
     User getUserById(String id);
+
+    public boolean isEmailExists(String email);
+
+    void UpdateLoginTime(User user, LocalDateTime time);
+
+
 }

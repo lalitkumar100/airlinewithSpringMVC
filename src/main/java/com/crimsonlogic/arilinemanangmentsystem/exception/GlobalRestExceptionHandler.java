@@ -4,9 +4,12 @@ import com.crimsonlogic.arilinemanangmentsystem.model.ErrorResponse;
 import com.crimsonlogic.arilinemanangmentsystem.utility.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalRestExceptionHandler {
@@ -55,5 +58,77 @@ public class GlobalRestExceptionHandler {
         }
 
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(NullValueException.class)
+    public ResponseEntity<ErrorResponse> handleNullValueException(
+            NullValueException ex) {
+
+        ErrorResponse error;
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        if (developmentMode) {
+
+            String stackTrace =
+                    ExceptionUtils.getStackTraceAsString(ex);
+
+            error = new ErrorResponse(
+                    status.value(),
+                    ex.getMessage(),
+                    stackTrace
+            );
+
+        } else {
+
+            error = new ErrorResponse(
+                    status.value(),
+                    ex.getMessage()
+            );
+        }
+
+        return new ResponseEntity<>(error, status);
+    }
+
+    /**
+     * Handles validation errors from @Valid request bodies.
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(
+            MethodArgumentNotValidException ex) {
+
+        String message = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error ->
+                        error.getField()
+                                + ": "
+                                + error.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+
+        ErrorResponse error;
+
+        if (developmentMode) {
+
+            String stackTrace =
+                    ExceptionUtils.getStackTraceAsString(ex);
+
+            error = new ErrorResponse(
+                    HttpStatus.BAD_REQUEST.value(),
+                    message,
+                    stackTrace
+            );
+
+        } else {
+
+            error = new ErrorResponse(
+                    HttpStatus.BAD_REQUEST.value(),
+                    message
+            );
+        }
+
+        return ResponseEntity
+                .badRequest()
+                .body(error);
     }
 }

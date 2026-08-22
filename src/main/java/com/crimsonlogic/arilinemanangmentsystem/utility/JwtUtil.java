@@ -12,14 +12,19 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY_STRING = "YourSuperSecretKeyForJwtGenerationThatIsLongEnough32Bytes";
+    private final String SECRET_KEY_STRING = "I_AM_WORK_IN_CRIMSONLALA_COMPANY_BIT_32_MUST";
     private final SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY_STRING.getBytes(StandardCharsets.UTF_8));
-    private final long EXPIRATION_TIME = 86400000L;
+    private final long EXPIRATION_TIME = 86400000L;//1 DAY IS VALIDATITY
 
-    public String generateToken(String email, String role) {
+    // Original generateToken method (if needed elsewhere)
+
+
+    // New overloaded generateToken method including lastLoginAt claim
+    public String generateToken(String email, String role, String lastLoginAt) {
         return Jwts.builder()
                 .subject(email)
                 .claim("role", role)
+                .claim("lastLoginAt", lastLoginAt)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(key)
@@ -33,6 +38,16 @@ public class JwtUtil {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    // Extract email from token
+    public String extractEmail(String token) {
+        return extractAllClaims(token).getSubject();
+    }
+
+    // Extract specific claim (like lastLoginAt)
+    public String extractClaim(String token, String claimKey) {
+        return extractAllClaims(token).get(claimKey, String.class);
     }
 
     public boolean validateToken(String token) {

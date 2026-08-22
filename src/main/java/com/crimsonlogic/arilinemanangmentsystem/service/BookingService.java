@@ -1,6 +1,9 @@
 package com.crimsonlogic.arilinemanangmentsystem.service;
 
+import com.crimsonlogic.arilinemanangmentsystem.dto.BookingConfirmationResponse;
+import com.crimsonlogic.arilinemanangmentsystem.dto.BookingRequest;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.CancelType;
+import com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass;
 import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
 import com.crimsonlogic.arilinemanangmentsystem.model.User;
 
@@ -9,9 +12,10 @@ import java.util.List;
 public interface BookingService {
 
 
-    public Booking createBooking(
-            Booking booking,
-            User user);
+    public BookingConfirmationResponse createBooking(
+            BookingRequest bookingRequest,
+            User user
+    );
 
     public List<Booking> getAllBookingsForUser(
             String userId);
@@ -20,14 +24,14 @@ public interface BookingService {
     /**
      * Performs check-in for a booking.
      *
-     * @param booking booking to be checked in
+     * @param bookingId booking to be checked in
      * @param user authenticated user
      * @param password user's password
      */
 
 
     void performCheckIn(
-            Booking booking,
+             String bookingId,
             User user,
             String password);
 
@@ -74,6 +78,8 @@ public interface BookingService {
             String password,
             CancelType cancelType);
 
+    void cancelFlightAndRefundAllBookings(String flightId);
+
 
     /**
      * Performs global authorization for passenger cancellation.
@@ -90,5 +96,9 @@ public interface BookingService {
             User user,
             String password,
             CancelType cancelType);
+
+    int getBookedSeatCount(String flightId, SeatClass seatClass);
+
+    List<Booking> getFlightBookings(String flightId);
 
 }

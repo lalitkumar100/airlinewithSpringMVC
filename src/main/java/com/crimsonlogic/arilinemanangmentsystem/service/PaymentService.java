@@ -11,4 +11,6 @@ public interface PaymentService {
             Transaction transaction,
             double amount
     );
+
+    Payment getPaymentByBookingId(String bookingId);
 }

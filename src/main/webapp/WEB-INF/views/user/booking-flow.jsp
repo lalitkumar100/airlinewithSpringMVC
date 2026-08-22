@@ -118,7 +118,8 @@
             color: white;
         }
         .text-navy { color: var(--navy-blue); }
-        
+        .bg-navy { background-color: var(--navy-blue) !important; }
+
         .passenger-card {
             border-radius: 12px;
             border: none;
@@ -158,11 +159,19 @@
 
             <!-- Step 1: Flight Details & Seat Selection -->
             <div id="step1" class="step-container step-active">
+
+                <!-- Flight Status Alert Check -->
+                <c:if test="${flight.status != 'SCHEDULED'}">
+                    <div class="alert alert-danger shadow-sm mb-4" role="alert">
+                        <i class="fas fa-ban me-2"></i><strong>Booking Unavailable:</strong> This flight status is <strong>${flight.status}</strong>. Bookings are only allowed for flights with a <strong>SCHEDULED</strong> status.
+                    </div>
+                </c:if>
+
                 <div class="card mb-4 flight-info-card shadow-sm">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h4 class="text-navy mb-0"><i class="fas fa-plane me-2"></i>Flight: ${flight.flightCode}</h4>
-                            <span class="badge bg-info-subtle text-info border border-info-subtle px-3 py-2">${flight.status}</span>
+                            <span class="badge ${flight.status == 'SCHEDULED' ? 'bg-success' : 'bg-danger'} px-3 py-2">${flight.status}</span>
                         </div>
                         <div class="row">
                             <div class="col-md-5">
@@ -194,35 +203,32 @@
                 <h5 class="mb-3 fw-bold"><i class="fas fa-couch me-2 text-navy"></i>Select Your Preferred Class</h5>
                 <div class="row g-4 mb-4">
                     <div class="col-md-4">
-                        <div class="card h-100 text-center card-fare ${economyAvailable == 0 ? 'opacity-50' : ''}" id="card-ECONOMY" onclick="selectClass('ECONOMY_CLASS', ${economyFare}, ${economyAvailable})">
+                        <div class="card h-100 text-center card-fare ${economyAvailable == 0 || flight.status != 'SCHEDULED' ? 'opacity-50' : ''}" id="card-ECONOMY" onclick="selectClass('ECONOMY_CLASS', ${economyAvailable == 0 || flight.status != 'SCHEDULED' ? 0 : economyFare}, ${economyAvailable})">
                             <div class="card-header bg-primary text-white py-3 fw-bold">Economy</div>
                             <div class="card-body">
                                 <h3 class="card-title text-navy mb-2">₹${economyFare}</h3>
                                 <p class="card-text text-muted mb-3"><i class="fas fa-users me-1"></i> ${economyAvailable} seats left</p>
                                 <div class="btn btn-outline-primary btn-sm rounded-pill px-3">Select</div>
-                                <input type="radio" id="seatClassRadio_ECONOMY" name="seatClassRadio" value="ECONOMY_CLASS" class="d-none" ${economyAvailable == 0 ? 'disabled' : ''}>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="card h-100 text-center card-fare ${businessAvailable == 0 ? 'opacity-50' : ''}" id="card-BUSINESS" onclick="selectClass('BUSINESS_CLASS', ${businessFare}, ${businessAvailable})">
+                        <div class="card h-100 text-center card-fare ${businessAvailable == 0 || flight.status != 'SCHEDULED' ? 'opacity-50' : ''}" id="card-BUSINESS" onclick="selectClass('BUSINESS_CLASS', ${businessAvailable == 0 || flight.status != 'SCHEDULED' ? 0 : businessFare}, ${businessAvailable})">
                             <div class="card-header bg-success text-white py-3 fw-bold">Business</div>
                             <div class="card-body">
                                 <h3 class="card-title text-navy mb-2">₹${businessFare}</h3>
                                 <p class="card-text text-muted mb-3"><i class="fas fa-users me-1"></i> ${businessAvailable} seats left</p>
                                 <div class="btn btn-outline-success btn-sm rounded-pill px-3">Select</div>
-                                <input type="radio" id="seatClassRadio_BUSINESS" name="seatClassRadio" value="BUSINESS_CLASS" class="d-none" ${businessAvailable == 0 ? 'disabled' : ''}>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="card h-100 text-center card-fare ${firstAvailable == 0 ? 'opacity-50' : ''}" id="card-FIRST" onclick="selectClass('FIRST_CLASS', ${firstFare}, ${firstAvailable})">
+                        <div class="card h-100 text-center card-fare ${firstAvailable == 0 || flight.status != 'SCHEDULED' ? 'opacity-50' : ''}" id="card-FIRST" onclick="selectClass('FIRST_CLASS', ${firstAvailable == 0 || flight.status != 'SCHEDULED' ? 0 : firstFare}, ${firstAvailable})">
                             <div class="card-header bg-warning text-dark py-3 fw-bold">First Class</div>
                             <div class="card-body">
                                 <h3 class="card-title text-navy mb-2">₹${firstFare}</h3>
                                 <p class="card-text text-muted mb-3"><i class="fas fa-users me-1"></i> ${firstAvailable} seats left</p>
                                 <div class="btn btn-outline-warning btn-sm rounded-pill px-3">Select</div>
-                                <input type="radio" id="seatClassRadio_FIRST" name="seatClassRadio" value="FIRST_CLASS" class="d-none" ${firstAvailable == 0 ? 'disabled' : ''}>
                             </div>
                         </div>
                     </div>
@@ -251,11 +257,11 @@
                 <div id="bookingSummaryHeader" class="alert alert-navy bg-white border-navy text-navy shadow-sm mb-4">
                     <!-- Populated by JS -->
                 </div>
-                
+
                 <h4 class="mb-4 fw-bold"><i class="fas fa-id-card me-2 text-navy"></i>Passenger Details</h4>
                 <form id="passengerForm" onsubmit="return openPaymentModal(event)">
                     <div id="passengerInputs"></div>
-                    
+
                     <div class="mt-5 d-flex justify-content-between align-items-center mb-5">
                         <button type="button" class="btn btn-outline-secondary rounded-pill px-4" onclick="showStep(1)"><i class="fas fa-chevron-left me-2"></i> Back</button>
                         <button type="submit" class="btn btn-success btn-lg rounded-pill px-5">Proceed to Payment <i class="fas fa-credit-card ms-2"></i></button>
@@ -275,12 +281,12 @@
                 </div>
                 <div class="modal-body p-4">
                     <div id="modalBookingSummary" class="mb-4 p-3 bg-light border-0 rounded-3 small"></div>
-                    
+
                     <div class="text-center mb-4">
                         <div class="text-muted small text-uppercase fw-bold">Total Amount to Pay</div>
                         <h2 class="text-navy fw-bold">₹<span id="modalTotalFare"></span></h2>
                     </div>
-                    
+
                     <form id="paymentConfirmForm">
                         <div class="mb-4">
                             <label for="walletPassword" class="form-label fw-bold">Wallet Security Pin/Password:</label>
@@ -307,10 +313,10 @@
         let availableSeats = 0;
         let passengerCount = 1;
         let paymentModal;
+        const flightStatus = '${flight.status}';
 
         document.addEventListener('DOMContentLoaded', () => {
             paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
-            
             document.getElementById('paymentConfirmForm').addEventListener('submit', handlePayment);
         });
 
@@ -320,6 +326,10 @@
         };
 
         function selectClass(seatClass, fare, available) {
+            if (flightStatus !== 'SCHEDULED') {
+                alert('Bookings are only allowed if the flight status is SCHEDULED.');
+                return;
+            }
             if (available === 0) return;
             selectedSeatClass = seatClass;
             farePerPassenger = fare;
@@ -333,8 +343,7 @@
         function showStep(stepNum) {
             document.querySelectorAll('.step-container').forEach(s => s.classList.remove('step-active'));
             document.getElementById('step' + stepNum).classList.add('step-active');
-            
-            // Update stepper UI
+
             document.querySelectorAll('.step-item').forEach((item, index) => {
                 if (index + 1 < stepNum) {
                     item.classList.add('completed');
@@ -351,6 +360,10 @@
         }
 
         function goToStep2() {
+            if (flightStatus !== 'SCHEDULED') {
+                alert('Bookings are restricted because this flight is not SCHEDULED.');
+                return;
+            }
             if (!selectedSeatClass) {
                 alert('Please select a seat class.');
                 return;
@@ -371,11 +384,11 @@
             const totalFare = farePerPassenger * passengerCount;
             const summaryHeader = document.getElementById('bookingSummaryHeader');
             if (summaryHeader) {
-                summaryHeader.innerHTML = 
+                summaryHeader.innerHTML =
                     `<div class="row align-items-center text-center text-md-start">
                         <div class="col-md-4 mb-2 mb-md-0">
                             <span class="text-muted small d-block">Flight</span>
-                            <strong>${flight.flightCode}</strong>
+                            <strong>\${flight.flightCode}</strong>
                         </div>
                         <div class="col-md-4 mb-2 mb-md-0">
                             <span class="text-muted small d-block">Class & Passengers</span>
@@ -387,7 +400,7 @@
                         </div>
                     </div>`;
             }
-            
+
             generatePassengerFields(passengerCount);
             showStep(2);
         }
@@ -400,29 +413,32 @@
                     <div class="card mb-4 passenger-card shadow-sm">
                         <div class="card-header fw-bold d-flex justify-content-between align-items-center">
                             <span><i class="fas fa-user me-2"></i>Passenger \${i + 1}</span>
-                            <span class="badge bg-navy-subtle text-navy border border-navy-subtle rounded-pill">Details Required</span>
+                            <span class="badge bg-navy text-white rounded-pill">Details Required</span>
                         </div>
                         <div class="card-body p-4">
                             <div class="row g-4">
                                 <div class="col-md-6">
                                     <label for="firstName_\${i}" class="form-label fw-semibold">First Name</label>
                                     <input type="text" id="firstName_\${i}" class="form-control" placeholder="Enter first name" required>
+                                    <div class="invalid-feedback" id="firstNameError_\${i}">Invalid name format.</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="lastName_\${i}" class="form-label fw-semibold">Last Name</label>
                                     <input type="text" id="lastName_\${i}" class="form-control" placeholder="Enter last name" required>
+                                    <div class="invalid-feedback" id="lastNameError_\${i}">Invalid name format.</div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="email_\${i}" class="form-label fw-semibold">Email Address</label>
-                                    <input type="email" id="email_\${i}" class="form-control" placeholder="example@mail.com" required>
+                                    <label for="email_\${i}" class="form-label fw-semibold">Email Address (Optional)</label>
+                                    <input type="email" id="email_\${i}" class="form-control" placeholder="example@mail.com">
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="phone_\${i}" class="form-label fw-semibold">Phone Number</label>
-                                    <input type="tel" id="phone_\${i}" class="form-control" pattern="[0-9]{10}" placeholder="10-digit mobile number" required>
+                                    <label for="phone_\${i}" class="form-label fw-semibold">Phone Number (Optional)</label>
+                                    <input type="tel" id="phone_\${i}" class="form-control" placeholder="10-digit mobile number">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="dob_\${i}" class="form-label fw-semibold">Date of Birth</label>
                                     <input type="date" id="dob_\${i}" class="form-control" required>
+                                    <small class="text-muted">Age must be between 1 and 120 years.</small>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="gender_\${i}" class="form-label fw-semibold">Gender</label>
@@ -440,9 +456,78 @@
             }
         }
 
+        // Custom validation check function for Names, Emails, Phones, and Age
+        function validatePassengerData() {
+            const nameRegex = /^[a-zA-Z\s]+$/;
+
+            for (let i = 0; i < passengerCount; i++) {
+                const fname = document.getElementById(`firstName_\${i}`).value.trim();
+                const lname = document.getElementById(`lastName_\${i}`).value.trim();
+                const email = document.getElementById(`email_\${i}`).value.trim();
+                const phone = document.getElementById(`phone_\${i}`).value.trim();
+                const dob = document.getElementById(`dob_\${i}`).value;
+
+                // 1. Name checks: No numbers, no special characters, no 5 consecutive repeating characters
+                if (!nameRegex.test(fname) || /(.)\1{4,}/.test(fname)) {
+                    alert(`Passenger \${i + 1}: Invalid First Name. Only letters are allowed without more than 5 consecutive identical repeating characters.`);
+                    document.getElementById(`firstName_\${i}`).focus();
+                    return false;
+                }
+                if (!nameRegex.test(lname) || /(.)\1{4,}/.test(lname)) {
+                    alert(`Passenger \${i + 1}: Invalid Last Name. Only letters are allowed without more than 5 consecutive identical repeating characters.`);
+                    document.getElementById(`lastName_\${i}`).focus();
+                    return false;
+                }
+
+                // 2. Email check (Optional, but if filled must be valid)
+                if (email !== '') {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) {
+                        alert(`Passenger \${i + 1}: Please enter a valid email address.`);
+                        document.getElementById(`email_\${i}`).focus();
+                        return false;
+                    }
+                }
+
+                // 3. Phone check (Optional, but if filled must be valid digits)
+                if (phone !== '') {
+                    const phoneRegex = /^[0-9]{10}$/;
+                    if (!phoneRegex.test(phone)) {
+                        alert(`Passenger \${i + 1}: Please enter a valid 10-digit phone number.`);
+                        document.getElementById(`phone_\${i}`).focus();
+                        return false;
+                    }
+                }
+
+                // 4. Age Check (Age between 1 and 120)
+                if (!dob) {
+                    alert(`Passenger \^{i + 1}: Please enter Date of Birth.`);
+                    return false;
+                }
+                const birthDate = new Date(dob);
+                const today = new Date();
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const m = today.getMonth() - birthDate.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+
+                if (age <= 0 || age > 120) {
+                    alert(`Passenger \${i + 1}: Age must be between 1 and 120 years old (0-year-olds or ages above 120 are not permitted).`);
+                    document.getElementById(`dob_\${i}`).focus();
+                    return false;
+                }
+            }
+            return true;
+        }
+
         function openPaymentModal(e) {
             e.preventDefault();
-            
+
+            if (!validatePassengerData()) {
+                return false;
+            }
+
             const totalFare = farePerPassenger * passengerCount;
             document.getElementById('modalTotalFare').innerText = totalFare;
             document.getElementById('modalBookingSummary').innerHTML = `
@@ -459,7 +544,7 @@
                     <span class="fw-bold">\${passengerCount}</span>
                 </div>
             `;
-            
+
             paymentModal.show();
             return false;
         }
@@ -473,10 +558,10 @@
             const passengers = [];
             for (let i = 0; i < passengerCount; i++) {
                 passengers.push({
-                    firstName: document.getElementById(`firstName_\${i}`).value,
-                    lastName: document.getElementById(`lastName_\${i}`).value,
-                    email: document.getElementById(`email_\${i}`).value,
-                    phoneNumber: document.getElementById(`phone_\${i}`).value,
+                    firstName: document.getElementById(`firstName_\${i}`).value.trim(),
+                    lastName: document.getElementById(`lastName_\${i}`).value.trim(),
+                    email: document.getElementById(`email_\${i}`).value.trim(),
+                    phoneNumber: document.getElementById(`phone_\${i}`).value.trim(),
                     dateOfBirth: document.getElementById(`dob_\${i}`).value,
                     gender: document.getElementById(`gender_\${i}`).value
                 });
@@ -511,8 +596,7 @@
                         <i class="fas fa-check-circle me-2"></i> <strong>Success!</strong> \${result.message}<br>
                         <small>Booking ID: \${result.data.bookingId}</small>
                     </div>`;
-                    
-                    // Update stepper to step 3
+
                     document.getElementById('stepper3').classList.add('completed');
                     document.getElementById('stepper3').classList.remove('active');
 

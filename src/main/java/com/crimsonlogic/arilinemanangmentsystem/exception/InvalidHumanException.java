@@ -1,11 +1,10 @@
 package com.crimsonlogic.arilinemanangmentsystem.exception;
 
-public class InvalidHumanException extends  Exception{
-    public InvalidHumanException(String message) {
-        super(message);
-    }
+import org.springframework.http.HttpStatus;
 
-    public InvalidHumanException(String message, Throwable cause) {
-        super(message, cause);
+public class InvalidHumanException extends  CustomException{
+
+    public InvalidHumanException(String message) {
+        super(message, HttpStatus.BAD_REQUEST);
     }
 }

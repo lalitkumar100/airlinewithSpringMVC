@@ -18,7 +18,7 @@ public interface LoyaltyAccountMapper {
             #{account.createdAt}, #{account.updatedAt}, #{account.deleted}
         )
     """)
-    int insertLoyaltyAccount(
+     int insertLoyaltyAccount(
             @Param("loyaltyAccountId") String loyaltyAccountId,
             @Param("userId") String userId,
             @Param("account") LoyaltyAccount account

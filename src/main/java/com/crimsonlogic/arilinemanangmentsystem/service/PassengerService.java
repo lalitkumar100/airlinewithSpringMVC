@@ -27,4 +27,7 @@ public interface PassengerService {
      * Retrieves all passengers for a given booking ID.
      */
     List<Passenger> getPassengersByBookingId(String bookingId);
+
+    void cancelPassenger(String passengerId);
+
 }

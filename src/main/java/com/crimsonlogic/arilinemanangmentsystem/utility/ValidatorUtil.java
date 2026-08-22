@@ -11,6 +11,9 @@ public final class ValidatorUtil {
     private ValidatorUtil() {
     }
 
+    private static final String NAME_REGEX =
+            "^[A-Za-z ]+$";
+
     private static final String EMAIL_REGEX =
             "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
 
@@ -18,9 +21,20 @@ public final class ValidatorUtil {
             "^[0-9]{10}$";
 
 
+    public static boolean validateName(String name)
+            throws InvalidHumanException {
 
+        if (name == null || name.isBlank()) {
+            throw new InvalidHumanException("Name cannot be empty.");
+        }
 
+        if (!Pattern.matches(NAME_REGEX, name)) {
+            throw new InvalidHumanException(
+                    "Name must contain only letters and spaces.");
+        }
 
+        return true;
+    }
 
 
     public static boolean validateEmail(String email)
@@ -33,8 +47,10 @@ public final class ValidatorUtil {
         if (!Pattern.matches(EMAIL_REGEX, email)) {
             throw new InvalidHumanException("Invalid email address.");
         }
+
         return true;
     }
+
 
     public static boolean validatePhone(String phone)
             throws InvalidHumanException {
@@ -44,30 +60,40 @@ public final class ValidatorUtil {
         }
 
         if (!Pattern.matches(PHONE_REGEX, phone)) {
-            throw new InvalidHumanException("Phone number must contain exactly 10 digits.");
+            throw new InvalidHumanException(
+                    "Phone number must contain exactly 10 digits.");
         }
 
         return true;
     }
 
+
     public static boolean validateAge(LocalDate dob)
             throws InvalidHumanException {
 
+        if (dob == null) {
+            throw new InvalidHumanException(
+                    "Date of birth cannot be empty.");
+        }
+
         int age = Period.between(dob, LocalDate.now()).getYears();
 
-        if (age < 18) {
-            throw new InvalidHumanException("Minimum age is 18.");
+        if (age < 0 || age > 120) {
+            throw new InvalidHumanException(
+                    "Age must be between 0 and 120 years.");
         }
 
-        if (age > 120) {
-            throw new InvalidHumanException("Invalid age.");
-        }
-        return  true;
+        return true;
     }
 
 
     public static boolean validatePassword(String password)
             throws InvalidHumanException {
+
+        if (password == null || password.isBlank()) {
+            throw new InvalidHumanException(
+                    "Password cannot be empty.");
+        }
 
         if (password.length() < 8) {
             throw new InvalidHumanException(
@@ -88,9 +114,25 @@ public final class ValidatorUtil {
             throw new InvalidHumanException(
                     "Password must contain one digit.");
         }
-        return  true;
+
+        return true;
     }
 
+    public static boolean validateAgeAdult(LocalDate dob)
+            throws InvalidHumanException {
 
+        if (dob == null) {
+            throw new InvalidHumanException(
+                    "Date of birth cannot be empty.");
+        }
 
+        int age = Period.between(dob, LocalDate.now()).getYears();
+
+        if (age <= 18 || age > 120) {
+            throw new InvalidHumanException(
+                    "Age must be between 18 and 120 years.");
+        }
+
+        return true;
+    }
 }
