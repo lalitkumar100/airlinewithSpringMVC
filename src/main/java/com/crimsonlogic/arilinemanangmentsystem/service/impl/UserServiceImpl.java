@@ -14,7 +14,6 @@ import com.crimsonlogic.arilinemanangmentsystem.service.UserService;
 import com.crimsonlogic.arilinemanangmentsystem.service.WalletService;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
 import com.crimsonlogic.arilinemanangmentsystem.utility.ValidatorUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,17 +25,13 @@ import java.time.LocalDateTime;
 public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
+    private final WalletService walletService;
+    private final LoyaltyAccountSerivce loyaltyAccountSerivce;
 
-    @Autowired
-    private WalletService walletService;
-
-    @Autowired
-    private LoyaltyAccountSerivce loyaltyAccountSerivce;
-
-
-    @Autowired
-    public UserServiceImpl(UserMapper userMapper) {
+    public UserServiceImpl(UserMapper userMapper, WalletService walletService, LoyaltyAccountSerivce loyaltyAccountSerivce) {
         this.userMapper = userMapper;
+        this.walletService = walletService;
+        this.loyaltyAccountSerivce = loyaltyAccountSerivce;
     }
 
     @Override

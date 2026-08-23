@@ -2,7 +2,6 @@ package com.crimsonlogic.arilinemanangmentsystem.service.impl;
 
 import com.crimsonlogic.arilinemanangmentsystem.exception.RecordNotFoundException;
 import com.crimsonlogic.arilinemanangmentsystem.service.AircraftService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.crimsonlogic.arilinemanangmentsystem.dao.AircraftMapper;
@@ -15,7 +14,6 @@ public class AircraftServiceImpl implements AircraftService {
 
     private final AircraftMapper aircraftMapper;
 
-    @Autowired
     public AircraftServiceImpl(AircraftMapper aircraftMapper) {
         this.aircraftMapper = aircraftMapper;
     }

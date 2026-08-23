@@ -6,7 +6,6 @@ import com.crimsonlogic.arilinemanangmentsystem.utility.JwtUtil;
 import io.jsonwebtoken.Claims;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -14,8 +13,11 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Component
 public class AdminJwtInterceptor implements HandlerInterceptor {
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
+
+    public AdminJwtInterceptor(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

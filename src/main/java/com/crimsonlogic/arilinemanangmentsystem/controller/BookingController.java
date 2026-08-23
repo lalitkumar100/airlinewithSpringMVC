@@ -4,7 +4,8 @@ import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass;
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightReportService;
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.crimsonlogic.arilinemanangmentsystem.service.BookingService;
+import com.crimsonlogic.arilinemanangmentsystem.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,17 +16,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/bookings")
 public class BookingController {
 
-    @Autowired
-    private FlightService flightService;
+    private final FlightService flightService;
+    private final FlightReportService flightReportService;
+    private final BookingService bookingService;
+    private final UserService userService;
 
-    @Autowired
-    private FlightReportService flightReportService;
-
-    @Autowired
-    private com.crimsonlogic.arilinemanangmentsystem.service.BookingService bookingService;
-
-    @Autowired
-    private com.crimsonlogic.arilinemanangmentsystem.service.UserService userService;
+    public BookingController(FlightService flightService, FlightReportService flightReportService, BookingService bookingService, UserService userService) {
+        this.flightService = flightService;
+        this.flightReportService = flightReportService;
+        this.bookingService = bookingService;
+        this.userService = userService;
+    }
 
     @GetMapping("/new")
     public String showBookingFlow(@RequestParam("flightId") String flightId, Model model) {

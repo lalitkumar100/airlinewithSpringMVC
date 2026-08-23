@@ -17,7 +17,7 @@ import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
 import com.crimsonlogic.arilinemanangmentsystem.service.PassengerService;
 import com.crimsonlogic.arilinemanangmentsystem.service.WalletService;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,33 +47,19 @@ import java.util.List;
 @Service
 public class BookingServiceImpl implements BookingService {
 
-    /**
-     * Data access object used to perform booking-related database operations.
-     */
-    @Autowired
-    private BookingMapper bookingMapper;
+    private final BookingMapper bookingMapper;
+    private final FlightService flightService;
+    private final FlightReportService flightReportService;
+    private final PassengerService passengerService;
+    private final WalletService walletService;
 
-    /**
-     * Service responsible for flight-related business operations.
-     */
-    @Autowired
-    private FlightService flightService;
-
-    @Autowired
-    private FlightReportService flightReportService;
-
-    /**
-     * Service responsible for passenger-related business operations.
-     */
-    @Autowired
-    private PassengerService passengerService;
-
-
-    /**
-     * Service responsible for wallet transactions and money transfers.
-     */
-    @Autowired
-    private WalletService walletService;
+    public BookingServiceImpl(BookingMapper bookingMapper, FlightService flightService, @Lazy FlightReportService flightReportService, PassengerService passengerService, WalletService walletService) {
+        this.bookingMapper = bookingMapper;
+        this.flightService = flightService;
+        this.flightReportService = flightReportService;
+        this.passengerService = passengerService;
+        this.walletService = walletService;
+    }
 
 
 
@@ -132,6 +118,16 @@ public class BookingServiceImpl implements BookingService {
                 flightService.getFlightById(
                         bookingRequest.getFlightId()
                 );
+
+        // 4. Validate departure time
+        if (flight.getDepartureDateTime()
+                .isBefore(LocalDateTime.now())) {
+
+            throw new FlgihtException(
+                    "Cannot book the flight because its departure time has already passed.",
+                    HttpStatus.CONFLICT
+            );
+        }
 
         // 4. Validate flight status
         if (flight.getStatus() != FlightStatus.SCHEDULED) {
@@ -203,14 +199,7 @@ public class BookingServiceImpl implements BookingService {
             );
 
             // Payment is required for waitlisted booking
-            Payment payment =
-                    walletService.payForBooking(
-                            booking,
-                            totalAmount,
-                            user
-                    );
 
-            booking.setPayment(payment);
 
             // Save waitlisted booking
             int rows =
@@ -224,6 +213,15 @@ public class BookingServiceImpl implements BookingService {
                         "Failed to save waitlisted booking."
                 );
             }
+
+            Payment payment =
+                    walletService.payForBooking(
+                            booking,
+                            totalAmount,
+                            user
+                    );
+
+            booking.setPayment(payment);
 
             // Save passenger
             passengerService.savePassengersForBooking(
@@ -257,7 +255,19 @@ public class BookingServiceImpl implements BookingService {
                 BookingStatus.CONFIRMED_NOT_CHECKED_IN
         );
 
-        // Process payment
+        // Save booking first because payment has FK to booking
+        int rows =
+                bookingMapper.insertBooking(
+                        booking
+                );
+
+        if (rows <= 0) {
+            throw new DBException(
+                    "Failed to save booking."
+            );
+        }
+
+// Process payment after booking exists
         Payment payment =
                 walletService.payForBooking(
                         booking,
@@ -265,22 +275,12 @@ public class BookingServiceImpl implements BookingService {
                         user
                 );
 
-
-
         booking.setPayment(payment);
 
+
         // Save confirmed booking
-        int rows =
-                bookingMapper.insertBooking(
-                        booking
-                );
 
-        if (rows <= 0) {
 
-            throw new DBException(
-                    "Failed to save booking."
-            );
-        }
 
         // Save passengers
         passengerService.savePassengersForBooking(

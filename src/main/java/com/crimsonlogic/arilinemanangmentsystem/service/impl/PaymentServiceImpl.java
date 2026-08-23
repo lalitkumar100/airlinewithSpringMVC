@@ -7,16 +7,21 @@ import com.crimsonlogic.arilinemanangmentsystem.model.Payment;
 import com.crimsonlogic.arilinemanangmentsystem.model.Transaction;
 import com.crimsonlogic.arilinemanangmentsystem.service.PaymentService;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
-    @Autowired
-    private PaymentMapper paymentMapper;
+    private final PaymentMapper paymentMapper;
+
+    public PaymentServiceImpl(PaymentMapper paymentMapper) {
+
+        this.paymentMapper = paymentMapper;
+    }
 
     @Override
+    @Transactional
     public Payment createPayment(
             Booking booking,
             Transaction transaction,

@@ -8,18 +8,23 @@ import com.crimsonlogic.arilinemanangmentsystem.model.Refund;
 import com.crimsonlogic.arilinemanangmentsystem.model.Transaction;
 import com.crimsonlogic.arilinemanangmentsystem.service.RefundService;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @Service
 public class RefundServiceImpl implements RefundService {
 
-    @Autowired
-    private RefundMapper refundMapper;
+    private final RefundMapper refundMapper;
+
+    public RefundServiceImpl(RefundMapper refundMapper) {
+
+        this.refundMapper = refundMapper;
+    }
 
     @Override
+    @Transactional
     public Refund createRefund(
             Booking booking,
             Transaction transaction,

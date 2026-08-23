@@ -4,8 +4,6 @@ import com.crimsonlogic.arilinemanangmentsystem.model.Aircraft;
 import com.crimsonlogic.arilinemanangmentsystem.model.Airport;
 import com.crimsonlogic.arilinemanangmentsystem.service.AircraftService;
 import com.crimsonlogic.arilinemanangmentsystem.service.AirportService;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,11 +14,13 @@ import java.util.List;
 @Controller
 public class AdminController {
 
-    @Autowired
-    private AirportService airportService;
+    private final AirportService airportService;
+    private final AircraftService aircraftService;
 
-    @Autowired
-    private AircraftService aircraftService;
+    public AdminController(AirportService airportService, AircraftService aircraftService) {
+        this.airportService = airportService;
+        this.aircraftService = aircraftService;
+    }
 
 
     // ==========================================

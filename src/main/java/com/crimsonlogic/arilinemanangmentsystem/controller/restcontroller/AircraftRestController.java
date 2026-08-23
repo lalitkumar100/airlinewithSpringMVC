@@ -4,7 +4,6 @@ import com.crimsonlogic.arilinemanangmentsystem.dto.ApiResponse;
 import com.crimsonlogic.arilinemanangmentsystem.model.Aircraft;
 import com.crimsonlogic.arilinemanangmentsystem.service.AircraftService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +15,6 @@ public class AircraftRestController {
 
     private final AircraftService aircraftService;
 
-    @Autowired
     public AircraftRestController(AircraftService aircraftService) {
         this.aircraftService = aircraftService;
     }

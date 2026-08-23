@@ -6,7 +6,6 @@ import com.crimsonlogic.arilinemanangmentsystem.dto.UpdateFlightScheduleRequest;
 import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightOrchestratorService;
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +20,13 @@ import java.util.List;
 @RequestMapping("/api/v1/flights")
 public class FlightRestController {
 
-    @Autowired
-    private FlightService flightService;
+    private final FlightService flightService;
+    private final FlightOrchestratorService flightOrchestratorService;
 
-    @Autowired
-    private FlightOrchestratorService flightOrchestratorService;
+    public FlightRestController(FlightService flightService, FlightOrchestratorService flightOrchestratorService) {
+        this.flightService = flightService;
+        this.flightOrchestratorService = flightOrchestratorService;
+    }
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<Flight>>> getAllFlights() {
@@ -54,23 +55,9 @@ public class FlightRestController {
         );
     }
 
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<ApiResponse<Void>> updateFlightStatus(@PathVariable("id") String flightId,
-                                                               @Valid @RequestBody UpdateFlightStatusRequest request) {
-        flightOrchestratorService.updateFlightStatus(flightId, request);
-        return ResponseEntity.ok(
-                new ApiResponse<>("SUCCESS", "Flight status updated successfully", null)
-        );
-    }
 
-    @PatchMapping("/{id}/schedule")
-    public ResponseEntity<ApiResponse<Void>> updateFlightSchedule(@PathVariable("id") String flightId,
-                                                                 @Valid @RequestBody UpdateFlightScheduleRequest request) {
-        flightOrchestratorService.updateFlightSchedule(flightId, request);
-        return ResponseEntity.ok(
-                new ApiResponse<>("SUCCESS", "Flight schedule updated successfully", null)
-        );
-    }
+
+
 
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<Flight>>> searchFlights(

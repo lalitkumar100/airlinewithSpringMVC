@@ -9,7 +9,7 @@ import com.crimsonlogic.arilinemanangmentsystem.model.Passenger;
 import com.crimsonlogic.arilinemanangmentsystem.model.Ticket;
 import com.crimsonlogic.arilinemanangmentsystem.service.BookingService;
 import com.crimsonlogic.arilinemanangmentsystem.service.TicketService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +20,13 @@ import java.util.stream.Collectors;
 @Service
 public class TicketServiceImpl implements TicketService {
 
-    @Autowired
-    private TicketMapper ticketMapper;
+    private final TicketMapper ticketMapper;
+    private final BookingService bookingService;
 
-    @Autowired
-    private BookingService bookingService;
+    public TicketServiceImpl(TicketMapper ticketMapper, BookingService bookingService) {
+        this.ticketMapper = ticketMapper;
+        this.bookingService = bookingService;
+    }
 
     @Override
     @Transactional
@@ -85,6 +87,7 @@ public class TicketServiceImpl implements TicketService {
             if (totalAssigned + passengers.size() <= capacity) {
                 for (Passenger p : passengers) {
                     Ticket ticket = new Ticket();
+                    ticket.setTicketId(IdGenerator.generateTicketId());
                     ticket.setBooking(booking);
                     ticket.setPassenger(p);
                     ticket.setSeatClass(seatClass);

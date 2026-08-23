@@ -8,7 +8,6 @@ import com.crimsonlogic.arilinemanangmentsystem.service.AuthService;
 import com.crimsonlogic.arilinemanangmentsystem.service.UserService;
 import com.crimsonlogic.arilinemanangmentsystem.utility.JwtUtil;
 import io.jsonwebtoken.Claims;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
@@ -18,11 +17,13 @@ import java.time.LocalDateTime;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    public AuthServiceImpl(UserService userService, JwtUtil jwtUtil) {
+        this.userService = userService;
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     public LoginResponse authenticateUser(LoginRequest loginRequest) {

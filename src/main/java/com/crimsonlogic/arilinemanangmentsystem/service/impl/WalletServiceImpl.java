@@ -13,7 +13,6 @@ import com.crimsonlogic.arilinemanangmentsystem.service.RefundService;
 import com.crimsonlogic.arilinemanangmentsystem.service.TransactionService;
 import com.crimsonlogic.arilinemanangmentsystem.service.WalletService;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -32,9 +31,8 @@ public class WalletServiceImpl implements WalletService {
 
     // Fetching receiver ID for bookings from environment properties (e.g., application.properties)
 //    @Value("${booking.receiver.user.id}")
-    private String platformReceiverUserId ="USR693190";
+    private String platformReceiverUserId ="USR365589";
 
-    @Autowired
     public WalletServiceImpl(
             WalletMapper walletMapper,
             TransactionService transactionService,

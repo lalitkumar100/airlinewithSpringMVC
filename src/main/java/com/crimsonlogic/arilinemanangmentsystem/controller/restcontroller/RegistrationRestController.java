@@ -5,7 +5,6 @@ import com.crimsonlogic.arilinemanangmentsystem.dto.RegistrationRequest;
 import com.crimsonlogic.arilinemanangmentsystem.exception.InvalidHumanException;
 import com.crimsonlogic.arilinemanangmentsystem.model.User;
 import com.crimsonlogic.arilinemanangmentsystem.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +18,6 @@ public class RegistrationRestController {
 
     private final UserService userService;
 
-    @Autowired
     public RegistrationRestController(UserService userService) {
         this.userService = userService;
     }

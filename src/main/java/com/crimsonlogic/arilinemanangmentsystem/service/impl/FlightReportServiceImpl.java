@@ -12,7 +12,6 @@ import com.crimsonlogic.arilinemanangmentsystem.service.FlightReportService;
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
 import com.crimsonlogic.arilinemanangmentsystem.service.PaymentService;
 import com.crimsonlogic.arilinemanangmentsystem.service.RefundService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,17 +19,17 @@ import java.util.List;
 @Service
 public class FlightReportServiceImpl implements FlightReportService {
 
-    @Autowired
-    private FlightService flightService;
+    private final FlightService flightService;
+    private final BookingService bookingService;
+    private final PaymentService paymentService;
+    private final RefundService refundService;
 
-    @Autowired
-    private BookingService bookingService;
-
-    @Autowired
-    private PaymentService paymentService;
-
-    @Autowired
-    private RefundService refundService;
+    public FlightReportServiceImpl(FlightService flightService, BookingService bookingService, PaymentService paymentService, RefundService refundService) {
+        this.flightService = flightService;
+        this.bookingService = bookingService;
+        this.paymentService = paymentService;
+        this.refundService = refundService;
+    }
 
     @Override
     public RevenueReport getFlightRevenueReport(String flightId) {

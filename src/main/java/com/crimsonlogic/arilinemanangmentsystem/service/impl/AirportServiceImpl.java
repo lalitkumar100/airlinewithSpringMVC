@@ -6,7 +6,6 @@ import com.crimsonlogic.arilinemanangmentsystem.exception.RecordNotFoundExceptio
 import com.crimsonlogic.arilinemanangmentsystem.model.Airport;
 import com.crimsonlogic.arilinemanangmentsystem.service.AirportService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +14,11 @@ import java.util.List;
 @Service
 public class AirportServiceImpl implements AirportService {
 
-    @Autowired
-    private AirportMapper airportMapper;
+    private final AirportMapper airportMapper;
+
+    public AirportServiceImpl(AirportMapper airportMapper) {
+        this.airportMapper = airportMapper;
+    }
 
     // =========================================================
     // GET ALL AIRPORTS

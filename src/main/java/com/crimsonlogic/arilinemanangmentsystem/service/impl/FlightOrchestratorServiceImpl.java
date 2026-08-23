@@ -9,21 +9,21 @@ import com.crimsonlogic.arilinemanangmentsystem.service.FlightOrchestratorServic
 import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
 import com.crimsonlogic.arilinemanangmentsystem.service.TicketService;
 import com.crimsonlogic.arilinemanangmentsystem.service.AircraftService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class FlightOrchestratorServiceImpl implements FlightOrchestratorService {
 
-    @Autowired
-    private FlightService flightService;
+    private final FlightService flightService;
+    private final TicketService ticketService;
+    private final AircraftService aircraftService;
 
-    @Autowired
-    private TicketService ticketService;
-    
-    @Autowired
-    private AircraftService aircraftService;
+    public FlightOrchestratorServiceImpl(FlightService flightService, TicketService ticketService, AircraftService aircraftService) {
+        this.flightService = flightService;
+        this.ticketService = ticketService;
+        this.aircraftService = aircraftService;
+    }
 
     @Override
     @Transactional

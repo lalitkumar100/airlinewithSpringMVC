@@ -6,7 +6,6 @@ import com.crimsonlogic.arilinemanangmentsystem.model.User;
 import com.crimsonlogic.arilinemanangmentsystem.service.LoyaltyAccountSerivce;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
 import com.crimsonlogic.arilinemanangmentsystem.dao.LoyaltyAccountMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,8 +14,11 @@ import java.time.LocalDateTime;
 @Service
 public class LoyaltyAccountSerivceImpl implements LoyaltyAccountSerivce {
 
-    @Autowired
-    LoyaltyAccountMapper loyaltyAccountMapper;
+    private final LoyaltyAccountMapper loyaltyAccountMapper;
+
+    public LoyaltyAccountSerivceImpl(LoyaltyAccountMapper loyaltyAccountMapper) {
+        this.loyaltyAccountMapper = loyaltyAccountMapper;
+    }
 
     public LoyaltyAccount createLoyaltyAccount(User user, LocalDateTime now) {
 

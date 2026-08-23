@@ -24,7 +24,6 @@ import com.crimsonlogic.arilinemanangmentsystem.enumrator.FlightStatus;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass;
 import com.crimsonlogic.arilinemanangmentsystem.service.*;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,23 +36,19 @@ import java.util.List;
 @Service
 public class FlightServiceImpl implements FlightService {
 
-    @Autowired
-    private FlightMapper flightMapper;
+    private final FlightMapper flightMapper;
+    private final AirportService airportService;
+    private final AircraftService aircraftService;
+    private final PaymentService paymentService;
+    private final RefundService refundService;
 
-    @Autowired
-    private  AirportService airportService;
-
-    @Autowired
-    private AircraftService aircraftService;
-
-
-    @Autowired
-    private PaymentService paymentService;
-
-    @Autowired
-    private RefundService refundService;
-
-;
+    public FlightServiceImpl(FlightMapper flightMapper, AirportService airportService, AircraftService aircraftService, PaymentService paymentService, RefundService refundService) {
+        this.flightMapper = flightMapper;
+        this.airportService = airportService;
+        this.aircraftService = aircraftService;
+        this.paymentService = paymentService;
+        this.refundService = refundService;
+    }
 
 
 
@@ -132,6 +127,13 @@ public class FlightServiceImpl implements FlightService {
                 )
         );
 
+        // 2. Verify and populate Aircraft
+        newFlight.setAircraft(
+                aircraftService.findById(
+                        addFlightRequest.getAircraftId()
+                )
+        );
+
         // 3. Verify Date and Time rules
         validateFlightDateTime(
                 addFlightRequest.getDepartureDateTime(),
@@ -141,6 +143,7 @@ public class FlightServiceImpl implements FlightService {
 
         newFlight.setDepartureDateTime(addFlightRequest.getDepartureDateTime());
         newFlight.setArrivalDateTime(addFlightRequest.getArrivalDateTime());
+        newFlight.setBaseFare(addFlightRequest.getBaseFare());
         newFlight.generateFlightCode();
         newFlight.setStatus(FlightStatus.SCHEDULED);
 

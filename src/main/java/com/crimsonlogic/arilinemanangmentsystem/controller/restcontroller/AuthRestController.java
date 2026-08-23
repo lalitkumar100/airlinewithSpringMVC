@@ -4,7 +4,6 @@ import com.crimsonlogic.arilinemanangmentsystem.dto.ApiResponse;
 import com.crimsonlogic.arilinemanangmentsystem.dto.LoginRequest;
 import com.crimsonlogic.arilinemanangmentsystem.dto.LoginResponse;
 import com.crimsonlogic.arilinemanangmentsystem.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +13,11 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1")
 public class AuthRestController {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
+
+    public AuthRestController(AuthService authService) {
+        this.authService = authService;
+    }
 
 
 

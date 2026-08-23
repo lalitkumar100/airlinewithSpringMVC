@@ -10,7 +10,6 @@ import com.crimsonlogic.arilinemanangmentsystem.model.Transaction;
 import com.crimsonlogic.arilinemanangmentsystem.model.User;
 import com.crimsonlogic.arilinemanangmentsystem.service.TransactionService;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +21,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionMapper transactionMapper;
 
-    @Autowired
     public TransactionServiceImpl(TransactionMapper transactionMapper) {
         this.transactionMapper = transactionMapper;
     }

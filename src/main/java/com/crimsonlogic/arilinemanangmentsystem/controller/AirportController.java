@@ -2,7 +2,6 @@ package com.crimsonlogic.arilinemanangmentsystem.controller;
 
 import com.crimsonlogic.arilinemanangmentsystem.model.Airport;
 import com.crimsonlogic.arilinemanangmentsystem.service.AirportService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +14,11 @@ import java.util.List;
 @RequestMapping("/airports")
 public class AirportController {
 
-    @Autowired
-    private AirportService airportService;
+    private final AirportService airportService;
+
+    public AirportController(AirportService airportService) {
+        this.airportService = airportService;
+    }
 
     // View all airports in JSP
     @GetMapping

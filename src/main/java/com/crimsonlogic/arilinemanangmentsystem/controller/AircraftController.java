@@ -2,8 +2,6 @@ package com.crimsonlogic.arilinemanangmentsystem.controller;
 
 import com.crimsonlogic.arilinemanangmentsystem.model.Aircraft;
 import com.crimsonlogic.arilinemanangmentsystem.service.AircraftService;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +16,6 @@ public class AircraftController {
 
     private final AircraftService aircraftService;
 
-    @Autowired
     public AircraftController(AircraftService aircraftService) {
         this.aircraftService = aircraftService;
     }

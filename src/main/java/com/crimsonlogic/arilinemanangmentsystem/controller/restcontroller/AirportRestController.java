@@ -4,7 +4,6 @@ import com.crimsonlogic.arilinemanangmentsystem.dto.ApiResponse;
 import com.crimsonlogic.arilinemanangmentsystem.model.Airport;
 import com.crimsonlogic.arilinemanangmentsystem.service.AirportService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +13,11 @@ import java.util.List;
 @RequestMapping("/api/v1/airports")
 public class AirportRestController {
 
-    @Autowired
-    private AirportService airportService;
+    private final AirportService airportService;
+
+    public AirportRestController(AirportService airportService) {
+        this.airportService = airportService;
+    }
 
     // =========================================================
     // GET ALL AIRPORTS

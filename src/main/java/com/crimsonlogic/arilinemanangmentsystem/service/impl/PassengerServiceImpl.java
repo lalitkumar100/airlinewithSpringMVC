@@ -11,7 +11,6 @@ import com.crimsonlogic.arilinemanangmentsystem.model.Passenger;
 import com.crimsonlogic.arilinemanangmentsystem.service.PassengerService;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
 import com.crimsonlogic.arilinemanangmentsystem.utility.ValidatorUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +24,11 @@ import java.util.UUID;
 @Service
 public class PassengerServiceImpl implements PassengerService {
 
-    @Autowired
-    private PassengerMapper passengerMapper;
+    private final PassengerMapper passengerMapper;
+
+    public PassengerServiceImpl(PassengerMapper passengerMapper) {
+        this.passengerMapper = passengerMapper;
+    }
 
 
 
@@ -48,7 +50,21 @@ public class PassengerServiceImpl implements PassengerService {
             // Generate unique passenger ID if not already present
                 ValidatorUtil.validateName(passenger.getFirstName());
                 ValidatorUtil.validateName(passenger.getLastName());
-                ValidatorUtil.validatePhone(passenger.getPhoneNumber());
+
+            if (passenger.getPhoneNumber() != null
+                    && !passenger.getPhoneNumber().isBlank()) {
+
+                ValidatorUtil.validatePhone(
+                        passenger.getPhoneNumber()
+                );
+            }
+            if (passenger.getEmail() != null
+                    && !passenger.getEmail().isBlank()) {
+
+                ValidatorUtil.validateEmail(
+                        passenger.getEmail()
+                );
+            }
                 ValidatorUtil.validateAge(passenger.getDateOfBirth());
                 passenger.setPassengerId(IdGenerator.generatePassengerId());
 

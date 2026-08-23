@@ -1,20 +1,13 @@
 package com.crimsonlogic.arilinemanangmentsystem.controller.restcontroller;
 
-import com.crimsonlogic.arilinemanangmentsystem.dto.AddFlightRequest;
+import com.crimsonlogic.arilinemanangmentsystem.dto.*;
 
-import com.crimsonlogic.arilinemanangmentsystem.dto.ApiResponse;
-import com.crimsonlogic.arilinemanangmentsystem.dto.PasswordRequest;
 import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
 import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
 import com.crimsonlogic.arilinemanangmentsystem.model.RevenueReport;
 import com.crimsonlogic.arilinemanangmentsystem.model.Ticket;
-import com.crimsonlogic.arilinemanangmentsystem.service.BookingService;
-import com.crimsonlogic.arilinemanangmentsystem.service.FlightReportService;
-import com.crimsonlogic.arilinemanangmentsystem.service.FlightService;
-import com.crimsonlogic.arilinemanangmentsystem.service.TicketService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.crimsonlogic.arilinemanangmentsystem.service.*;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,17 +17,19 @@ import java.util.List;
 @RequestMapping("/api/v1/admin")
 public class AdminRestController {
 
-    @Autowired
-    private TicketService ticketService;
+    private final TicketService ticketService;
+    private final FlightService flightService;
+    private final FlightReportService flightReportService;
+    private final BookingService bookingService;
+    private final FlightOrchestratorService flightOrchestratorService;
 
-    @Autowired
-    private FlightService flightService;
-
-    @Autowired
-    private FlightReportService flightReportService;
-
-    @Autowired
-    private BookingService bookingService;
+    public AdminRestController(TicketService ticketService, FlightService flightService, FlightReportService flightReportService, BookingService bookingService,  FlightOrchestratorService flightOrchestratorService) {
+        this.ticketService = ticketService;
+        this.flightService = flightService;
+        this.flightReportService = flightReportService;
+        this.bookingService = bookingService;
+        this.flightOrchestratorService= flightOrchestratorService;
+    }
 
     @GetMapping("/flights")
     public ResponseEntity<ApiResponse<List<Flight>>> getAllFlights() {
@@ -135,6 +130,24 @@ public class AdminRestController {
                                 "All bookings have been cancelled and full " +
                                 "refunds have been processed."
                 )
+        );
+    }
+
+    @PatchMapping("/flights/{id}/status")
+    public ResponseEntity<ApiResponse<Void>> updateFlightStatus(@PathVariable("id") String flightId,
+                                                                @Valid @RequestBody UpdateFlightStatusRequest request) {
+        flightOrchestratorService.updateFlightStatus(flightId, request);
+        return ResponseEntity.ok(
+                new ApiResponse<>("SUCCESS", "Flight status updated successfully", null)
+        );
+    }
+
+    @PatchMapping("/flights/{id}/schedule")
+    public ResponseEntity<ApiResponse<Void>> updateFlightSchedule(@PathVariable("id") String flightId,
+                                                                  @Valid @RequestBody UpdateFlightScheduleRequest request) {
+        flightOrchestratorService.updateFlightSchedule(flightId, request);
+        return ResponseEntity.ok(
+                new ApiResponse<>("SUCCESS", "Flight schedule updated successfully", null)
         );
     }
 }

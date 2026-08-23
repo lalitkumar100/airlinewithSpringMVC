@@ -10,7 +10,6 @@ import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
 import com.crimsonlogic.arilinemanangmentsystem.model.User;
 import com.crimsonlogic.arilinemanangmentsystem.service.AuthService;
 import com.crimsonlogic.arilinemanangmentsystem.service.BookingService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,11 +26,13 @@ public class BookingRestController {
     // SERVICES
     // =========================================================
 
-    @Autowired
-    private BookingService bookingService;
+    private final BookingService bookingService;
+    private final AuthService authService;
 
-    @Autowired
-    private AuthService authService;
+    public BookingRestController(BookingService bookingService, AuthService authService) {
+        this.bookingService = bookingService;
+        this.authService = authService;
+    }
 
 
     // =========================================================
