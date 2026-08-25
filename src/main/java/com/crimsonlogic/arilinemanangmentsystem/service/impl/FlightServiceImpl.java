@@ -1,34 +1,19 @@
 package com.crimsonlogic.arilinemanangmentsystem.service.impl;
 
-import com.crimsonlogic.arilinemanangmentsystem.dao.AircraftMapper;
-import com.crimsonlogic.arilinemanangmentsystem.dao.AirportMapper;
 import com.crimsonlogic.arilinemanangmentsystem.dao.FlightMapper;
-import com.crimsonlogic.arilinemanangmentsystem.dao.PassengerMapper;
-import com.crimsonlogic.arilinemanangmentsystem.dao.PaymentMapper;
-import com.crimsonlogic.arilinemanangmentsystem.dao.RefundMapper;
 import com.crimsonlogic.arilinemanangmentsystem.dto.*;
 import com.crimsonlogic.arilinemanangmentsystem.exception.DBException;
 import com.crimsonlogic.arilinemanangmentsystem.exception.NullValueException;
 import com.crimsonlogic.arilinemanangmentsystem.exception.RecordNotFoundException;
-import com.crimsonlogic.arilinemanangmentsystem.model.Aircraft;
-import com.crimsonlogic.arilinemanangmentsystem.model.Airport;
-import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
 import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
-import com.crimsonlogic.arilinemanangmentsystem.model.Passenger;
-import com.crimsonlogic.arilinemanangmentsystem.model.Payment;
-import com.crimsonlogic.arilinemanangmentsystem.model.Refund;
-import com.crimsonlogic.arilinemanangmentsystem.model.RevenueReport;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.FlightStatus;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass;
 import com.crimsonlogic.arilinemanangmentsystem.service.*;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -105,7 +90,7 @@ public class FlightServiceImpl implements FlightService {
 
 
     @Override
-    public Flight addNewFlight(AddFlightRequest addFlightRequest) {
+    public FlightDTO addNewFlight(AddFlightRequest addFlightRequest) {
 
         Flight newFlight = new Flight();
         String newFlightId =    IdGenerator.generateFlightId();
@@ -149,7 +134,7 @@ public class FlightServiceImpl implements FlightService {
         int rows = flightMapper.insertFlight(newFlight);
         if (rows > 0) {
             // Fetch and return the complete flight object from the database
-            return  getFlightById(newFlightId);
+            return  getFlightByIdDTO(newFlightId);
         }
         throw new RuntimeException("Failed to insert the flight into the database.");
     }

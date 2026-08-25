@@ -1,6 +1,4 @@
-<%@ page language="java"
-         contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,191 +8,279 @@
     <meta charset="UTF-8">
 
     <meta name="viewport"
-          content="width=device-width, initial-scale=1">
+          content="width=device-width, initial-scale=1.0">
 
-    <title>Flight Details - Admin</title>
+    <title>ABC Airline - Flight Details</title>
+
 
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
 
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-          rel="stylesheet">
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet">
 
 
     <style>
 
-        :root {
-            --navy: #003366;
-            --navy-dark: #002244;
-            --blue: #0d6efd;
-            --light-blue: #eaf3ff;
-            --light-gray: #f5f8fc;
-        }
+        /* =====================================================
+           BODY
+           ===================================================== */
 
         body {
-            background-color: var(--light-gray);
-            font-family: 'Segoe UI',
-                         Tahoma,
-                         Geneva,
-                         Verdana,
-                         sans-serif;
+            background-color: #f4f7fb;
+            font-family: Arial, sans-serif;
         }
 
-        .page-header {
 
-            background: linear-gradient(
-                    135deg,
-                    var(--navy),
-                    #0056a6
-            );
+        /* =====================================================
+           NAVBAR
+           ===================================================== */
 
+        .navbar {
+            background-color: #071b3a;
+        }
+
+
+        .navbar-brand {
+            color: white !important;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+
+        .navbar-text {
             color: white;
-
-            padding: 35px 0 55px;
-
-            margin-bottom: -25px;
         }
 
-        .page-header h2 {
-            font-weight: 700;
+
+        /* =====================================================
+           MAIN CONTAINER
+           ===================================================== */
+
+        .page-container {
+            max-width: 1100px;
+            margin: 40px auto;
         }
 
-        .main-card {
 
-            border: none;
+        /* =====================================================
+           PAGE TITLE
+           ===================================================== */
 
-            border-radius: 16px;
+        .page-title {
+            color: #071b3a;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+
+        .page-subtitle {
+            color: #6c757d;
+        }
+
+
+        /* =====================================================
+           BACK BUTTON
+           ===================================================== */
+
+        .btn-back {
+            background-color: white;
+            color: #071b3a;
+            border: 1px solid #071b3a;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+
+        .btn-back:hover {
+            background-color: #071b3a;
+            color: white;
+        }
+
+
+        /* =====================================================
+           MAIN CARD
+           ===================================================== */
+
+        .details-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-top: 30px;
 
             box-shadow:
-                0 8px 30px
-                rgba(0, 51, 102, 0.12);
-
-            overflow: hidden;
+                    0 5px 20px
+                    rgba(0, 0, 0, 0.08);
         }
 
-        .card-header-blue {
 
-            background-color: var(--navy);
+        /* =====================================================
+           FLIGHT HEADER
+           ===================================================== */
 
-            color: white;
-
-            padding: 18px 24px;
+        .flight-code {
+            color: #071b3a;
+            font-size: 26px;
+            font-weight: bold;
         }
 
-        .info-card {
 
-            border: 1px solid #e2eaf3;
+        /* =====================================================
+           INFORMATION BOX
+           ===================================================== */
 
-            border-radius: 12px;
-
-            background: white;
-
+        .info-box {
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 18px;
             height: 100%;
         }
 
+
         .info-label {
-
             color: #6c757d;
-
-            font-size: 0.78rem;
-
-            font-weight: 600;
-
-            text-transform: uppercase;
-
-            letter-spacing: 0.4px;
-
-            margin-bottom: 4px;
+            font-size: 13px;
+            margin-bottom: 5px;
         }
+
 
         .info-value {
-
-            color: #212529;
-
-            font-size: 1rem;
-
+            color: #071b3a;
             font-weight: 600;
+            font-size: 16px;
         }
 
-        .flight-code {
 
-            background-color: var(--light-blue);
-
-            color: var(--navy);
-
-            padding: 6px 12px;
-
-            border-radius: 6px;
-
-            font-weight: 700;
-        }
-
-        .airport-code {
-
-            color: var(--navy);
-
-            font-size: 1.5rem;
-
-            font-weight: 800;
-        }
-
-        .airport-name {
-
-            font-weight: 600;
-
-            color: #495057;
-        }
-
-        .route-line {
-
-            height: 2px;
-
-            background-color: #cbd5e1;
-
-            position: relative;
-
-            margin: 0 15px;
-        }
-
-        .route-plane {
-
-            color: var(--blue);
-
-            font-size: 1.3rem;
-        }
-
-        .status-badge {
-
-            padding: 7px 15px;
-
-            border-radius: 20px;
-
-            font-weight: 600;
-        }
+        /* =====================================================
+           SECTION TITLE
+           ===================================================== */
 
         .section-title {
-
-            color: var(--navy);
-
-            font-weight: 700;
+            color: #071b3a;
+            font-weight: bold;
+            margin-bottom: 20px;
         }
 
-        .loading-container {
 
-            min-height: 400px;
+        /* =====================================================
+           STATUS
+           ===================================================== */
 
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
         }
+
+
+        .status-scheduled {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+
+
+        .status-other {
+            background-color: #e2e3e5;
+            color: #41464b;
+        }
+
+
+        /* =====================================================
+           ACTION BUTTONS
+           ===================================================== */
 
         .action-btn {
+            min-width: 130px;
+            padding: 10px 18px;
+            border-radius: 5px;
+            font-weight: 600;
+            border: none;
+        }
 
-            min-width: 120px;
+
+        .btn-revenue {
+            background-color: #071b3a;
+            color: white;
+        }
+
+
+        .btn-revenue:hover {
+            background-color: #0d2c5c;
+            color: white;
+        }
+
+
+        .btn-booking {
+            background-color: #071b3a;
+            color: white;
+        }
+
+
+        .btn-booking:hover {
+            background-color: #0d2c5c;
+            color: white;
+        }
+
+
+        .btn-cancel-flight {
+            background-color: #dc3545;
+            color: white;
+        }
+
+
+        .btn-cancel-flight:hover {
+            background-color: #bb2d3b;
+            color: white;
+        }
+
+
+        /* =====================================================
+           LOADING
+           ===================================================== */
+
+        .loading {
+            text-align: center;
+            color: #6c757d;
+            padding: 50px;
+        }
+
+
+        /* =====================================================
+           ERROR
+           ===================================================== */
+
+        .error-container {
+            margin-top: 30px;
+        }
+
+
+        /* =====================================================
+           LOGOUT
+           ===================================================== */
+
+        .logout-btn {
+            border: 1px solid white;
+            color: white;
+            background: transparent;
+            padding: 5px 15px;
+            border-radius: 5px;
+        }
+
+
+        .logout-btn:hover {
+            background-color: white;
+            color: #071b3a;
         }
 
     </style>
@@ -205,1576 +291,1442 @@
 <body>
 
 
-<!-- ===================================================== -->
-<!-- PAGE HEADER -->
-<!-- ===================================================== -->
+<!-- =========================================================
+     NAVBAR
+     ========================================================= -->
 
-<div class="page-header">
+<nav class="navbar navbar-dark">
 
     <div class="container">
 
-        <div class="d-flex
-                    justify-content-between
-                    align-items-center">
 
-            <div>
+        <a
+                class="navbar-brand"
+                href="${pageContext.request.contextPath}/admin/menu">
 
-                <h2 class="mb-1">
+            ✈ ABC Airline
 
-                    <i class="fas fa-plane me-2"></i>
-
-                    Flight Details
-
-                </h2>
-
-                <p class="mb-0 opacity-75">
-
-                    Administrator Flight Management
-
-                </p>
-
-            </div>
+        </a>
 
 
-            <a href="${pageContext.request.contextPath}/admin/flights"
-               class="btn btn-light">
+        <div class="d-flex align-items-center gap-3">
 
-                <i class="fas fa-arrow-left me-1"></i>
+            <span class="navbar-text">
 
-                Back to Flights
+                Admin
 
-            </a>
+            </span>
+
+
+            <button
+                    type="button"
+                    id="logoutButton"
+                    class="logout-btn">
+
+                Logout
+
+            </button>
 
         </div>
 
     </div>
 
-</div>
+</nav>
 
 
-<!-- ===================================================== -->
-<!-- MAIN CONTENT -->
-<!-- ===================================================== -->
 
-<div class="container py-4">
+<!-- =========================================================
+     MAIN CONTENT
+     ========================================================= -->
 
-
-    <!-- ERROR -->
-
-    <div id="errorMessage"
-         class="alert alert-danger d-none shadow-sm">
-
-        <i class="fas fa-circle-exclamation me-2"></i>
-
-        <span id="errorText"></span>
-
-    </div>
+<div class="container page-container">
 
 
-    <!-- SUCCESS -->
+    <!-- =====================================================
+         PAGE HEADER
+         ===================================================== -->
 
-    <div id="successMessage"
-         class="alert alert-success d-none shadow-sm">
+    <div class="d-flex justify-content-between align-items-center">
 
-        <i class="fas fa-circle-check me-2"></i>
+        <div>
 
-        <span id="successText"></span>
+            <h2 class="page-title">
 
-    </div>
+                Flight Details
 
+            </h2>
 
-    <!-- LOADING -->
+            <p class="page-subtitle mb-0">
 
-    <div id="loading"
-         class="card main-card loading-container">
-
-        <div class="text-center">
-
-            <div class="spinner-border text-primary"
-                 style="width: 3rem; height: 3rem;"
-                 role="status">
-
-            </div>
-
-            <p class="text-muted mt-3 mb-0">
-
-                Loading flight details...
+                View complete flight information.
 
             </p>
 
         </div>
 
+
+        <a
+                href="${pageContext.request.contextPath}/admin/flights"
+                class="btn-back">
+
+            ← Back to Flights
+
+        </a>
+
     </div>
 
 
-    <!-- ================================================= -->
-    <!-- FLIGHT CONTENT -->
-    <!-- ================================================= -->
 
-    <div id="flightContent"
-         class="d-none">
+    <!-- =====================================================
+         API MESSAGE
+         ===================================================== -->
 
+    <div
+            id="apiMessage"
+            class="error-container">
 
-        <!-- ================================================= -->
-        <!-- FLIGHT HEADER -->
-        <!-- ================================================= -->
-
-        <div class="card main-card mb-4">
-
-            <div class="card-header-blue">
-
-                <div class="row align-items-center">
-
-                    <div class="col-md-8">
-
-                        <div class="small opacity-75 mb-2">
-
-                            Flight Code
-
-                        </div>
-
-                        <h3 class="mb-0">
-
-                            <span id="flightCode"
-                                  class="flight-code">
-
-                            </span>
-
-                        </h3>
-
-                    </div>
+    </div>
 
 
-                    <div class="col-md-4
-                                text-md-end
-                                mt-3
-                                mt-md-0">
 
-                        <span id="flightStatus"
-                              class="status-badge">
+    <!-- =====================================================
+         LOADING
+         ===================================================== -->
 
-                        </span>
+    <div
+            id="loading"
+            class="details-card loading">
 
-                    </div>
+        Loading flight details...
+
+    </div>
+
+
+
+    <!-- =====================================================
+         FLIGHT DETAILS
+         ===================================================== -->
+
+    <div
+            id="flightDetails"
+            class="details-card d-none">
+
+
+        <!-- =================================================
+             FLIGHT HEADER
+             ================================================= -->
+
+        <div class="d-flex justify-content-between
+                    align-items-center mb-4">
+
+            <div>
+
+                <div
+                        id="flightCode"
+                        class="flight-code">
 
                 </div>
+
+                <small
+                        id="flightId"
+                        class="text-muted">
+
+                </small>
 
             </div>
 
 
-            <div class="card-body p-4">
-
-
-                <!-- ROUTE -->
-
-                <div class="row
-                            align-items-center
-                            text-center">
-
-
-                    <!-- SOURCE -->
-
-                    <div class="col-md-4">
-
-                        <div id="sourceCode"
-                             class="airport-code">
-                        </div>
-
-                        <div id="sourceCity"
-                             class="airport-name">
-                        </div>
-
-                        <small id="sourceAirport"
-                               class="text-muted d-block">
-                        </small>
-
-
-                        <div class="mt-3">
-
-                            <span class="badge
-                                         bg-light
-                                         text-dark
-                                         border">
-
-                                <i class="far fa-clock me-1"></i>
-
-                                <span id="departureTime"></span>
-
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- ROUTE -->
-
-                    <div class="col-md-4
-                                my-4
-                                my-md-0">
-
-                        <div class="small text-muted mb-2">
-
-                            <span id="flightRouteCode"></span>
-
-                        </div>
-
-
-                        <div class="d-flex
-                                    align-items-center">
-
-                            <div class="route-line
-                                        flex-grow-1">
-                            </div>
-
-                            <i class="fas fa-plane
-                                      route-plane
-                                      mx-2">
-                            </i>
-
-                            <div class="route-line
-                                        flex-grow-1">
-                            </div>
-
-                        </div>
-
-
-                        <div class="small
-                                    text-muted
-                                    mt-2">
-
-                            <span id="aircraftModel"></span>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- DESTINATION -->
-
-                    <div class="col-md-4">
-
-                        <div id="destinationCode"
-                             class="airport-code">
-                        </div>
-
-                        <div id="destinationCity"
-                             class="airport-name">
-                        </div>
-
-                        <small id="destinationAirport"
-                               class="text-muted d-block">
-                        </small>
-
-
-                        <div class="mt-3">
-
-                            <span class="badge
-                                         bg-light
-                                         text-dark
-                                         border">
-
-                                <i class="far fa-clock me-1"></i>
-
-                                <span id="arrivalTime"></span>
-
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
+            <div id="flightStatus">
 
             </div>
 
         </div>
 
 
-        <!-- ================================================= -->
-        <!-- FLIGHT INFORMATION -->
-        <!-- ================================================= -->
 
-        <div class="card main-card mb-4">
+        <!-- =================================================
+             ROUTE
+             ================================================= -->
 
-            <div class="card-header
-                        bg-white
-                        border-0
-                        pt-4
-                        px-4">
+        <h5 class="section-title">
 
-                <h5 class="section-title mb-0">
+            Flight Route
 
-                    <i class="fas fa-circle-info me-2"></i>
-
-                    Flight Information
-
-                </h5>
-
-            </div>
+        </h5>
 
 
-            <div class="card-body p-4">
-
-                <div class="row g-3">
+        <div class="row g-3 mb-4">
 
 
-                    <!-- Flight ID -->
+            <!-- SOURCE -->
 
-                    <div class="col-md-4">
+            <div class="col-md-6">
 
-                        <div class="info-card p-3">
+                <div class="info-box">
 
-                            <div class="info-label">
-                                Flight ID
-                            </div>
+                    <div class="info-label">
 
-                            <div id="flightId"
-                                 class="info-value font-monospace">
-                            </div>
-
-                        </div>
+                        Source
 
                     </div>
 
 
-                    <!-- Flight Code -->
-
-                    <div class="col-md-4">
-
-                        <div class="info-card p-3">
-
-                            <div class="info-label">
-                                Flight Code
-                            </div>
-
-                            <div id="infoFlightCode"
-                                 class="info-value">
-                            </div>
-
-                        </div>
+                    <div
+                            id="sourceAirport"
+                            class="info-value">
 
                     </div>
 
 
-                    <!-- Base Fare -->
-
-                    <div class="col-md-4">
-
-                        <div class="info-card p-3">
-
-                            <div class="info-label">
-                                Base Fare
-                            </div>
-
-                            <div id="baseFare"
-                                 class="info-value text-success">
-                            </div>
-
-                        </div>
+                    <div
+                            id="sourceName"
+                            class="text-muted mt-1">
 
                     </div>
 
 
-                    <!-- Aircraft ID -->
-
-                    <div class="col-md-4">
-
-                        <div class="info-card p-3">
-
-                            <div class="info-label">
-                                Aircraft ID
-                            </div>
-
-                            <div id="aircraftId"
-                                 class="info-value font-monospace">
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Aircraft Model -->
-
-                    <div class="col-md-4">
-
-                        <div class="info-card p-3">
-
-                            <div class="info-label">
-                                Aircraft Model
-                            </div>
-
-                            <div id="infoAircraftModel"
-                                 class="info-value">
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Capacity -->
-
-                    <div class="col-md-4">
-
-                        <div class="info-card p-3">
-
-                            <div class="info-label">
-                                Aircraft Capacity
-                            </div>
-
-                            <div id="capacity"
-                                 class="info-value">
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Total Bookings -->
-
-                    <div class="col-md-4">
-
-                        <div class="info-card p-3">
-
-                            <div class="info-label">
-                                Total Bookings
-                            </div>
-
-                            <div id="totalBookings"
-                                 class="info-value text-primary">
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Created -->
-
-                    <div class="col-md-4">
-
-                        <div class="info-card p-3">
-
-                            <div class="info-label">
-                                Created At
-                            </div>
-
-                            <div id="createdAt"
-                                 class="info-value">
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- Updated -->
-
-                    <div class="col-md-4">
-
-                        <div class="info-card p-3">
-
-                            <div class="info-label">
-                                Last Updated
-                            </div>
-
-                            <div id="updatedAt"
-                                 class="info-value">
-                            </div>
-
-                        </div>
+                    <div
+                            id="sourceCity"
+                            class="text-muted">
 
                     </div>
 
                 </div>
 
             </div>
+
+
+
+            <!-- DESTINATION -->
+
+            <div class="col-md-6">
+
+                <div class="info-box">
+
+                    <div class="info-label">
+
+                        Destination
+
+                    </div>
+
+
+                    <div
+                            id="destinationAirport"
+                            class="info-value">
+
+                    </div>
+
+
+                    <div
+                            id="destinationName"
+                            class="text-muted mt-1">
+
+                    </div>
+
+
+                    <div
+                            id="destinationCity"
+                            class="text-muted">
+
+                    </div>
+
+                </div>
+
+            </div>
+
 
         </div>
 
 
-        <!-- ================================================= -->
-        <!-- ADMIN ACTIONS -->
-        <!-- ================================================= -->
 
-        <div class="card main-card mb-4">
+        <!-- =================================================
+             DATE / TIME
+             ================================================= -->
 
-            <div class="card-header
-                        bg-white
-                        border-0
-                        pt-4
-                        px-4">
+        <h5 class="section-title">
 
-                <h5 class="section-title mb-0">
+            Schedule
 
-                    <i class="fas fa-sliders me-2"></i>
-
-                    Admin Actions
-
-                </h5>
-
-            </div>
+        </h5>
 
 
-            <div class="card-body p-4">
-
-                <div class="d-flex flex-wrap gap-2">
+        <div class="row g-3 mb-4">
 
 
-                    <!-- BOOKINGS -->
+            <div class="col-md-6">
 
-                    <button type="button"
-                            class="btn btn-primary action-btn"
-                            onclick="viewBookings()">
+                <div class="info-box">
 
-                        <i class="fas fa-users me-1"></i>
+                    <div class="info-label">
 
-                        Bookings
+                        Departure
 
-                    </button>
+                    </div>
 
 
-                    <!-- REVENUE -->
+                    <div
+                            id="departureDateTime"
+                            class="info-value">
 
-                    <button type="button"
-                            class="btn btn-outline-primary action-btn"
-                            onclick="viewRevenue()">
-
-                        <i class="fas fa-chart-line me-1"></i>
-
-                        Revenue
-
-                    </button>
-
-
-                    <!-- TICKETS -->
-
-                    <button type="button"
-                            class="btn btn-outline-primary action-btn"
-                            onclick="viewTickets()">
-
-                        <i class="fas fa-ticket me-1"></i>
-
-                        Tickets
-
-                    </button>
-
-
-                    <!-- CANCEL -->
-
-                    <button type="button"
-                            id="cancelButton"
-                            class="btn btn-outline-danger action-btn"
-                            onclick="cancelFlight()">
-
-                        <i class="fas fa-ban me-1"></i>
-
-                        Cancel Flight
-
-                    </button>
+                    </div>
 
                 </div>
 
             </div>
+
+
+            <div class="col-md-6">
+
+                <div class="info-box">
+
+                    <div class="info-label">
+
+                        Arrival
+
+                    </div>
+
+
+                    <div
+                            id="arrivalDateTime"
+                            class="info-value">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             AIRCRAFT
+             ================================================= -->
+
+        <h5 class="section-title">
+
+            Aircraft
+
+        </h5>
+
+
+        <div class="row g-3 mb-4">
+
+
+            <div class="col-md-4">
+
+                <div class="info-box">
+
+                    <div class="info-label">
+
+                        Aircraft ID
+
+                    </div>
+
+
+                    <div
+                            id="aircraftId"
+                            class="info-value">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-5">
+
+                <div class="info-box">
+
+                    <div class="info-label">
+
+                        Model
+
+                    </div>
+
+
+                    <div
+                            id="aircraftModel"
+                            class="info-value">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-md-3">
+
+                <div class="info-box">
+
+                    <div class="info-label">
+
+                        Capacity
+
+                    </div>
+
+
+                    <div
+                            id="aircraftCapacity"
+                            class="info-value">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             FARE
+             ================================================= -->
+
+        <h5 class="section-title">
+
+            Fare
+
+        </h5>
+
+
+        <div class="row g-3 mb-4">
+
+
+            <div class="col-md-4">
+
+                <div class="info-box">
+
+                    <div class="info-label">
+
+                        Base Fare
+
+                    </div>
+
+
+                    <div
+                            id="baseFare"
+                            class="info-value">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             ACTIONS
+             ================================================= -->
+
+        <h5 class="section-title">
+
+            Actions
+
+        </h5>
+
+
+        <div class="d-flex gap-3 flex-wrap">
+
+
+            <!-- REVENUE -->
+
+            <button
+                    type="button"
+                    id="revenueButton"
+                    class="action-btn btn-revenue">
+
+                Revenue
+
+            </button>
+
+
+            <!-- BOOKINGS -->
+
+            <button
+                    type="button"
+                    id="bookingButton"
+                    class="action-btn btn-booking">
+
+                Bookings
+
+            </button>
+
+
+            <!-- CANCEL -->
+
+            <button
+                    type="button"
+                    id="cancelButton"
+                    class="action-btn btn-cancel-flight">
+
+                Cancel Flight
+
+            </button>
+
 
         </div>
 
 
     </div>
 
-</div>
-
-
-<!-- ===================================================== -->
-<!-- FOOTER -->
-<!-- ===================================================== -->
-
-<div class="container text-center py-4">
-
-    <p class="text-muted small mb-0">
-
-        &copy; 2026 Airline Management System
-
-        |
-
-        <i class="fas fa-shield-alt"></i>
-
-        Administrator Portal
-
-    </p>
 
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+
+<!-- =========================================================
+     CANCEL FLIGHT MODAL
+     ========================================================= -->
+
+<div
+        class="modal fade"
+        id="cancelFlightModal"
+        tabindex="-1"
+        aria-hidden="true">
+
+
+    <div
+            class="modal-dialog modal-dialog-centered">
+
+
+        <div class="modal-content">
+
+
+            <!-- HEADER -->
+
+            <div class="modal-header">
+
+                <h5 class="modal-title">
+
+                    Cancel Flight
+
+                </h5>
+
+
+                <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+
+                </button>
+
+            </div>
+
+
+
+            <!-- BODY -->
+
+            <div class="modal-body">
+
+
+                <div class="alert alert-warning">
+
+                    Are you sure you want to cancel this flight?
+
+                </div>
+
+
+                <p class="text-muted">
+
+                    Enter your 8-character password to confirm
+                    cancellation.
+
+                </p>
+
+
+                <label
+                        for="cancelPassword"
+                        class="form-label">
+
+                    Password
+
+                </label>
+
+
+                <input
+                        type="password"
+                        id="cancelPassword"
+                        class="form-control"
+                        maxlength="8"
+                        minlength="8"
+                        placeholder="Enter 8-character password"
+                        autocomplete="off">
+
+
+                <div
+                        id="passwordError"
+                        class="text-danger mt-2">
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- FOOTER -->
+
+            <div class="modal-footer">
+
+
+                <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                    Close
+
+                </button>
+
+
+                <button
+                        type="button"
+                        id="confirmCancelButton"
+                        class="btn btn-danger">
+
+                    Confirm Cancellation
+
+                </button>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- Bootstrap JS -->
+
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
 </script>
+
 
 
 <script>
 
-/* =========================================================
-   GLOBAL VARIABLES
-   ========================================================= */
 
-const FLIGHT_ID = "${flightId}";
+    /* =========================================================
+       CONTEXT PATH
+       ========================================================= */
 
-const CONTEXT_PATH =
-    "${pageContext.request.contextPath}";
+    const contextPath =
+        "${pageContext.request.contextPath}";
 
 
-/* =========================================================
-   PAGE LOAD
-   ========================================================= */
+    /* =========================================================
+       FLIGHT ID FROM URL
+       ========================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        console.log(
-            "Opening Flight:",
-            FLIGHT_ID
-        );
-
-        if (
-            !FLIGHT_ID ||
-            FLIGHT_ID.trim() === ""
-        ) {
-
-            showError(
-                "No Flight ID was provided."
+    const pathParts =
+        window.location.pathname
+            .split("/")
+            .filter(
+                function (part) {
+                    return part.length > 0;
+                }
             );
 
+
+    /*
+     * Last part of URL is flight ID.
+     *
+     * Example:
+     *
+     * /airline/admin/flights/FLT933393
+     *
+     * flightId = FLT933393
+     */
+
+    const flightId =
+        pathParts[pathParts.length - 1];
+
+
+
+    /* =========================================================
+       API URL
+       ========================================================= */
+
+    const flightApi =
+        contextPath +
+        "/api/v1/admin/flights/" +
+        encodeURIComponent(flightId);
+
+
+
+    /* =========================================================
+       CANCEL API
+       =========================================================
+
+       Put your actual cancel endpoint here when available.
+
+       Example only:
+
+       const cancelApi =
+           contextPath +
+           "/api/v1/admin/flights/" +
+           flightId +
+           "/cancel";
+
+       ========================================================= */
+
+    const cancelApi = "";
+
+
+
+    /* =========================================================
+       GET TOKEN
+       ========================================================= */
+
+    function getToken() {
+
+        return localStorage.getItem("token");
+
+    }
+
+
+
+    /* =========================================================
+       CHECK TOKEN
+       ========================================================= */
+
+    function checkToken() {
+
+        const token =
+            getToken();
+
+
+        if (!token) {
+
+            window.location.href =
+                contextPath + "/login";
+
+            return false;
+
+        }
+
+
+        return true;
+
+    }
+
+
+
+    /* =========================================================
+       FORMAT DATE
+       ========================================================= */
+
+    function formatDateTime(
+        dateTime
+    ) {
+
+        if (!dateTime) {
+            return "-";
+        }
+
+
+        const date =
+            new Date(dateTime);
+
+
+        if (isNaN(date.getTime())) {
+
+            return dateTime;
+
+        }
+
+
+        return date.toLocaleString(
+            "en-IN",
+            {
+                day: "2-digit",
+
+                month: "short",
+
+                year: "numeric",
+
+                hour: "2-digit",
+
+                minute: "2-digit"
+            }
+        );
+
+    }
+
+
+
+    /* =========================================================
+       FORMAT MONEY
+       ========================================================= */
+
+    function formatMoney(
+        amount
+    ) {
+
+        if (
+            amount === null ||
+            amount === undefined
+        ) {
+
+            return "-";
+
+        }
+
+
+        return "₹ " +
+            Number(amount)
+                .toLocaleString("en-IN");
+
+    }
+
+
+
+    /* =========================================================
+       LOAD FLIGHT
+       ========================================================= */
+
+    async function loadFlight() {
+
+
+        if (!checkToken()) {
             return;
         }
 
-        loadFlightDetails(
-            FLIGHT_ID
-        );
 
-    }
-);
+        try {
 
 
-/* =========================================================
-   GET JWT TOKEN
-   ========================================================= */
+            const response =
+                await fetch(
+                    flightApi,
+                    {
+                        method: "GET",
 
-function getToken() {
+                        headers: {
 
-    const token =
-        localStorage.getItem("jwtToken");
+                            "Authorization":
+                                "Bearer " + getToken(),
 
-    if (!token) {
+                            "Content-Type":
+                                "application/json"
 
-        alert(
-            "Your session has expired. Please login again."
-        );
+                        }
 
-        redirectToLogin();
-
-        return null;
-    }
-
-    return token;
-}
+                    }
+                );
 
 
-/* =========================================================
-   REDIRECT TO LOGIN
-   ========================================================= */
-
-function redirectToLogin() {
-
-    localStorage.removeItem(
-        "jwtToken"
-    );
-
-    window.location.href =
-        CONTEXT_PATH +
-        "/users/login";
-}
+            const result =
+                await response
+                    .json()
+                    .catch(
+                        function () {
+                            return null;
+                        }
+                    );
 
 
-/* =========================================================
-   LOAD FLIGHT DETAILS
-   ========================================================= */
 
-function loadFlightDetails(
-    flightId
-) {
-
-    const token =
-        getToken();
-
-    if (!token) {
-        return;
-    }
-
-
-    const apiUrl =
-        CONTEXT_PATH +
-        "/api/v1/admin/flights/" +
-        encodeURIComponent(
-            flightId
-        );
-
-
-    console.log(
-        "GET:",
-        apiUrl
-    );
-
-
-    fetch(
-        apiUrl,
-        {
-
-            method: "GET",
-
-            headers: {
-
-                "Accept":
-                    "application/json",
-
-                "Authorization":
-                    "Bearer " + token
-
-            }
-
-        }
-    )
-
-    .then(
-        function (response) {
+            /* =================================================
+               SUCCESS
+               ================================================= */
 
             if (
-                response.status === 401 ||
-                response.status === 403
+                response.ok &&
+                result &&
+                result.status === "SUCCESS"
             ) {
 
-                redirectToLogin();
 
-                throw new Error(
-                    "Unauthorized"
+                displayFlight(
+                    result.responseData
                 );
+
+
+                return;
+
             }
 
 
-            if (!response.ok) {
+
+            /* =================================================
+               ERROR
+               ================================================= */
+
+            const message =
+                result &&
+                result.message
+                    ? result.message
+                    : "Unable to retrieve flight.";
+
+
+            showError(
+                message
+            );
+
+
+        } catch (error) {
+
+
+            console.error(error);
+
+
+            showError(
+                "Unable to connect to the server."
+            );
+
+        }
+
+    }
+
+
+
+    /* =========================================================
+       DISPLAY FLIGHT
+       ========================================================= */
+
+    function displayFlight(
+        flight
+    ) {
+
+
+        /* -----------------------------------------------------
+           HEADER
+           ----------------------------------------------------- */
+
+        document.getElementById(
+            "flightCode"
+        ).innerText =
+            flight.flightCode;
+
+
+        document.getElementById(
+            "flightId"
+        ).innerText =
+            "Flight ID: " +
+            flight.flightId;
+
+
+
+        /* -----------------------------------------------------
+           STATUS
+           ----------------------------------------------------- */
+
+        let statusClass =
+            "status-other";
+
+
+        if (
+            flight.status ===
+            "SCHEDULED"
+        ) {
+
+            statusClass =
+                "status-scheduled";
+
+        }
+
+
+        if (
+            flight.status ===
+            "CANCELLED"
+        ) {
+
+            statusClass =
+                "status-cancelled";
+
+        }
+
+
+        document.getElementById(
+            "flightStatus"
+        ).innerHTML = `
+
+            <span class="status-badge ${statusClass}">
+
+                ${flight.status}
+
+            </span>
+
+        `;
+
+
+
+        /* -----------------------------------------------------
+           SOURCE
+           ----------------------------------------------------- */
+
+        document.getElementById(
+            "sourceAirport"
+        ).innerText =
+            flight.source.airportCode;
+
+
+        document.getElementById(
+            "sourceName"
+        ).innerText =
+            flight.source.airportName;
+
+
+        document.getElementById(
+            "sourceCity"
+        ).innerText =
+            flight.source.city;
+
+
+
+        /* -----------------------------------------------------
+           DESTINATION
+           ----------------------------------------------------- */
+
+        document.getElementById(
+            "destinationAirport"
+        ).innerText =
+            flight.destination.airportCode;
+
+
+        document.getElementById(
+            "destinationName"
+        ).innerText =
+            flight.destination.airportName;
+
+
+        document.getElementById(
+            "destinationCity"
+        ).innerText =
+            flight.destination.city;
+
+
+
+        /* -----------------------------------------------------
+           SCHEDULE
+           ----------------------------------------------------- */
+
+        document.getElementById(
+            "departureDateTime"
+        ).innerText =
+            formatDateTime(
+                flight.departureDateTime
+            );
+
+
+        document.getElementById(
+            "arrivalDateTime"
+        ).innerText =
+            formatDateTime(
+                flight.arrivalDateTime
+            );
+
+
+
+        /* -----------------------------------------------------
+           AIRCRAFT
+           ----------------------------------------------------- */
+
+        document.getElementById(
+            "aircraftId"
+        ).innerText =
+            flight.aircraft.aircraftId;
+
+
+        document.getElementById(
+            "aircraftModel"
+        ).innerText =
+            flight.aircraft.model;
+
+
+        document.getElementById(
+            "aircraftCapacity"
+        ).innerText =
+            flight.aircraft.capacity;
+
+
+
+        /* -----------------------------------------------------
+           FARE
+           ----------------------------------------------------- */
+
+        document.getElementById(
+            "baseFare"
+        ).innerText =
+            formatMoney(
+                flight.baseFare
+            );
+
+
+
+        /* -----------------------------------------------------
+           SHOW PAGE
+           ----------------------------------------------------- */
+
+        document.getElementById(
+            "loading"
+        ).classList.add("d-none");
+
+
+        document.getElementById(
+            "flightDetails"
+        ).classList.remove("d-none");
+
+    }
+
+
+
+    /* =========================================================
+       SHOW ERROR
+       ========================================================= */
+
+    function showError(
+        message
+    ) {
+
+
+        document.getElementById(
+            "loading"
+        ).classList.add("d-none");
+
+
+        document.getElementById(
+            "flightDetails"
+        ).classList.add("d-none");
+
+
+        document.getElementById(
+            "apiMessage"
+        ).innerHTML = `
+
+            <div class="alert alert-danger">
+
+                ${message}
+
+            </div>
+
+        `;
+
+    }
+
+
+
+    /* =========================================================
+       REVENUE BUTTON
+       ========================================================= */
+
+    document.getElementById(
+        "revenueButton"
+    ).addEventListener(
+        "click",
+        function () {
+
+
+            window.location.href =
+                contextPath +
+                "/admin/flights/" +
+                encodeURIComponent(
+                    flightId
+                ) +
+                "/revenue";
+
+        }
+    );
+
+
+
+    /* =========================================================
+       BOOKINGS BUTTON
+       ========================================================= */
+
+    document.getElementById(
+        "bookingButton"
+    ).addEventListener(
+        "click",
+        function () {
+
+
+            window.location.href =
+                contextPath +
+                "/admin/flights/" +
+                encodeURIComponent(
+                    flightId
+                ) +
+                "/bookings";
+
+        }
+    );
+
+
+
+    /* =========================================================
+       OPEN CANCEL MODAL
+       ========================================================= */
+
+    const cancelModal =
+        new bootstrap.Modal(
+            document.getElementById(
+                "cancelFlightModal"
+            )
+        );
+
+
+    document.getElementById(
+        "cancelButton"
+    ).addEventListener(
+        "click",
+        function () {
+
+
+            document.getElementById(
+                "cancelPassword"
+            ).value = "";
+
+
+            document.getElementById(
+                "passwordError"
+            ).innerText = "";
+
+
+            cancelModal.show();
+
+        }
+    );
+
+
+
+    /* =========================================================
+       PASSWORD VALIDATION
+       ========================================================= */
+
+    document.getElementById(
+        "confirmCancelButton"
+    ).addEventListener(
+        "click",
+        async function () {
+
+
+            const password =
+                document.getElementById(
+                    "cancelPassword"
+                ).value;
+
+
+            const passwordError =
+                document.getElementById(
+                    "passwordError"
+                );
+
+
+            /* -------------------------------------------------
+               REQUIRED
+               ------------------------------------------------- */
+
+            if (!password) {
+
+                passwordError.innerText =
+                    "Password is required.";
+
+                return;
+
+            }
+
+
+            /* -------------------------------------------------
+               EXACTLY 8 CHARACTERS
+               ------------------------------------------------- */
+
+            if (password.length !== 8) {
+
+                passwordError.innerText =
+                    "Password must be exactly 8 characters.";
+
+                return;
+
+            }
+
+
+            /* -------------------------------------------------
+               CANCEL API NOT PROVIDED YET
+               ------------------------------------------------- */
+
+            if (!cancelApi) {
+
+                passwordError.innerText =
+                    "Cancel API is not configured yet.";
+
+                return;
+
+            }
+
+
+            try {
+
+
+                const response =
+                    await fetch(
+                        cancelApi,
+                        {
+                            method: "POST",
+
+                            headers: {
+
+                                "Authorization":
+                                    "Bearer " + getToken(),
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body: JSON.stringify({
+
+                                password: password
+
+                            })
+
+                        }
+                    );
+
+
+                const result =
+                    await response
+                        .json()
+                        .catch(
+                            function () {
+                                return null;
+                            }
+                        );
+
+
+
+                /* ------------------------------------------------
+                   SUCCESS
+                   ------------------------------------------------ */
 
                 if (
-                    response.status === 404
+                    response.ok &&
+                    result &&
+                    (
+                        result.status ===
+                        "SUCCESS" ||
+                        response.status === 200 ||
+                        response.status === 201
+                    )
                 ) {
 
-                    throw new Error(
-                        "Flight not found."
-                    );
+
+                    cancelModal.hide();
+
+
+                    document.getElementById(
+                        "apiMessage"
+                    ).innerHTML = `
+
+                        <div class="alert alert-success">
+
+                            ${result.message || "Flight cancelled successfully."}
+
+                        </div>
+
+                    `;
+
+
+                    /*
+                     * Reload flight details so that
+                     * status becomes CANCELLED.
+                     */
+
+                    loadFlight();
+
+
+                    return;
+
                 }
 
 
-                throw new Error(
-                    "Unable to load flight details. HTTP Status: "
-                    + response.status
-                );
-            }
+
+                /* ------------------------------------------------
+                   API ERROR
+                   ------------------------------------------------ */
+
+                passwordError.innerText =
+                    result &&
+                    result.message
+                        ? result.message
+                        : "Unable to cancel flight.";
 
 
-            return response.json();
+            } catch (error) {
 
-        }
-    )
 
-    .then(
-        function (flight) {
+                console.error(error);
 
-            console.log(
-                "Flight Response:",
-                flight
-            );
 
-            renderFlight(
-                flight
-            );
+                passwordError.innerText =
+                    "Unable to connect to the server.";
 
-        }
-    )
-
-    .catch(
-        function (error) {
-
-            console.error(
-                "Flight Error:",
-                error
-            );
-
-            if (
-                error.message !==
-                "Unauthorized"
-            ) {
-
-                showError(
-                    error.message ||
-                    "Failed to load flight details."
-                );
             }
 
         }
     );
 
-}
 
 
-/* =========================================================
-   RENDER FLIGHT
-   ========================================================= */
+    /* =========================================================
+       LOGOUT
+       ========================================================= */
 
-function renderFlight(
-    flight
-) {
+    document.getElementById(
+        "logoutButton"
+    ).addEventListener(
+        "click",
+        function () {
 
-    /* FLIGHT ID */
 
-    document
-        .getElementById("flightId")
-        .innerText =
-        flight.flightId || "-";
-
-
-    /* FLIGHT CODE */
-
-    document
-        .getElementById("flightCode")
-        .innerText =
-        flight.flightCode || "-";
-
-
-    document
-        .getElementById("infoFlightCode")
-        .innerText =
-        flight.flightCode || "-";
-
-
-    /* ROUTE */
-
-    document
-        .getElementById("flightRouteCode")
-        .innerText =
-        (flight.source?.airportCode || "-")
-        +
-        " → "
-        +
-        (flight.destination?.airportCode || "-");
-
-
-    /* STATUS */
-
-    const statusElement =
-        document.getElementById(
-            "flightStatus"
-        );
-
-
-    statusElement.innerText =
-        flight.status || "-";
-
-
-    statusElement.className =
-        "status-badge " +
-        getStatusClass(
-            flight.status
-        );
-
-
-    /* SOURCE */
-
-    if (flight.source) {
-
-        document
-            .getElementById("sourceCode")
-            .innerText =
-            flight.source.airportCode || "-";
-
-
-        document
-            .getElementById("sourceCity")
-            .innerText =
-            flight.source.city || "-";
-
-
-        document
-            .getElementById("sourceAirport")
-            .innerText =
-            flight.source.airportName || "-";
-
-    }
-
-
-    /* DESTINATION */
-
-    if (flight.destination) {
-
-        document
-            .getElementById("destinationCode")
-            .innerText =
-            flight.destination.airportCode || "-";
-
-
-        document
-            .getElementById("destinationCity")
-            .innerText =
-            flight.destination.city || "-";
-
-
-        document
-            .getElementById("destinationAirport")
-            .innerText =
-            flight.destination.airportName || "-";
-
-    }
-
-
-    /* DEPARTURE */
-
-    document
-        .getElementById("departureTime")
-        .innerText =
-        formatDateTime(
-            flight.departureDateTime
-        );
-
-
-    /* ARRIVAL */
-
-    document
-        .getElementById("arrivalTime")
-        .innerText =
-        formatDateTime(
-            flight.arrivalDateTime
-        );
-
-
-    /* AIRCRAFT */
-
-    if (flight.aircraft) {
-
-        document
-            .getElementById("aircraftId")
-            .innerText =
-            flight.aircraft.aircraftId || "-";
-
-
-        document
-            .getElementById("aircraftModel")
-            .innerText =
-            flight.aircraft.model || "-";
-
-
-        document
-            .getElementById("infoAircraftModel")
-            .innerText =
-            flight.aircraft.model || "-";
-
-
-        document
-            .getElementById("capacity")
-            .innerText =
-            flight.aircraft.capacity || "-";
-
-    }
-
-
-    /* BASE FARE */
-
-    document
-        .getElementById("baseFare")
-        .innerText =
-        "₹" +
-        Number(
-            flight.baseFare || 0
-        ).toLocaleString(
-            "en-IN"
-        );
-
-
-    /* TOTAL BOOKINGS */
-
-    document
-        .getElementById("totalBookings")
-        .innerText =
-        flight.totalBookings || 0;
-
-
-    /* CREATED */
-
-    document
-        .getElementById("createdAt")
-        .innerText =
-        formatDateTime(
-            flight.createdAt
-        );
-
-
-    /* UPDATED */
-
-    document
-        .getElementById("updatedAt")
-        .innerText =
-        formatDateTime(
-            flight.updatedAt
-        );
-
-
-    /* CANCEL BUTTON */
-
-    const cancelButton =
-        document.getElementById(
-            "cancelButton"
-        );
-
-
-    if (
-        flight.status === "CANCELLED" ||
-        flight.deleted === true
-    ) {
-
-        cancelButton.disabled = true;
-
-        cancelButton.innerHTML =
-            '<i class="fas fa-ban me-1"></i>' +
-            ' Flight Cancelled';
-
-    } else {
-
-        cancelButton.disabled = false;
-
-        cancelButton.innerHTML =
-            '<i class="fas fa-ban me-1"></i>' +
-            ' Cancel Flight';
-
-    }
-
-
-    /* HIDE LOADING */
-
-    document
-        .getElementById("loading")
-        .classList
-        .add("d-none");
-
-
-    /* SHOW CONTENT */
-
-    document
-        .getElementById("flightContent")
-        .classList
-        .remove("d-none");
-
-}
-
-
-/* =========================================================
-   STATUS CLASS
-   ========================================================= */
-
-function getStatusClass(
-    status
-) {
-
-    switch (status) {
-
-        case "SCHEDULED":
-
-            return "bg-success";
-
-        case "DELAYED":
-
-            return "bg-warning text-dark";
-
-        case "CANCELLED":
-
-            return "bg-danger";
-
-        case "COMPLETED":
-
-            return "bg-primary";
-
-        case "CHECK_IN_STARTED":
-
-            return "bg-info text-dark";
-
-        default:
-
-            return "bg-secondary";
-    }
-
-}
-
-
-/* =========================================================
-   FORMAT DATE TIME
-   ========================================================= */
-
-function formatDateTime(
-    value
-) {
-
-    if (!value) {
-
-        return "-";
-    }
-
-
-    const date =
-        new Date(value);
-
-
-    if (
-        isNaN(
-            date.getTime()
-        )
-    ) {
-
-        return value;
-    }
-
-
-    return date.toLocaleDateString(
-        "en-IN",
-        {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        }
-    )
-    +
-    " "
-    +
-    date.toLocaleTimeString(
-        "en-IN",
-        {
-            hour: "2-digit",
-            minute: "2-digit"
-        }
-    );
-
-}
-
-
-/* =========================================================
-   VIEW BOOKINGS
-   ========================================================= */
-
-function viewBookings() {
-
-    window.location.href =
-        CONTEXT_PATH +
-        "/admin/flights/" +
-        encodeURIComponent(
-            FLIGHT_ID
-        ) +
-        "/bookings";
-
-}
-
-
-/* =========================================================
-   VIEW REVENUE
-   ========================================================= */
-
-function viewRevenue() {
-
-    window.location.href =
-        CONTEXT_PATH +
-        "/admin/flights/" +
-        encodeURIComponent(
-            FLIGHT_ID
-        ) +
-        "/revenue";
-
-}
-
-
-/* =========================================================
-   VIEW TICKETS
-   ========================================================= */
-
-function viewTickets() {
-
-    window.location.href =
-        CONTEXT_PATH +
-        "/admin/flights/" +
-        encodeURIComponent(
-            FLIGHT_ID
-        ) +
-        "/tickets";
-
-}
-
-
-/* =========================================================
-   CANCEL FLIGHT
-   =========================================================
-
-   IMPORTANT:
-
-   Controller:
-
-   @PostMapping("/flights/{flightId}/cancel")
-
-   Therefore JavaScript MUST use:
-
-   method: "POST"
-
-   ========================================================= */
-
-function cancelFlight() {
-
-
-    /*
-     * First confirmation
-     */
-
-    const firstConfirm =
-        confirm(
-            "Are you sure you want to cancel Flight "
-            + FLIGHT_ID
-            + "?"
-        );
-
-
-    if (!firstConfirm) {
-
-        return;
-    }
-
-
-    /*
-     * Second confirmation
-     */
-
-    const secondConfirm =
-        confirm(
-            "WARNING!\n\n"
-            +
-            "Cancelling this flight will cancel "
-            +
-            "the associated bookings and process "
-            +
-            "the refunds.\n\n"
-            +
-            "Do you want to continue?"
-        );
-
-
-    if (!secondConfirm) {
-
-        return;
-    }
-
-
-    /*
-     * Get JWT
-     */
-
-    const token =
-        getToken();
-
-
-    if (!token) {
-
-        return;
-    }
-
-
-    /*
-     * Button
-     */
-
-    const cancelButton =
-        document.getElementById(
-            "cancelButton"
-        );
-
-
-    cancelButton.disabled = true;
-
-
-    cancelButton.innerHTML =
-        '<span class="spinner-border spinner-border-sm me-2"></span>' +
-        'Cancelling...';
-
-
-    /*
-     * API URL
-     */
-
-    const apiUrl =
-        CONTEXT_PATH +
-        "/api/v1/admin/flights/" +
-        encodeURIComponent(
-            FLIGHT_ID
-        ) +
-        "/cancel";
-
-
-    console.log(
-        "POST:",
-        apiUrl
-    );
-
-
-    /*
-     * IMPORTANT:
-     * POST because controller has @PostMapping
-     */
-
-    fetch(
-        apiUrl,
-        {
-
-            method: "POST",
-
-            headers: {
-
-                "Accept":
-                    "application/json",
-
-                "Authorization":
-                    "Bearer " + token
-
-            }
-
-        }
-    )
-
-
-    .then(
-        async function (response) {
-
-            console.log(
-                "Cancel HTTP Status:",
-                response.status
+            localStorage.removeItem(
+                "token"
             );
 
 
-            /*
-             * Unauthorized
-             */
-
-            if (
-                response.status === 401 ||
-                response.status === 403
-            ) {
-
-                redirectToLogin();
-
-                throw new Error(
-                    "Session expired. Please login again."
-                );
-            }
-
-
-            /*
-             * Error
-             */
-
-            if (!response.ok) {
-
-                const text =
-                    await response.text();
-
-
-                throw new Error(
-                    text ||
-                    "Unable to cancel flight."
-                );
-            }
-
-
-            /*
-             * Controller currently returns String.
-             *
-             * Therefore read response as text.
-             */
-
-            return response.text();
-
-        }
-    )
-
-
-    .then(
-        function (result) {
-
-            console.log(
-                "Cancel Response:",
-                result
+            localStorage.removeItem(
+                "role"
             );
 
 
-            /*
-             * Show success
-             */
-
-            showSuccess(
-                result ||
-                "Flight cancelled successfully. "
-                +
-                "All bookings have been cancelled "
-                +
-                "and refunds have been processed."
-            );
-
-
-            /*
-             * Change button immediately
-             */
-
-            cancelButton.disabled = true;
-
-
-            cancelButton.innerHTML =
-                '<i class="fas fa-check me-1"></i>' +
-                ' Flight Cancelled';
-
-
-            /*
-             * Reload flight details after
-             * a short delay.
-             */
-
-            setTimeout(
-                function () {
-
-                    loadFlightDetails(
-                        FLIGHT_ID
-                    );
-
-                },
-                1000
-            );
-
-        }
-    )
-
-
-    .catch(
-        function (error) {
-
-            console.error(
-                "Cancel Flight Error:",
-                error
-            );
-
-
-            /*
-             * Restore button
-             */
-
-            cancelButton.disabled = false;
-
-
-            cancelButton.innerHTML =
-                '<i class="fas fa-ban me-1"></i>' +
-                ' Cancel Flight';
-
-
-            /*
-             * Show error
-             */
-
-            showError(
-                error.message ||
-                "Failed to cancel flight."
-            );
+            window.location.href =
+                contextPath + "/login";
 
         }
     );
 
-}
 
 
-/* =========================================================
-   SHOW ERROR
-   ========================================================= */
+    /* =========================================================
+       LOAD PAGE
+       ========================================================= */
 
-function showError(
-    message
-) {
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
 
-    document
-        .getElementById("loading")
-        .classList
-        .add("d-none");
+            loadFlight();
 
+        }
+    );
 
-    const errorBox =
-        document.getElementById(
-            "errorMessage"
-        );
-
-
-    document
-        .getElementById("errorText")
-        .innerText =
-        message;
-
-
-    errorBox
-        .classList
-        .remove("d-none");
-
-
-    /*
-     * Hide success if showing
-     */
-
-    document
-        .getElementById("successMessage")
-        .classList
-        .add("d-none");
-
-}
-
-
-/* =========================================================
-   SHOW SUCCESS
-   ========================================================= */
-
-function showSuccess(
-    message
-) {
-
-    const successBox =
-        document.getElementById(
-            "successMessage"
-        );
-
-
-    document
-        .getElementById("successText")
-        .innerText =
-        message;
-
-
-    successBox
-        .classList
-        .remove("d-none");
-
-
-    /*
-     * Hide error if showing
-     */
-
-    document
-        .getElementById("errorMessage")
-        .classList
-        .add("d-none");
-
-}
 
 </script>
 

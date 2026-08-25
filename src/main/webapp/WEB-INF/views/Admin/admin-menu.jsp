@@ -10,10 +10,10 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
-    <title>ABC Airline - User Menu</title>
+    <title>ABC Airline - Admin Menu</title>
 
 
-    <!-- Bootstrap -->
+    <!-- Bootstrap 5 -->
 
     <link
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -53,6 +53,7 @@
 
         .menu-container {
             max-width: 1000px;
+
             margin: 60px auto;
         }
 
@@ -61,15 +62,20 @@
 
         .menu-title {
             color: #071b3a;
+
             font-weight: bold;
+
             text-align: center;
+
             margin-bottom: 10px;
         }
 
 
         .menu-subtitle {
             text-align: center;
+
             color: #6c757d;
+
             margin-bottom: 40px;
         }
 
@@ -96,6 +102,7 @@
 
 
         .menu-card:hover {
+
             transform: translateY(-5px);
 
             box-shadow:
@@ -116,6 +123,7 @@
         /* ================= CARD TITLE ================= */
 
         .menu-card h4 {
+
             color: #071b3a;
 
             font-weight: bold;
@@ -127,6 +135,7 @@
         /* ================= DESCRIPTION ================= */
 
         .menu-card p {
+
             color: #6c757d;
 
             min-height: 45px;
@@ -136,6 +145,7 @@
         /* ================= BUTTON ================= */
 
         .menu-btn {
+
             background-color: #071b3a;
 
             color: white;
@@ -159,6 +169,7 @@
 
 
         .menu-btn:hover {
+
             background-color: #0d2c5c;
 
             color: white;
@@ -168,6 +179,7 @@
         /* ================= LOGOUT ================= */
 
         .logout-btn {
+
             border: 1px solid white;
 
             color: white;
@@ -181,6 +193,7 @@
 
 
         .logout-btn:hover {
+
             background-color: white;
 
             color: #071b3a;
@@ -202,8 +215,10 @@
 
     <div class="container">
 
-        <a class="navbar-brand"
-           href="${pageContext.request.contextPath}/user/menu">
+
+        <a
+                class="navbar-brand"
+                href="${pageContext.request.contextPath}/admin/menu">
 
             ✈ ABC Airline
 
@@ -214,7 +229,7 @@
 
             <span class="navbar-text">
 
-                User
+                Admin
 
             </span>
 
@@ -237,7 +252,7 @@
 
 
 <!-- =========================================================
-     USER MENU
+     ADMIN MENU
      ========================================================= -->
 
 <div class="container menu-container">
@@ -245,14 +260,14 @@
 
     <h2 class="menu-title">
 
-        Welcome to ABC Airline
+        ABC Airline Administration
 
     </h2>
 
 
     <p class="menu-subtitle">
 
-        What would you like to do?
+        Manage your airline system
 
     </p>
 
@@ -262,35 +277,41 @@
 
 
         <!-- =================================================
-             SEARCH FLIGHT
+             AIRPORT & AIRCRAFT
              ================================================= -->
 
         <div class="col-md-6 col-lg-3">
 
             <div class="menu-card">
 
+
                 <div class="menu-icon">
-                    ✈️
+                    🏢
                 </div>
 
 
                 <h4>
-                    Search Flights
+
+                    Airport & Aircraft
+
                 </h4>
 
 
                 <p>
-                    Find available flights and book your ticket.
+
+                    Manage airports and aircraft information.
+
                 </p>
 
 
                 <a
-                        href="${pageContext.request.contextPath}/user/flight-search"
+                        href="${pageContext.request.contextPath}/admin/airport-aircraft"
                         class="menu-btn">
 
-                    Search Flights
+                    Manage
 
                 </a>
+
 
             </div>
 
@@ -299,35 +320,84 @@
 
 
         <!-- =================================================
-             MY BOOKINGS
+             FLIGHTS
              ================================================= -->
 
         <div class="col-md-6 col-lg-3">
 
             <div class="menu-card">
 
+
                 <div class="menu-icon">
-                    🎫
+                    ✈️
                 </div>
 
 
                 <h4>
-                    My Bookings
+
+                    Flights
+
                 </h4>
 
 
                 <p>
-                    View and manage your flight bookings.
+
+                    Create and manage airline flights.
+
                 </p>
 
 
                 <a
-                        href="${pageContext.request.contextPath}/user/my-booking"
+                        href="${pageContext.request.contextPath}/admin/flights"
                         class="menu-btn">
 
-                    My Bookings
+                    Manage Flights
 
                 </a>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             REVENUE
+             ================================================= -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="menu-card">
+
+
+                <div class="menu-icon">
+                    📊
+                </div>
+
+
+                <h4>
+
+                    Revenue
+
+                </h4>
+
+
+                <p>
+
+                    View airline revenue and financial reports.
+
+                </p>
+
+
+                <a
+                        href="${pageContext.request.contextPath}/admin/revenue"
+                        class="menu-btn">
+
+                    View Revenue
+
+                </a>
+
 
             </div>
 
@@ -343,65 +413,34 @@
 
             <div class="menu-card">
 
+
                 <div class="menu-icon">
                     💰
                 </div>
 
 
                 <h4>
+
                     Wallet
+
                 </h4>
 
 
                 <p>
-                    Check your balance and manage your wallet.
+
+                    Manage the admin wallet and transactions.
+
                 </p>
 
 
                 <a
-                        href="${pageContext.request.contextPath}/user/wallet"
+                        href="${pageContext.request.contextPath}/admin/wallet"
                         class="menu-btn">
 
                     Open Wallet
 
                 </a>
 
-            </div>
-
-        </div>
-
-
-
-        <!-- =================================================
-             PROFILE
-             ================================================= -->
-
-        <div class="col-md-6 col-lg-3">
-
-            <div class="menu-card">
-
-                <div class="menu-icon">
-                    👤
-                </div>
-
-
-                <h4>
-                    Profile
-                </h4>
-
-
-                <p>
-                    View and manage your account information.
-                </p>
-
-
-                <a
-                        href="${pageContext.request.contextPath}/user/profile"
-                        class="menu-btn">
-
-                    My Profile
-
-                </a>
 
             </div>
 
@@ -438,16 +477,21 @@
 
 
                 /*
-                 * Remove authentication information.
+                 * Remove JWT token.
                  */
 
                 localStorage.removeItem("token");
+
+
+                /*
+                 * Remove role.
+                 */
 
                 localStorage.removeItem("role");
 
 
                 /*
-                 * Go back to login.
+                 * Redirect to login.
                  */
 
                 window.location.href =

@@ -1,6 +1,7 @@
 package com.crimsonlogic.arilinemanangmentsystem.service.impl;
 
 
+import com.crimsonlogic.arilinemanangmentsystem.dto.PassengerDTO;
 import com.crimsonlogic.arilinemanangmentsystem.exception.CustomException;
 import com.crimsonlogic.arilinemanangmentsystem.dao.PassengerMapper;
 import com.crimsonlogic.arilinemanangmentsystem.exception.DBException;
@@ -116,5 +117,46 @@ public class PassengerServiceImpl implements PassengerService {
         if (rows <= 0) {
             throw new DBException( "Failed to cancel passenger" );
         }
+    }
+    @Override
+    public PassengerDTO getPassengerByIdDTO(String passengerId) {
+
+        Passenger passenger = getPassengerById(passengerId);
+
+        return convertToDTO(passenger);
+    }
+
+    @Override
+    public List<PassengerDTO> getPassengersByBookingIdDTO(String bookingId) {
+
+        List<Passenger> passengers = getPassengersByBookingId(bookingId);
+
+        return passengers.stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    private PassengerDTO convertToDTO(Passenger passenger) {
+
+        return new PassengerDTO(
+                passenger.getPassengerId(),
+
+                passenger.getUser() != null
+                        ? passenger.getUser().getId()
+                        : null,
+
+                passenger.getFirstName(),
+                passenger.getLastName(),
+                passenger.getDateOfBirth(),
+                passenger.getGender(),
+                passenger.getEmail(),
+                passenger.getPhoneNumber(),
+
+                passenger.getBooking() != null
+                        ? passenger.getBooking().getBookingId()
+                        : null,
+
+                passenger.isCancelled()
+        );
     }
 }

@@ -1,333 +1,457 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java"
+         contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
 <html>
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
 
-    <title>Booking Details - Airline Management System</title>
+    <title>Booking Details - ABC Airline</title>
 
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
 
-    <!-- FontAwesome -->
+    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
           rel="stylesheet">
 
+    <style>
+
+        :root {
+            --navy: #071a3d;
+            --navy-light: #0d2a5c;
+        }
+
+        body {
+            background: #f4f6f9;
+            color: #212529;
+        }
+
+        .navbar-custom {
+            background: var(--navy);
+        }
+
+        .navbar-brand {
+            color: white !important;
+            font-weight: 700;
+        }
+
+        .page-title {
+            color: var(--navy);
+            font-weight: 700;
+        }
+
+        .card {
+            border: none;
+            border-radius: 12px;
+        }
+
+        .section-title {
+            color: var(--navy);
+            font-weight: 700;
+        }
+
+        .btn-navy {
+            background: var(--navy);
+            color: white;
+            border: none;
+        }
+
+        .btn-navy:hover {
+            background: var(--navy-light);
+            color: white;
+        }
+
+        .flight-line {
+            border-top: 2px dashed #c7c7c7;
+        }
+
+        .airport-code {
+            color: var(--navy);
+            font-weight: 800;
+        }
+
+        .info-label {
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .info-value {
+            font-weight: 600;
+        }
+
+        .table thead th {
+            background: #eef1f5;
+            color: var(--navy);
+        }
+
+        .password-input {
+            letter-spacing: 4px;
+            font-weight: 600;
+        }
+
+    </style>
+
 </head>
 
-<body class="bg-light">
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar navbar-custom">
+
+    <div class="container">
+
+        <span class="navbar-brand">
+            <i class="fa-solid fa-plane-departure me-2"></i>
+            ABC Airline
+        </span>
+
+    </div>
+
+</nav>
+
 
 <div class="container py-5">
 
-    <div class="row justify-content-center">
+    <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <div class="col-12 col-lg-10">
+        <div>
 
-            <!-- Header -->
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="page-title mb-1">
+                Booking Details
+            </h2>
 
-                <h2 class="fw-bold mb-0">
-                    Booking Details
-                </h2>
+            <p class="text-muted mb-0">
+                View booking and passenger information
+            </p>
 
-                <a href="${pageContext.request.contextPath}/bookings/my-bookings"
-                   class="btn btn-outline-secondary">
-
-                    <i class="fa-solid fa-arrow-left me-1"></i>
-                    Back to My Bookings
-
-                </a>
-
-            </div>
+        </div>
 
 
-            <!-- Loader -->
-            <div id="loader"
-                 class="text-center py-5">
+        <button type="button"
+                id="backButton"
+                class="btn btn-outline-secondary">
 
-                <div class="spinner-border text-primary"
-                     style="width: 3rem; height: 3rem;"
-                     role="status">
+            <i class="fa-solid fa-arrow-left me-1"></i>
+            Back
 
-                    <span class="visually-hidden">
-                        Loading...
-                    </span>
+        </button>
 
-                </div>
-
-                <p class="mt-3 text-muted">
-                    Fetching booking information...
-                </p>
-
-            </div>
+    </div>
 
 
-            <!-- Error Message -->
-            <div id="errorMessage"
-                 class="alert alert-danger d-none shadow-sm"
-                 role="alert">
-            </div>
+    <!-- =====================================================
+         LOADER
+    ===================================================== -->
+
+    <div id="loader"
+         class="text-center py-5">
+
+        <div class="spinner-border"
+             style="color:#071a3d;width:3rem;height:3rem;"
+             role="status">
+
+            <span class="visually-hidden">
+                Loading...
+            </span>
+
+        </div>
+
+        <p class="text-muted mt-3">
+            Loading booking details...
+        </p>
+
+    </div>
 
 
-            <!-- Success Message -->
-            <div id="successMessage"
-                 class="alert alert-success d-none shadow-sm"
-                 role="alert">
-            </div>
+    <!-- =====================================================
+         ERROR
+    ===================================================== -->
+
+    <div id="errorMessage"
+         class="alert alert-danger d-none">
+
+    </div>
 
 
-            <!-- Booking Container -->
-            <div id="bookingContainer"
-                 class="d-none">
+    <!-- =====================================================
+         SUCCESS
+    ===================================================== -->
+
+    <div id="successMessage"
+         class="alert alert-success d-none">
+
+    </div>
 
 
-                <!-- Booking Summary -->
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
+    <!-- =====================================================
+         BOOKING CONTENT
+    ===================================================== -->
 
-                    <div class="card-body p-4">
-
-                        <div class="row align-items-center mb-3">
-
-                            <div class="col-md-6 mb-3 mb-md-0">
-
-                                <span class="text-muted small text-uppercase fw-bold">
-                                    Booking Reference
-                                </span>
-
-                                <h3 id="bookingIdText"
-                                    class="fw-bold text-primary mb-0">
-                                </h3>
-
-                            </div>
+    <div id="bookingContainer"
+         class="d-none">
 
 
-                            <div class="col-md-6 text-md-end">
+        <!-- =================================================
+             BOOKING SUMMARY
+        ================================================= -->
 
-                                <!-- Booking Status -->
-                                <span id="bookingStatusBadge"
-                                      class="badge fs-6 px-3 py-2 rounded-pill me-2">
-                                </span>
+        <div class="card shadow-sm mb-4">
 
+            <div class="card-body p-4">
 
-                                <!-- Global Actions -->
-                                <span id="globalActionContainer">
-                                </span>
+                <div class="row align-items-center">
 
-                            </div>
+                    <div class="col-md-6">
 
+                        <div class="info-label">
+                            BOOKING REFERENCE
                         </div>
 
+                        <h3 id="bookingIdText"
+                            class="airport-code mb-0">
+                        </h3>
 
-                        <hr class="my-3">
-
-
-                        <div class="row g-3">
-
-                            <div class="col-6 col-md-3">
-
-                                <span class="text-muted small d-block">
-                                    Seat Class
-                                </span>
-
-                                <strong id="seatClassText"
-                                        class="text-dark">
-                                </strong>
-
-                            </div>
+                    </div>
 
 
-                            <div class="col-6 col-md-3">
+                    <div class="col-md-6 text-md-end mt-3 mt-md-0">
 
-                                <span class="text-muted small d-block">
-                                    Total Fare
-                                </span>
+                        <span id="bookingStatusBadge"
+                              class="badge fs-6 px-3 py-2">
+                        </span>
 
-                                <strong id="amountText"
-                                        class="text-dark">
-                                </strong>
-
-                            </div>
-
-
-                            <div class="col-6 col-md-3">
-
-                                <span class="text-muted small d-block">
-                                    Booking Date
-                                </span>
-
-                                <strong id="bookingDateText"
-                                        class="text-dark">
-                                </strong>
-
-                            </div>
-
-
-                            <div class="col-6 col-md-3">
-
-                                <span class="text-muted small d-block">
-                                    Booked By
-                                </span>
-
-                                <strong id="bookedByText"
-                                        class="text-dark">
-                                </strong>
-
-                            </div>
-
-                        </div>
+                        <span id="globalActionContainer"
+                              class="ms-2">
+                        </span>
 
                     </div>
 
                 </div>
 
 
-                <!-- Flight Details -->
-                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <hr>
 
-                    <div class="card-header bg-white border-0 pt-4 px-4">
 
-                        <h5 class="fw-bold mb-0">
+                <div class="row g-4">
 
-                            <i class="fa-solid fa-plane text-primary me-2"></i>
-                            Flight Itinerary
+                    <div class="col-md-3">
 
+                        <div class="info-label">
+                            SEAT CLASS
+                        </div>
+
+                        <div id="seatClassText"
+                             class="info-value">
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-3">
+
+                        <div class="info-label">
+                            TOTAL FARE
+                        </div>
+
+                        <div id="amountText"
+                             class="info-value">
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-3">
+
+                        <div class="info-label">
+                            BOOKING DATE
+                        </div>
+
+                        <div id="bookingDateText"
+                             class="info-value">
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-3">
+
+                        <div class="info-label">
+                            USER ID
+                        </div>
+
+                        <div id="bookedByText"
+                             class="info-value">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             FLIGHT DETAILS
+        ================================================= -->
+
+        <div class="card shadow-sm mb-4">
+
+            <div class="card-body p-4">
+
+                <h5 class="section-title mb-4">
+
+                    <i class="fa-solid fa-plane me-2"></i>
+                    Flight Itinerary
+
+                </h5>
+
+
+                <div class="row align-items-center">
+
+
+                    <!-- SOURCE -->
+
+                    <div class="col-md-4 text-center text-md-start">
+
+                        <h1 id="srcAirportCode"
+                            class="airport-code mb-1">
+                        </h1>
+
+                        <h5 id="srcCity"
+                            class="fw-semibold">
                         </h5>
 
+                        <small id="srcAirportName"
+                               class="text-muted d-block">
+                        </small>
+
+                        <span id="departureTime"
+                              class="badge bg-light text-dark border mt-2">
+                        </span>
+
                     </div>
 
 
-                    <div class="card-body p-4">
+                    <!-- MIDDLE -->
 
-                        <div class="row align-items-center text-center text-md-start">
+                    <div class="col-md-4 text-center my-4 my-md-0">
 
-
-                            <!-- Source -->
-                            <div class="col-md-4 mb-3 mb-md-0">
-
-                                <h2 id="srcAirportCode"
-                                    class="fw-bold mb-0 text-dark">
-                                </h2>
-
-                                <div id="srcCity"
-                                     class="fw-semibold text-secondary">
-                                </div>
-
-                                <small id="srcAirportName"
-                                       class="text-muted d-block text-truncate">
-                                </small>
-
-                                <div id="departureTime"
-                                     class="badge bg-light text-dark border mt-2">
-                                </div>
-
-                            </div>
+                        <div id="flightCodeBadge"
+                             class="fw-bold text-secondary mb-2">
+                        </div>
 
 
-                            <!-- Flight -->
-                            <div class="col-md-4 my-3 my-md-0 text-center">
+                        <div class="d-flex align-items-center">
 
-                                <div id="flightCodeBadge"
-                                     class="text-muted small mb-1">
-                                </div>
+                            <hr class="flight-line w-100">
 
-                                <div class="d-flex align-items-center justify-content-center">
+                            <i class="fa-solid fa-plane mx-3"
+                               style="color:#071a3d;">
+                            </i>
 
-                                    <hr class="w-100 me-2"
-                                        style="border-top: 2px dashed #ccc;">
-
-                                    <i class="fa-solid fa-plane text-primary fa-lg"></i>
-
-                                    <hr class="w-100 ms-2"
-                                        style="border-top: 2px dashed #ccc;">
-
-                                </div>
-
-                                <small id="aircraftModel"
-                                       class="text-muted d-block mt-1">
-                                </small>
-
-                            </div>
-
-
-                            <!-- Destination -->
-                            <div class="col-md-4 text-center text-md-end">
-
-                                <h2 id="destAirportCode"
-                                    class="fw-bold mb-0 text-dark">
-                                </h2>
-
-                                <div id="destCity"
-                                     class="fw-semibold text-secondary">
-                                </div>
-
-                                <small id="destAirportName"
-                                       class="text-muted d-block text-truncate">
-                                </small>
-
-                                <div id="arrivalTime"
-                                     class="badge bg-light text-dark border mt-2">
-                                </div>
-
-                            </div>
+                            <hr class="flight-line w-100">
 
                         </div>
+
+
+                        <small id="aircraftModel"
+                               class="text-muted">
+                        </small>
+
+                    </div>
+
+
+                    <!-- DESTINATION -->
+
+                    <div class="col-md-4 text-center text-md-end">
+
+                        <h1 id="destAirportCode"
+                            class="airport-code mb-1">
+                        </h1>
+
+                        <h5 id="destCity"
+                            class="fw-semibold">
+                        </h5>
+
+                        <small id="destAirportName"
+                               class="text-muted d-block">
+                        </small>
+
+                        <span id="arrivalTime"
+                              class="badge bg-light text-dark border mt-2">
+                        </span>
 
                     </div>
 
                 </div>
 
+            </div>
 
-                <!-- Passenger Details -->
-                <div class="card border-0 shadow-sm rounded-4">
-
-                    <div class="card-header bg-white border-0 pt-4 px-4">
-
-                        <h5 class="fw-bold mb-0">
-
-                            <i class="fa-solid fa-users text-primary me-2"></i>
-                            Passenger Details
-
-                        </h5>
-
-                    </div>
+        </div>
 
 
-                    <div class="card-body p-4">
+        <!-- =================================================
+             PASSENGERS
+        ================================================= -->
 
-                        <div class="table-responsive">
+        <div class="card shadow-sm">
 
-                            <table class="table table-hover align-middle mb-0">
+            <div class="card-body p-4">
 
-                                <thead class="table-light">
+                <h5 class="section-title mb-4">
 
-                                <tr>
+                    <i class="fa-solid fa-users me-2"></i>
+                    Passenger Details
 
-                                    <th>Passenger ID</th>
-                                    <th>Name</th>
-                                    <th>Gender</th>
-                                    <th>DOB</th>
-                                    <th>Contact Details</th>
-                                    <th>Status</th>
-                                    <th class="text-end">Action</th>
-
-                                </tr>
-
-                                </thead>
+                </h5>
 
 
-                                <tbody id="passengersTableBody">
+                <div class="table-responsive">
 
-                                </tbody>
+                    <table class="table table-hover align-middle">
 
-                            </table>
+                        <thead>
 
-                        </div>
+                        <tr>
 
-                    </div>
+                            <th>Passenger ID</th>
+
+                            <th>Name</th>
+
+                            <th>Gender</th>
+
+                            <th>Date of Birth</th>
+
+                            <th>Email</th>
+
+                            <th>Status</th>
+
+                            <th class="text-end">
+                                Action
+                            </th>
+
+                        </tr>
+
+                        </thead>
+
+
+                        <tbody id="passengersTableBody">
+
+                        </tbody>
+
+                    </table>
 
                 </div>
 
@@ -340,20 +464,23 @@
 </div>
 
 
-<!-- Password Modal -->
+
+<!-- =====================================================
+     PASSWORD MODAL
+===================================================== -->
+
 <div class="modal fade"
      id="passwordModal"
      tabindex="-1">
 
     <div class="modal-dialog modal-dialog-centered">
 
-        <div class="modal-content border-0 shadow rounded-4">
+        <div class="modal-content border-0 shadow">
 
+            <div class="modal-header">
 
-            <div class="modal-header border-0 pb-0">
-
-                <h5 class="modal-title fw-bold"
-                    id="passwordModalLabel">
+                <h5 id="passwordModalLabel"
+                    class="modal-title fw-bold">
 
                     Confirm Action
 
@@ -367,38 +494,43 @@
             </div>
 
 
-            <div class="modal-body p-4">
+            <div class="modal-body">
 
                 <p id="modalActionDescription"
-                   class="text-muted mb-3">
+                   class="text-muted">
                 </p>
 
 
-                <div class="mb-3">
+                <label for="confirmPasswordInput"
+                       class="form-label fw-semibold">
 
-                    <label for="confirmPasswordInput"
-                           class="form-label fw-semibold">
+                    Enter Password
 
-                        Enter Account Password
+                </label>
 
-                    </label>
 
-                    <input type="password"
-                           class="form-control form-control-lg"
-                           id="confirmPasswordInput"
-                           placeholder="Enter password"
-                           required>
+                <input type="password"
+                       id="confirmPasswordInput"
+                       class="form-control form-control-lg password-input"
+                       maxlength="8"
+                       inputmode="numeric"
+                       autocomplete="current-password"
+                       placeholder="8 digit password">
 
-                    <div id="modalError"
-                         class="invalid-feedback">
-                    </div>
 
+                <div id="modalError"
+                     class="invalid-feedback">
                 </div>
+
+
+                <small class="text-muted">
+                    Password must contain exactly 8 digits.
+                </small>
 
             </div>
 
 
-            <div class="modal-footer border-0 pt-0">
+            <div class="modal-footer">
 
                 <button type="button"
                         class="btn btn-light"
@@ -410,8 +542,8 @@
 
 
                 <button type="button"
-                        class="btn btn-primary"
-                        id="btnSubmitAction">
+                        id="btnSubmitAction"
+                        class="btn btn-navy">
 
                     Verify & Proceed
 
@@ -426,1312 +558,1518 @@
 </div>
 
 
+
 <!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
 
 
 <script>
 
-    // =====================================================
-    // GLOBAL VARIABLES
-    // =====================================================
 
-    let targetPassengerId = null;
+/* =====================================================
+   GLOBAL VARIABLES
+===================================================== */
 
-    let targetActionScope = null;
+let bookingId = null;
 
-    let passwordModalObj = null;
+let targetPassengerId = null;
 
+let targetAction = null;
 
-    // =====================================================
-    // PAGE LOAD
-    // =====================================================
+let passwordModal = null;
 
-    document.addEventListener("DOMContentLoaded", function () {
 
-        passwordModalObj =
-            new bootstrap.Modal(
-                document.getElementById('passwordModal')
-            );
+/* =====================================================
+   PAGE LOAD
+===================================================== */
 
+document.addEventListener("DOMContentLoaded", function () {
 
-        const bookingId = "${param.bookingId}";
+    passwordModal =
+        new bootstrap.Modal(
+            document.getElementById("passwordModal")
+        );
 
 
-        if (!bookingId || bookingId.trim() === "") {
+    /*
+     * URL expected:
+     *
+     * /booking/BKG942587
+     *
+     * JSP receives:
+     *
+     * ${param.bookingId}
+     */
 
-            document.getElementById('loader')
-                .classList.add('d-none');
+    bookingId = "${param.bookingId}";
 
-            showError(
-                "No Booking ID provided."
-            );
 
-            return;
-        }
+    if (!bookingId || bookingId.trim() === "") {
 
+        hideLoader();
 
-        // Load booking details
-        fetchBookingDetails(bookingId);
+        showError("Booking ID is required.");
 
-
-        // Modal action button
-        document
-            .getElementById('btnSubmitAction')
-            .addEventListener(
-                'click',
-                handleActionSubmit
-            );
-
-    });
-
-
-    // =====================================================
-    // GET BOOKING DETAILS
-    // GET /api/v1/user/bookings/{bookingId}
-    // =====================================================
-
-    function fetchBookingDetails(bookingId) {
-
-        const token =
-            localStorage.getItem('jwtToken');
-
-
-        const contextPath =
-            '${pageContext.request.contextPath}';
-
-
-        if (!token) {
-
-            window.location.href =
-                contextPath + '/users/login';
-
-            return;
-        }
-
-
-        const apiUrl =
-            contextPath +
-            '/api/v1/user/bookings/' +
-            encodeURIComponent(bookingId);
-
-
-        fetch(apiUrl, {
-
-            method: 'GET',
-
-            headers: {
-
-                'Accept': 'application/json',
-
-                'Authorization':
-                    'Bearer ' + token
-
-            }
-
-        })
-
-        .then(response => {
-
-            if (
-                response.status === 401 ||
-                response.status === 403
-            ) {
-
-                localStorage.removeItem('jwtToken');
-
-                window.location.href =
-                    contextPath + '/users/login';
-
-                throw new Error(
-                    "Session expired. Please login again."
-                );
-
-            }
-
-
-            if (!response.ok) {
-
-                return response.json()
-                    .then(errorData => {
-
-                        throw new Error(
-                            errorData.message ||
-                            "Failed to load booking details."
-                        );
-
-                    });
-
-            }
-
-
-            return response.json();
-
-        })
-
-        .then(res => {
-
-            document
-                .getElementById('loader')
-                .classList.add('d-none');
-
-
-            if (
-                res.status === 'SUCCESS' &&
-                res.data
-            ) {
-
-                renderBookingData(res.data);
-
-
-                document
-                    .getElementById('bookingContainer')
-                    .classList.remove('d-none');
-
-            } else {
-
-                showError(
-                    res.message ||
-                    "Unable to retrieve booking details."
-                );
-
-            }
-
-        })
-
-        .catch(error => {
-
-            document
-                .getElementById('loader')
-                .classList.add('d-none');
-
-
-            showError(
-                error.message ||
-                "An error occurred while loading booking details."
-            );
-
-        });
+        return;
 
     }
 
 
-    // =====================================================
-    // DISPLAY BOOKING DATA
-    // =====================================================
+    setupBackButton();
 
-    function renderBookingData(data) {
-
-        document
-            .getElementById('bookingIdText')
-            .innerText =
-            data.bookingId || '-';
+    fetchBookingDetails();
 
 
-        // ---------------------------------------------
-        // BOOKING STATUS
-        // ---------------------------------------------
-
-        const statusBadge =
-            document.getElementById(
-                'bookingStatusBadge'
-            );
+    document
+        .getElementById("btnSubmitAction")
+        .addEventListener(
+            "click",
+            submitPassword
+        );
 
 
-        statusBadge.innerText =
-            data.bookingStatus || '-';
+    /*
+     * Allow only digits in password field.
+     */
+
+    document
+        .getElementById("confirmPasswordInput")
+        .addEventListener("input", function () {
+
+            this.value =
+                this.value.replace(/\D/g, "");
+
+        });
+
+});
 
 
-        if (data.bookingStatus === 'CONFIRMED') {
 
-            statusBadge.className =
-                'badge bg-success px-3 py-2 rounded-pill me-2';
+/* =====================================================
+   BACK BUTTON
+===================================================== */
 
-        } else if (data.bookingStatus === 'CANCELLED') {
+function setupBackButton() {
 
-            statusBadge.className =
-                'badge bg-danger px-3 py-2 rounded-pill me-2';
+    const button =
+        document.getElementById("backButton");
 
-        } else {
 
-            statusBadge.className =
-                'badge bg-secondary px-3 py-2 rounded-pill me-2';
+    button.addEventListener("click", function () {
+
+        /*
+         * Admin opens:
+         *
+         * /booking/{id}
+         *
+         * User opens:
+         *
+         * /booking/{id}
+         *
+         */
+
+        const token =
+            localStorage.getItem("jwtToken");
+
+
+        if (token) {
+
+            const role =
+                getRoleFromToken(token);
+
+
+            if (role === "ADMIN") {
+
+                window.location.href =
+                    "${pageContext.request.contextPath}" +
+                    "/admin/flights";
+
+                return;
+
+            }
 
         }
 
 
-        // ---------------------------------------------
-        // BOOKING INFORMATION
-        // ---------------------------------------------
+        window.location.href =
+            "${pageContext.request.contextPath}" +
+            "/my-booking";
+
+    });
+
+}
+
+
+
+/* =====================================================
+   GET BOOKING DETAILS
+=====================================================
+
+   IMPORTANT:
+
+   NO BEARER TOKEN HERE.
+
+   GET:
+   /api/v1/user/bookings/{bookingId}
+
+===================================================== */
+
+function fetchBookingDetails() {
+
+    const contextPath =
+        "${pageContext.request.contextPath}";
+
+
+    const apiUrl =
+        contextPath +
+        "/api/v1/user/bookings/" +
+        encodeURIComponent(bookingId);
+
+
+    fetch(apiUrl, {
+
+        method: "GET",
+
+        headers: {
+
+            "Accept": "application/json"
+
+        }
+
+    })
+
+    .then(function (response) {
+
+        return response.json()
+            .then(function (data) {
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to retrieve booking details."
+                    );
+
+                }
+
+                return data;
+
+            });
+
+    })
+
+    .then(function (responseData) {
+
+        hideLoader();
+
+
+        /*
+         * Your response:
+         *
+         * {
+         *   status: "SUCCESS",
+         *   message: "...",
+         *   responseData: {...}
+         * }
+         */
+
+        if (
+            responseData.status === "SUCCESS" &&
+            responseData.responseData
+        ) {
+
+            renderBooking(
+                responseData.responseData
+            );
+
+
+            document
+                .getElementById("bookingContainer")
+                .classList.remove("d-none");
+
+        }
+
+        else {
+
+            showError(
+                responseData.message ||
+                "Unable to retrieve booking details."
+            );
+
+        }
+
+    })
+
+    .catch(function (error) {
+
+        hideLoader();
+
+        showError(
+            error.message
+        );
+
+    });
+
+}
+
+
+
+/* =====================================================
+   RENDER BOOKING
+===================================================== */
+
+function renderBooking(data) {
+
+
+    /* -----------------------------------------------
+       BOOKING
+    ------------------------------------------------ */
+
+    document
+        .getElementById("bookingIdText")
+        .innerText =
+        data.bookingId || "-";
+
+
+    document
+        .getElementById("seatClassText")
+        .innerText =
+        formatEnum(data.seatClass);
+
+
+    document
+        .getElementById("amountText")
+        .innerText =
+        "₹" +
+        Number(data.amount || 0)
+            .toLocaleString("en-IN");
+
+
+    document
+        .getElementById("bookingDateText")
+        .innerText =
+        formatDateTime(
+            data.bookingDateTime
+        );
+
+
+    document
+        .getElementById("bookedByText")
+        .innerText =
+        data.userId || "-";
+
+
+    renderBookingStatus(
+        data.bookingStatus
+    );
+
+
+    /* -----------------------------------------------
+       FLIGHT
+    ------------------------------------------------ */
+
+    if (data.flightBooked) {
+
+        const flight =
+            data.flightBooked;
+
 
         document
-            .getElementById('seatClassText')
+            .getElementById("flightCodeBadge")
             .innerText =
-            formatEnum(data.seatClass);
+            flight.flightCode || "-";
 
 
         document
-            .getElementById('amountText')
+            .getElementById("aircraftModel")
             .innerText =
-            '₹' + Number(
-                data.amount || 0
-            ).toLocaleString('en-IN');
+            flight.aircraft
+                ? flight.aircraft.model
+                : "-";
+
+
+        if (flight.source) {
+
+            document
+                .getElementById("srcAirportCode")
+                .innerText =
+                flight.source.airportCode || "-";
+
+
+            document
+                .getElementById("srcCity")
+                .innerText =
+                flight.source.city || "-";
+
+
+            document
+                .getElementById("srcAirportName")
+                .innerText =
+                flight.source.airportName || "-";
+
+        }
+
+
+        if (flight.destination) {
+
+            document
+                .getElementById("destAirportCode")
+                .innerText =
+                flight.destination.airportCode || "-";
+
+
+            document
+                .getElementById("destCity")
+                .innerText =
+                flight.destination.city || "-";
+
+
+            document
+                .getElementById("destAirportName")
+                .innerText =
+                flight.destination.airportName || "-";
+
+        }
 
 
         document
-            .getElementById('bookingDateText')
+            .getElementById("departureTime")
             .innerText =
+            "Departure: " +
             formatDateTime(
-                data.bookingDateTime
+                flight.departureDateTime
             );
 
 
-        if (data.userbooked) {
+        document
+            .getElementById("arrivalTime")
+            .innerText =
+            "Arrival: " +
+            formatDateTime(
+                flight.arrivalDateTime
+            );
 
-            document
-                .getElementById('bookedByText')
-                .innerText =
-                (data.userbooked.firstName || '') +
-                ' ' +
-                (data.userbooked.lastName || '');
-
-        } else {
-
-            document
-                .getElementById('bookedByText')
-                .innerText = '-';
-
-        }
+    }
 
 
-        // ---------------------------------------------
-        // FLIGHT DETAILS
-        // ---------------------------------------------
+    /* -----------------------------------------------
+       ACTIONS
+    ------------------------------------------------ */
 
-        if (data.flightBooked) {
-
-            const flight =
-                data.flightBooked;
-
-
-            document
-                .getElementById('flightCodeBadge')
-                .innerText =
-                flight.flightCode || '-';
+    renderGlobalActions(
+        data
+    );
 
 
-            document
-                .getElementById('aircraftModel')
-                .innerText =
-                flight.aircraft
-                    ? flight.aircraft.model
-                    : '-';
+    /* -----------------------------------------------
+       PASSENGERS
+    ------------------------------------------------ */
+
+    renderPassengers(
+        data.passengers || [],
+        data.bookingStatus
+    );
+
+}
 
 
-            // SOURCE
-            if (flight.source) {
 
-                document
-                    .getElementById('srcAirportCode')
-                    .innerText =
-                    flight.source.airportCode || '-';
+/* =====================================================
+   BOOKING STATUS
+===================================================== */
 
+function renderBookingStatus(status) {
 
-                document
-                    .getElementById('srcCity')
-                    .innerText =
-                    flight.source.city || '-';
+    const badge =
+        document.getElementById(
+            "bookingStatusBadge"
+        );
 
 
-                document
-                    .getElementById('srcAirportName')
-                    .innerText =
-                    flight.source.airportName || '-';
-
-            }
+    badge.innerText =
+        formatEnum(status);
 
 
-            // DESTINATION
-            if (flight.destination) {
+    if (status === "CONFIRMED") {
 
-                document
-                    .getElementById('destAirportCode')
-                    .innerText =
-                    flight.destination.airportCode || '-';
+        badge.className =
+            "badge bg-success fs-6 px-3 py-2";
+
+    }
+
+    else if (
+        status === "CONFIRMED_NOT_CHECKED_IN"
+    ) {
+
+        badge.className =
+            "badge bg-primary fs-6 px-3 py-2";
+
+    }
+
+    else if (
+        status === "CANCELLED"
+    ) {
+
+        badge.className =
+            "badge bg-danger fs-6 px-3 py-2";
+
+    }
+
+    else {
+
+        badge.className =
+            "badge bg-secondary fs-6 px-3 py-2";
+
+    }
+
+}
 
 
-                document
-                    .getElementById('destCity')
-                    .innerText =
-                    flight.destination.city || '-';
+
+/* =====================================================
+   GLOBAL ACTIONS
+===================================================== */
+
+function renderGlobalActions(data) {
+
+    const container =
+        document.getElementById(
+            "globalActionContainer"
+        );
 
 
-                document
-                    .getElementById('destAirportName')
-                    .innerText =
-                    flight.destination.airportName || '-';
-
-            }
+    container.innerHTML = "";
 
 
-            document
-                .getElementById('departureTime')
-                .innerText =
-                'Dep: ' +
-                formatDateTime(
-                    flight.departureDateTime
+    if (
+        data.bookingStatus ===
+        "CANCELLED"
+    ) {
+
+        return;
+
+    }
+
+
+    const passengers =
+        data.passengers || [];
+
+
+    const activePassengers =
+        passengers.filter(function (passenger) {
+
+            return !passenger.cancelled;
+
+        });
+
+
+    /*
+     * Check-In All
+     */
+
+    const needsCheckIn =
+        activePassengers.some(function (passenger) {
+
+            return !passenger.checkedIn;
+
+        });
+
+
+    if (
+        activePassengers.length > 0 &&
+        needsCheckIn
+    ) {
+
+        const checkInButton =
+            document.createElement("button");
+
+
+        checkInButton.type =
+            "button";
+
+
+        checkInButton.className =
+            "btn btn-success btn-sm me-2";
+
+
+        checkInButton.innerHTML =
+            '<i class="fa-solid fa-plane-departure me-1"></i>' +
+            'Check-In All';
+
+
+        checkInButton.onclick =
+            function () {
+
+                openPasswordModal(
+                    null,
+                    "FULL_CHECK_IN",
+                    null
                 );
 
-
-            document
-                .getElementById('arrivalTime')
-                .innerText =
-                'Arr: ' +
-                formatDateTime(
-                    flight.arrivalDateTime
-                );
-
-        }
+            };
 
 
-        // ---------------------------------------------
-        // GLOBAL ACTION BUTTONS
-        // ---------------------------------------------
-
-        renderGlobalActions(data);
-
-
-        // ---------------------------------------------
-        // PASSENGERS
-        // ---------------------------------------------
-
-        renderPassengers(
-            data.passengers || [],
-            data.bookingStatus
+        container.appendChild(
+            checkInButton
         );
 
     }
 
 
-    // =====================================================
-    // GLOBAL ACTION BUTTONS
-    // =====================================================
+    /*
+     * Cancel Booking
+     */
 
-    function renderGlobalActions(data) {
+    const cancelButton =
+        document.createElement("button");
 
-        const globalContainer =
-            document.getElementById(
-                'globalActionContainer'
+
+    cancelButton.type =
+        "button";
+
+
+    cancelButton.className =
+        "btn btn-outline-danger btn-sm";
+
+
+    cancelButton.innerHTML =
+        '<i class="fa-solid fa-ban me-1"></i>' +
+        'Cancel Booking';
+
+
+    cancelButton.onclick =
+        function () {
+
+            openPasswordModal(
+                null,
+                "FULL_CANCEL",
+                null
             );
 
-
-        globalContainer.innerHTML = '';
-
-
-        const isBookingCancelled =
-            data.bookingStatus === 'CANCELLED';
+        };
 
 
-        if (isBookingCancelled) {
+    container.appendChild(
+        cancelButton
+    );
 
-            globalContainer.innerHTML =
-                '<span class="badge bg-secondary px-3 py-2 rounded-pill">' +
-                'Booking Cancelled' +
+}
+
+
+
+/* =====================================================
+   PASSENGER TABLE
+===================================================== */
+
+function renderPassengers(
+    passengers,
+    bookingStatus
+) {
+
+    const tbody =
+        document.getElementById(
+            "passengersTableBody"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    if (
+        !Array.isArray(passengers) ||
+        passengers.length === 0
+    ) {
+
+        tbody.innerHTML =
+            '<tr>' +
+            '<td colspan="7" class="text-center text-muted py-4">' +
+            'No passenger details available.' +
+            '</td>' +
+            '</tr>';
+
+        return;
+
+    }
+
+
+    passengers.forEach(function (passenger) {
+
+        const row =
+            document.createElement("tr");
+
+
+        let statusHtml = "";
+
+        let actionHtml = "";
+
+
+        /*
+         * CANCELLED
+         */
+
+        if (
+            passenger.cancelled ||
+            bookingStatus === "CANCELLED"
+        ) {
+
+            statusHtml =
+                '<span class="badge bg-danger">' +
+                'Cancelled' +
                 '</span>';
 
-            return;
+
+            actionHtml =
+                '<span class="text-muted">' +
+                'No Action' +
+                '</span>';
 
         }
 
 
-        const passengers =
-            data.passengers || [];
+        /*
+         * CHECKED IN
+         */
+
+        else if (passenger.checkedIn) {
+
+            statusHtml =
+                '<span class="badge bg-success">' +
+                'Checked-In' +
+                '</span>';
 
 
-        const activePassengers =
-            passengers.filter(function (passenger) {
+            actionHtml =
+                '<span class="text-muted">' +
+                'Checked-In' +
+                '</span>';
 
-                return !passenger.cancelled;
-
-            });
-
-
-        const needsCheckIn =
-            activePassengers.some(function (passenger) {
-
-                return !passenger.checkedIn;
-
-            });
+        }
 
 
-        let buttons = '';
+        /*
+         * ACTIVE
+         */
+
+        else {
+
+            statusHtml =
+                '<span class="badge bg-primary">' +
+                'Confirmed' +
+                '</span>';
 
 
-        // Check-In
-        if (
-            activePassengers.length > 0 &&
-            needsCheckIn
-        ) {
-
-            buttons +=
+            actionHtml =
                 '<button type="button" ' +
-                'class="btn btn-sm btn-success me-2" ' +
-                'onclick="openPasswordModal(null, \'FULL_CHECK_IN\', null)">' +
-                '<i class="fa-solid fa-plane-departure me-1"></i>' +
-                'Check-In All' +
+                'class="btn btn-sm btn-outline-danger" ' +
+                'onclick="openPasswordModal(\'' +
+                escapeJs(passenger.passengerId) +
+                '\', \'PASSENGER_CANCEL\', \'' +
+                escapeJs(passenger.firstName) +
+                '\')">' +
+                '<i class="fa-solid fa-xmark me-1"></i>' +
+                'Cancel' +
                 '</button>';
 
         }
 
 
-        // Cancel Full Booking
-        buttons +=
-            '<button type="button" ' +
-            'class="btn btn-sm btn-outline-danger" ' +
-            'onclick="openPasswordModal(null, \'FULL_CANCEL\', null)">' +
-            '<i class="fa-solid fa-ban me-1"></i>' +
-            'Cancel Full Booking' +
-            '</button>';
+        row.innerHTML =
 
+            "<td>" +
+            escapeHtml(
+                passenger.passengerId
+            ) +
+            "</td>" +
 
-        globalContainer.innerHTML =
-            buttons;
 
-    }
+            "<td class='fw-semibold'>" +
+            escapeHtml(
+                passenger.firstName
+            ) +
+            " " +
+            escapeHtml(
+                passenger.lastName
+            ) +
+            "</td>" +
 
 
-    // =====================================================
-    // PASSENGER TABLE
-    // =====================================================
+            "<td>" +
+            escapeHtml(
+                formatEnum(
+                    passenger.gender
+                )
+            ) +
+            "</td>" +
 
-    function renderPassengers(
-        passengers,
-        bookingStatus
-    ) {
 
-        const tbody =
-            document.getElementById(
-                'passengersTableBody'
-            );
+            "<td>" +
+            escapeHtml(
+                passenger.dateOfBirth
+            ) +
+            "</td>" +
 
 
-        tbody.innerHTML = '';
+            "<td>" +
+            escapeHtml(
+                passenger.email
+            ) +
+            "</td>" +
 
 
-        const isBookingCancelled =
-            bookingStatus === 'CANCELLED';
+            "<td>" +
+            statusHtml +
+            "</td>" +
 
 
-        if (
-            !Array.isArray(passengers) ||
-            passengers.length === 0
-        ) {
+            "<td class='text-end'>" +
+            actionHtml +
+            "</td>";
 
-            tbody.innerHTML =
-                '<tr>' +
-                '<td colspan="7" ' +
-                'class="text-center text-muted py-4">' +
-                'No passenger details available.' +
-                '</td>' +
-                '</tr>';
 
-            return;
+        tbody.appendChild(row);
 
-        }
+    });
 
+}
 
-        passengers.forEach(function (passenger) {
 
-            const row =
-                document.createElement('tr');
 
+/* =====================================================
+   OPEN PASSWORD MODAL
+===================================================== */
 
-            let statusHtml = '';
+function openPasswordModal(
+    passengerId,
+    action,
+    passengerName
+) {
 
-            let actionHtml = '';
+    targetPassengerId =
+        passengerId;
 
 
-            // Passenger Cancelled
-            if (
-                passenger.cancelled ||
-                isBookingCancelled
-            ) {
+    targetAction =
+        action;
 
-                row.className =
-                    'table-danger';
 
-
-                statusHtml =
-                    '<span class="badge bg-danger">' +
-                    'Cancelled' +
-                    '</span>';
-
-
-                actionHtml =
-                    '<span class="text-muted small">' +
-                    'No Action' +
-                    '</span>';
-
-            }
-
-            // Passenger Checked-In
-            else if (passenger.checkedIn) {
-
-                statusHtml =
-                    '<span class="badge bg-success">' +
-                    'Checked-In' +
-                    '</span>';
-
-
-                actionHtml =
-                    '<span class="text-muted small">' +
-                    'Checked-In' +
-                    '</span>';
-
-            }
-
-            // Active Passenger
-            else {
-
-                statusHtml =
-                    '<span class="badge bg-secondary">' +
-                    'Confirmed' +
-                    '</span>';
-
-
-                actionHtml =
-                    '<button type="button" ' +
-                    'class="btn btn-sm btn-outline-danger" ' +
-                    'onclick="openPasswordModal(\'' +
-                    escapeJs(passenger.passengerId) +
-                    '\', \'PASSENGER_CANCEL\', \'' +
-                    escapeJs(passenger.firstName) +
-                    '\')">' +
-                    '<i class="fa-solid fa-xmark me-1"></i>' +
-                    'Cancel Passenger' +
-                    '</button>';
-
-            }
-
-
-            row.innerHTML =
-
-                '<td>' +
-                '<span class="font-monospace fw-bold text-secondary">' +
-                escapeHtml(passenger.passengerId) +
-                '</span>' +
-                '</td>' +
-
-
-                '<td class="fw-semibold">' +
-                escapeHtml(capitalize(passenger.firstName)) +
-                ' ' +
-                escapeHtml(capitalize(passenger.lastName)) +
-                '</td>' +
-
-
-                '<td>' +
-                escapeHtml(formatEnum(passenger.gender)) +
-                '</td>' +
-
-
-                '<td>' +
-                escapeHtml(passenger.dateOfBirth) +
-                '</td>' +
-
-
-                '<td>' +
-                '<div class="small">' +
-                '<i class="fa-regular fa-envelope me-1 text-muted"></i>' +
-                escapeHtml(passenger.email) +
-                '</div>' +
-
-                '<div class="small">' +
-                '<i class="fa-solid fa-phone me-1 text-muted"></i>' +
-                escapeHtml(passenger.phoneNumber) +
-                '</div>' +
-                '</td>' +
-
-
-                '<td>' +
-                statusHtml +
-                '</td>' +
-
-
-                '<td class="text-end">' +
-                actionHtml +
-                '</td>';
-
-
-            tbody.appendChild(row);
-
-        });
-
-    }
-
-
-    // =====================================================
-    // OPEN PASSWORD MODAL
-    // =====================================================
-
-    function openPasswordModal(
-        passengerId,
-        actionScope,
-        passengerName
-    ) {
-
-        targetPassengerId =
-            passengerId;
-
-
-        targetActionScope =
-            actionScope;
-
-
-        const passwordInput =
-            document.getElementById(
-                'confirmPasswordInput'
-            );
-
-
-        passwordInput.value = '';
-
-
-        passwordInput.classList.remove(
-            'is-invalid'
+    const input =
+        document.getElementById(
+            "confirmPasswordInput"
         );
 
 
-        const modalTitle =
-            document.getElementById(
-                'passwordModalLabel'
-            );
-
-
-        const modalDescription =
-            document.getElementById(
-                'modalActionDescription'
-            );
-
-
-        const submitButton =
-            document.getElementById(
-                'btnSubmitAction'
-            );
-
-
-        if (
-            actionScope === 'FULL_CHECK_IN'
-        ) {
-
-            modalTitle.innerText =
-                'Confirm Booking Check-In';
-
-
-            modalDescription.innerText =
-                'Enter your password to check in all active passengers.';
-
-
-            submitButton.className =
-                'btn btn-success';
-
-
-            submitButton.innerText =
-                'Verify & Check-In';
-
-        }
-
-
-        else if (
-            actionScope === 'FULL_CANCEL'
-        ) {
-
-            modalTitle.innerText =
-                'Confirm Full Booking Cancellation';
-
-
-            modalDescription.innerText =
-                'Enter your password to cancel the entire booking and process the refund.';
-
-
-            submitButton.className =
-                'btn btn-danger';
-
-
-            submitButton.innerText =
-                'Verify & Cancel Booking';
-
-        }
-
-
-        else if (
-            actionScope === 'PASSENGER_CANCEL'
-        ) {
-
-            modalTitle.innerText =
-                'Confirm Passenger Cancellation';
-
-
-            modalDescription.innerText =
-                'Enter your password to cancel passenger: ' +
-                capitalize(passengerName) +
-                ' (' +
-                passengerId +
-                ').';
-
-
-            submitButton.className =
-                'btn btn-danger';
-
-
-            submitButton.innerText =
-                'Verify & Cancel Passenger';
-
-        }
-
-
-        passwordModalObj.show();
-
-    }
-
-
-    // =====================================================
-    // SUBMIT PASSWORD
-    // =====================================================
-
-    function handleActionSubmit() {
-
-        const passwordInput =
-            document.getElementById(
-                'confirmPasswordInput'
-            );
-
-
-        const password =
-            passwordInput.value.trim();
-
-
-        if (!password) {
-
-            passwordInput.classList.add(
-                'is-invalid'
-            );
-
-
-            document
-                .getElementById('modalError')
-                .innerText =
-                'Password is required.';
-
-
-            return;
-
-        }
-
-
-        let confirmMessage = '';
-
-
-        if (
-            targetActionScope === 'FULL_CHECK_IN'
-        ) {
-
-            confirmMessage =
-                'Are you sure you want to check in all active passengers?';
-
-        }
-
-
-        else if (
-            targetActionScope === 'FULL_CANCEL'
-        ) {
-
-            confirmMessage =
-                'Are you sure you want to cancel the entire booking?';
-
-        }
-
-
-        else if (
-            targetActionScope === 'PASSENGER_CANCEL'
-        ) {
-
-            confirmMessage =
-                'Are you sure you want to cancel this passenger?';
-
-        }
-
-
-        if (!confirm(confirmMessage)) {
-
-            return;
-
-        }
-
-
-        passwordModalObj.hide();
-
-
-        sendPatchRequest(
-            targetPassengerId,
-            targetActionScope,
-            password
+    const error =
+        document.getElementById(
+            "modalError"
         );
 
+
+    input.value = "";
+
+    input.classList.remove(
+        "is-invalid"
+    );
+
+    error.innerText = "";
+
+
+    const title =
+        document.getElementById(
+            "passwordModalLabel"
+        );
+
+
+    const description =
+        document.getElementById(
+            "modalActionDescription"
+        );
+
+
+    const submit =
+        document.getElementById(
+            "btnSubmitAction"
+        );
+
+
+    if (
+        action === "FULL_CHECK_IN"
+    ) {
+
+        title.innerText =
+            "Confirm Check-In";
+
+
+        description.innerText =
+            "Enter your 8 digit account password to check in all active passengers.";
+
+
+        submit.innerText =
+            "Verify & Check-In";
+
+
+        submit.className =
+            "btn btn-success";
+
     }
 
 
-    // =====================================================
-    // PATCH REQUEST
-    //
-    // CHECK-IN:
-    // PATCH /api/v1/user/bookings/{bookingId}/check-in
-    //
-    // FULL CANCEL:
-    // PATCH /api/v1/user/bookings/{bookingId}/cancel
-    //
-    // PASSENGER CANCEL:
-    // PATCH /api/v1/user/bookings/{bookingId}/cancel
-    // ?passenger={passengerId}
-    // =====================================================
+    else if (
+        action === "FULL_CANCEL"
+    ) {
 
-    function sendPatchRequest(
-        passengerId,
-        actionScope,
+        title.innerText =
+            "Cancel Booking";
+
+
+        description.innerText =
+            "Enter your 8 digit account password to cancel this booking.";
+
+
+        submit.innerText =
+            "Verify & Cancel";
+
+
+        submit.className =
+            "btn btn-danger";
+
+    }
+
+
+    else if (
+        action === "PASSENGER_CANCEL"
+    ) {
+
+        title.innerText =
+            "Cancel Passenger";
+
+
+        description.innerText =
+            "Enter your 8 digit account password to cancel passenger " +
+            (passengerName || "") +
+            ".";
+
+
+        submit.innerText =
+            "Verify & Cancel";
+
+
+        submit.className =
+            "btn btn-danger";
+
+    }
+
+
+    passwordModal.show();
+
+}
+
+
+
+/* =====================================================
+   PASSWORD VALIDATION + ACTION
+===================================================== */
+
+function submitPassword() {
+
+    const input =
+        document.getElementById(
+            "confirmPasswordInput"
+        );
+
+
+    const error =
+        document.getElementById(
+            "modalError"
+        );
+
+
+    const password =
+        input.value.trim();
+
+
+    /*
+     * FRONTEND VALIDATION
+     *
+     * EXACTLY 8 DIGITS
+     */
+
+    if (!/^\d{8}$/.test(password)) {
+
+        input.classList.add(
+            "is-invalid"
+        );
+
+
+        error.innerText =
+            "Password must contain exactly 8 digits.";
+
+
+        return;
+
+    }
+
+
+    input.classList.remove(
+        "is-invalid"
+    );
+
+
+    error.innerText = "";
+
+
+    let confirmation = "";
+
+
+    if (
+        targetAction ===
+        "FULL_CHECK_IN"
+    ) {
+
+        confirmation =
+            "Are you sure you want to check in all active passengers?";
+
+    }
+
+
+    else if (
+        targetAction ===
+        "FULL_CANCEL"
+    ) {
+
+        confirmation =
+            "Are you sure you want to cancel this booking?";
+
+    }
+
+
+    else if (
+        targetAction ===
+        "PASSENGER_CANCEL"
+    ) {
+
+        confirmation =
+            "Are you sure you want to cancel this passenger?";
+
+    }
+
+
+    if (!confirm(confirmation)) {
+
+        return;
+
+    }
+
+
+    passwordModal.hide();
+
+
+    sendActionRequest(
         password
+    );
+
+}
+
+
+
+/* =====================================================
+   ACTION API
+=====================================================
+
+   Bearer token IS REQUIRED HERE.
+
+===================================================== */
+
+function sendActionRequest(password) {
+
+    const token =
+        localStorage.getItem(
+            "jwtToken"
+        );
+
+
+    if (!token) {
+
+        window.location.href =
+            "${pageContext.request.contextPath}/login";
+
+        return;
+
+    }
+
+
+    const contextPath =
+        "${pageContext.request.contextPath}";
+
+
+    let endpoint = "";
+
+
+    /*
+     * FULL CHECK-IN
+     */
+
+    if (
+        targetAction ===
+        "FULL_CHECK_IN"
     ) {
 
-        const token =
-            localStorage.getItem('jwtToken');
-
-
-        const contextPath =
-            '${pageContext.request.contextPath}';
-
-
-        const bookingId =
-            "${param.bookingId}";
-
-
-        let endpoint = '';
-
-
-        // ---------------------------------------------
-        // FULL CHECK-IN
-        // ---------------------------------------------
-
-        if (
-            actionScope === 'FULL_CHECK_IN'
-        ) {
-
-            endpoint =
-                contextPath +
-                '/api/v1/user/bookings/' +
-                encodeURIComponent(bookingId) +
-                '/check-in';
-
-        }
-
-
-        // ---------------------------------------------
-        // FULL BOOKING CANCEL
-        // ---------------------------------------------
-
-        else if (
-            actionScope === 'FULL_CANCEL'
-        ) {
-
-            endpoint =
-                contextPath +
-                '/api/v1/user/bookings/' +
-                encodeURIComponent(bookingId) +
-                '/cancel';
-
-        }
-
-
-        // ---------------------------------------------
-        // PASSENGER CANCEL
-        // ---------------------------------------------
-
-        else if (
-            actionScope === 'PASSENGER_CANCEL'
-        ) {
-
-            endpoint =
-                contextPath +
-                '/api/v1/user/bookings/' +
-                encodeURIComponent(bookingId) +
-                '/cancel?passenger=' +
-                encodeURIComponent(passengerId);
-
-        }
-
-
-        // ---------------------------------------------
-        // INVALID ACTION
-        // ---------------------------------------------
-
-        else {
-
-            showError(
-                'Invalid action selected.'
-            );
-
-            return;
-
-        }
-
-
-        // ---------------------------------------------
-        // SEND REQUEST
-        // ---------------------------------------------
-
-        fetch(endpoint, {
-
-            method: 'PATCH',
-
-            headers: {
-
-                'Content-Type':
-                    'application/json',
-
-                'Authorization':
-                    'Bearer ' + token
-
-            },
-
-            body: JSON.stringify({
-
-                password: password
-
-            })
-
-        })
-
-        .then(response => {
-
-            if (
-                response.status === 401 ||
-                response.status === 403
-            ) {
-
-                localStorage.removeItem(
-                    'jwtToken'
-                );
-
-
-                window.location.href =
-                    contextPath +
-                    '/users/login';
-
-
-                throw new Error(
-                    'Session expired or you are not authorized.'
-                );
-
-            }
-
-
-            return response.json()
-                .then(responseData => {
-
-                    if (!response.ok) {
-
-                        throw new Error(
-                            responseData.message ||
-                            'Failed to process request.'
-                        );
-
-                    }
-
-                    return responseData;
-
-                });
-
-        })
-
-        .then(responseData => {
-
-            showSuccess(
-
-                responseData.message ||
-                'Action completed successfully.'
-
-            );
-
-
-            // Reload booking data
-            fetchBookingDetails(
-                bookingId
-            );
-
-        })
-
-        .catch(error => {
-
-            showError(
-
-                error.message ||
-                'An error occurred while processing the request.'
-
-            );
-
-        });
+        endpoint =
+            contextPath +
+            "/api/v1/user/bookings/" +
+            encodeURIComponent(bookingId) +
+            "/check-in";
 
     }
 
 
-    // =====================================================
-    // ERROR MESSAGE
-    // =====================================================
+    /*
+     * FULL CANCEL
+     */
 
-    function showError(message) {
+    else if (
+        targetAction ===
+        "FULL_CANCEL"
+    ) {
 
-        const errorDiv =
-            document.getElementById(
-                'errorMessage'
-            );
-
-
-        errorDiv.innerText =
-            message;
-
-
-        errorDiv.classList.remove(
-            'd-none'
-        );
-
-
-        setTimeout(function () {
-
-            errorDiv.classList.add(
-                'd-none'
-            );
-
-        }, 6000);
+        endpoint =
+            contextPath +
+            "/api/v1/user/bookings/" +
+            encodeURIComponent(bookingId) +
+            "/cancel";
 
     }
 
 
-    // =====================================================
-    // SUCCESS MESSAGE
-    // =====================================================
+    /*
+     * PASSENGER CANCEL
+     */
 
-    function showSuccess(message) {
+    else if (
+        targetAction ===
+        "PASSENGER_CANCEL"
+    ) {
 
-        const successDiv =
-            document.getElementById(
-                'successMessage'
+        endpoint =
+            contextPath +
+            "/api/v1/user/bookings/" +
+            encodeURIComponent(bookingId) +
+            "/cancel?passenger=" +
+            encodeURIComponent(
+                targetPassengerId
             );
-
-
-        successDiv.innerText =
-            message;
-
-
-        successDiv.classList.remove(
-            'd-none'
-        );
-
-
-        setTimeout(function () {
-
-            successDiv.classList.add(
-                'd-none'
-            );
-
-        }, 6000);
 
     }
 
 
-    // =====================================================
-    // FORMAT DATE TIME
-    // =====================================================
+    fetch(endpoint, {
 
-    function formatDateTime(value) {
+        method: "PATCH",
 
-        if (!value) {
+        headers: {
 
-            return '-';
+            "Content-Type":
+                "application/json",
 
-        }
+            "Authorization":
+                "Bearer " + token
 
+        },
 
-        // LocalDateTime serialized as array
-        if (Array.isArray(value)) {
+        body: JSON.stringify({
 
-            const year = value[0];
-            const month = value[1];
-            const day = value[2];
-            const hour = value[3] || 0;
-            const minute = value[4] || 0;
+            password: password
 
-            const date =
-                new Date(
-                    year,
-                    month - 1,
-                    day,
-                    hour,
-                    minute
-                );
+        })
 
-            return date.toLocaleDateString() +
-                ' ' +
-                date.toLocaleTimeString(
-                    [],
-                    {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    }
-                );
+    })
 
-        }
+    .then(function (response) {
 
+        return response.json()
+            .then(function (data) {
 
-        // String LocalDateTime
-        if (typeof value === 'string') {
+                /*
+                 * Unauthorized
+                 */
 
-            const date =
-                new Date(value);
+                if (
+                    response.status === 401 ||
+                    response.status === 403
+                ) {
 
-
-            if (!isNaN(date.getTime())) {
-
-                return date.toLocaleDateString() +
-                    ' ' +
-                    date.toLocaleTimeString(
-                        [],
-                        {
-                            hour: '2-digit',
-                            minute: '2-digit'
-                        }
+                    localStorage.removeItem(
+                        "jwtToken"
                     );
 
-            }
+
+                    window.location.href =
+                        contextPath +
+                        "/login";
 
 
-            return value;
-
-        }
-
-
-        return '-';
-
-    }
-
-
-    // =====================================================
-    // FORMAT ENUM
-    // =====================================================
-
-    function formatEnum(value) {
-
-        if (!value) {
-
-            return '-';
-
-        }
-
-
-        return String(value)
-
-            .replace(/_/g, ' ')
-
-            .toLowerCase()
-
-            .replace(
-                /\b\w/g,
-                function (character) {
-
-                    return character.toUpperCase();
+                    throw new Error(
+                        data.message ||
+                        "Session expired."
+                    );
 
                 }
+
+
+                /*
+                 * BACKEND ERROR
+                 *
+                 * Only show:
+                 *
+                 * data.message
+                 */
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        "Unable to complete the action."
+                    );
+
+                }
+
+
+                return data;
+
+            });
+
+    })
+
+    .then(function (data) {
+
+        /*
+         * Only display backend message.
+         */
+
+        showSuccess(
+            data.message ||
+            "Action completed successfully."
+        );
+
+
+        /*
+         * Refresh booking details.
+         */
+
+        setTimeout(function () {
+
+            fetchBookingDetails();
+
+        }, 500);
+
+    })
+
+    .catch(function (error) {
+
+        /*
+         * Only show message.
+         */
+
+        showError(
+            error.message
+        );
+
+    });
+
+}
+
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+function showError(message) {
+
+    const error =
+        document.getElementById(
+            "errorMessage"
+        );
+
+
+    error.innerText =
+        message || "Unable to complete request.";
+
+
+    error.classList.remove(
+        "d-none"
+    );
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+
+    setTimeout(function () {
+
+        error.classList.add(
+            "d-none"
+        );
+
+    }, 6000);
+
+}
+
+
+
+/* =====================================================
+   SUCCESS
+===================================================== */
+
+function showSuccess(message) {
+
+    const success =
+        document.getElementById(
+            "successMessage"
+        );
+
+
+    success.innerText =
+        message || "Action completed successfully.";
+
+
+    success.classList.remove(
+        "d-none"
+    );
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+
+    setTimeout(function () {
+
+        success.classList.add(
+            "d-none"
+        );
+
+    }, 5000);
+
+}
+
+
+
+/* =====================================================
+   HIDE LOADER
+===================================================== */
+
+function hideLoader() {
+
+    document
+        .getElementById("loader")
+        .classList.add("d-none");
+
+}
+
+
+
+/* =====================================================
+   DATE FORMAT
+===================================================== */
+
+function formatDateTime(value) {
+
+    if (!value) {
+
+        return "-";
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        !isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return date.toLocaleDateString(
+            "en-IN"
+        ) +
+        " " +
+        date.toLocaleTimeString(
+            "en-IN",
+            {
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        );
+
+    }
+
+
+    return value;
+
+}
+
+
+
+/* =====================================================
+   ENUM FORMAT
+===================================================== */
+
+function formatEnum(value) {
+
+    if (!value) {
+
+        return "-";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /_/g,
+            " "
+        )
+
+        .toLowerCase()
+
+        .replace(
+            /\b\w/g,
+            function (character) {
+
+                return character.toUpperCase();
+
+            }
+        );
+
+}
+
+
+
+/* =====================================================
+   HTML ESCAPE
+===================================================== */
+
+function escapeHtml(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "-";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+
+/* =====================================================
+   JS ESCAPE
+===================================================== */
+
+function escapeJs(value) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+
+        .replace(
+            /'/g,
+            "\\'"
+        )
+
+        .replace(
+            /"/g,
+            '\\"'
+        );
+
+}
+
+
+
+/* =====================================================
+   JWT ROLE
+===================================================== */
+
+function getRoleFromToken(token) {
+
+    try {
+
+        const payload =
+            token.split(".")[1];
+
+
+        const decoded =
+            JSON.parse(
+                atob(
+                    payload
+                        .replace(/-/g, "+")
+                        .replace(/_/g, "/")
+                )
             );
 
-    }
 
-
-    // =====================================================
-    // CAPITALIZE
-    // =====================================================
-
-    function capitalize(value) {
-
-        if (!value) {
-
-            return '';
-
-        }
-
-
-        value =
-            String(value).toLowerCase();
-
-
-        return value.charAt(0).toUpperCase() +
-            value.slice(1);
+        return decoded.role || null;
 
     }
 
+    catch (error) {
 
-    // =====================================================
-    // ESCAPE HTML
-    // =====================================================
-
-    function escapeHtml(value) {
-
-        if (
-            value === null ||
-            value === undefined
-        ) {
-
-            return '-';
-
-        }
-
-
-        return String(value)
-
-            .replace(/&/g, '&amp;')
-
-            .replace(/</g, '&lt;')
-
-            .replace(/>/g, '&gt;')
-
-            .replace(/"/g, '&quot;')
-
-            .replace(/'/g, '&#039;');
+        return null;
 
     }
 
-
-    // =====================================================
-    // ESCAPE JAVASCRIPT
-    // =====================================================
-
-    function escapeJs(value) {
-
-        if (
-            value === null ||
-            value === undefined
-        ) {
-
-            return '';
-
-        }
-
-
-        return String(value)
-
-            .replace(/\\/g, '\\\\')
-
-            .replace(/'/g, "\\'")
-
-            .replace(/"/g, '\\"');
-
-    }
+}
 
 </script>
 

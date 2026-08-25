@@ -33,7 +33,7 @@ public class RegistrationRestController {
 
         User registeredUser = userService.registerUser(registrationRequest);
 
-      return ResponseEntity.ok(
+      return ResponseEntity.status(HttpStatus.CREATED).body(
                 new ApiResponse<>(
                         "SUCCESS",
                         "New User is Registered Successfull",

@@ -1,6 +1,4 @@
-<%@ page language="java"
-         contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,135 +8,171 @@
     <meta charset="UTF-8">
 
     <meta name="viewport"
-          content="width=device-width, initial-scale=1">
+          content="width=device-width, initial-scale=1.0">
 
-    <title>Flight Bookings</title>
+    <title>ABC Airline - Flight Bookings</title>
+
+
+    <!-- Bootstrap -->
+
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+
 
     <style>
 
         body {
+            background-color: #f4f7fb;
             font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            margin: 0;
-            padding: 30px;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: auto;
+        .navbar {
+            background-color: #071b3a;
         }
 
-        h2 {
-            color: #003366;
-        }
-
-        .flight-info {
-            background: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .flight-info span {
-            margin-right: 25px;
+        .navbar-brand {
+            color: white !important;
+            font-size: 24px;
             font-weight: bold;
+        }
+
+        .navbar-text {
+            color: white;
+        }
+
+        .page-container {
+            max-width: 1250px;
+            margin: 40px auto;
+        }
+
+        .page-title {
+            color: #071b3a;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .page-subtitle {
+            color: #6c757d;
+        }
+
+        .btn-back {
+            background-color: white;
+            color: #071b3a;
+            border: 1px solid #071b3a;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .btn-back:hover {
+            background-color: #071b3a;
+            color: white;
+        }
+
+        .content-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 30px;
+
+            box-shadow:
+                    0 5px 20px
+                    rgba(0, 0, 0, 0.08);
+        }
+
+        .search-label {
+            color: #071b3a;
+            font-weight: 600;
+        }
+
+        .table thead th {
+            background-color: #071b3a;
+            color: white;
+            border: none;
+            white-space: nowrap;
+            padding: 12px;
+        }
+
+        .table tbody td {
+            padding: 12px;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f4f7fb;
+        }
+
+        .btn-details {
+            background-color: #071b3a;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .btn-details:hover {
+            background-color: #0d2c5c;
+            color: white;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .status-confirmed {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+
+        .status-waitlisted {
+            background-color: #fff3cd;
+            color: #664d03;
+        }
+
+        .status-other {
+            background-color: #e2e3e5;
+            color: #41464b;
         }
 
         .loading {
             text-align: center;
-            padding: 30px;
+            color: #6c757d;
+            padding: 40px;
         }
 
-        .error {
-            background: #f8d7da;
-            color: #842029;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            display: none;
-        }
-
-        .empty {
-            background: white;
-            padding: 30px;
+        .empty-message {
             text-align: center;
-            border-radius: 8px;
-            display: none;
+            color: #6c757d;
+            padding: 30px;
         }
 
-        .table-container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            overflow-x: auto;
-            display: none;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            background: #003366;
+        .logout-btn {
+            border: 1px solid white;
             color: white;
-            padding: 12px;
-            text-align: left;
-        }
-
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        tr:hover {
-            background: #f5f5f5;
-        }
-
-        .passenger {
-            margin-bottom: 8px;
-        }
-
-        .passenger:last-child {
-            margin-bottom: 0;
-        }
-
-        .status {
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .confirmed {
-            background: #d1e7dd;
-            color: #0f5132;
-        }
-
-        .cancelled {
-            background: #f8d7da;
-            color: #842029;
-        }
-
-        .checked {
-            background: #cfe2ff;
-            color: #084298;
-        }
-
-        .default-status {
-            background: #e2e3e5;
-            color: #41464b;
-        }
-
-        .back-btn {
-            display: inline-block;
-            margin-bottom: 20px;
-            padding: 10px 15px;
-            background: #003366;
-            color: white;
-            text-decoration: none;
+            background: transparent;
+            padding: 5px 15px;
             border-radius: 5px;
+        }
+
+        .logout-btn:hover {
+            background-color: white;
+            color: #071b3a;
         }
 
     </style>
@@ -149,114 +183,211 @@
 <body>
 
 
-<div class="container">
+<!-- =========================================================
+     NAVBAR
+     ========================================================= -->
 
-    <a href="${pageContext.request.contextPath}/admin/flights"
-       class="back-btn">
-        ← Back to Flights
-    </a>
+<nav class="navbar navbar-dark">
+
+    <div class="container">
+
+        <a
+                class="navbar-brand"
+                href="${pageContext.request.contextPath}/admin/menu">
+
+            ✈ ABC Airline
+
+        </a>
 
 
-    <h2>Flight Bookings</h2>
+        <div class="d-flex align-items-center gap-3">
+
+            <span class="navbar-text">
+                Admin
+            </span>
 
 
-    <!-- ERROR -->
+            <button
+                    type="button"
+                    id="logoutButton"
+                    class="logout-btn">
 
-    <div id="errorMessage"
-         class="error">
-    </div>
+                Logout
 
+            </button>
 
-    <!-- FLIGHT INFORMATION -->
-
-    <div id="flightSummary"
-         class="flight-info"
-         style="display:none;">
-
-        <span>
-            Flight:
-            <strong id="flightCode">-</strong>
-        </span>
-
-        <span>
-            Route:
-            <strong id="flightRoute">-</strong>
-        </span>
-
-        <span>
-            Departure:
-            <strong id="departureTime">-</strong>
-        </span>
-
-        <span>
-            Status:
-            <strong id="flightStatus">-</strong>
-        </span>
+        </div>
 
     </div>
 
+</nav>
 
-    <!-- LOADING -->
 
-    <div id="loading"
-         class="loading">
 
-        Loading bookings...
+<!-- =========================================================
+     MAIN
+     ========================================================= -->
+
+<div class="container page-container">
+
+
+    <!-- HEADER -->
+
+    <div class="d-flex justify-content-between align-items-center">
+
+        <div>
+
+            <h2 class="page-title">
+                Flight Bookings
+            </h2>
+
+            <p class="page-subtitle mb-0">
+                View all bookings for this flight.
+            </p>
+
+        </div>
+
+
+        <a
+                id="backButton"
+                href="#"
+                class="btn-back">
+
+            ← Back to Flight
+
+        </a>
 
     </div>
 
 
-    <!-- EMPTY -->
 
-    <div id="emptyMessage"
-         class="empty">
+    <!-- CONTENT -->
 
-        No bookings found for this flight.
-
-    </div>
+    <div class="content-card">
 
 
-    <!-- BOOKING TABLE -->
+        <!-- SEARCH -->
 
-    <div id="tableContainer"
-         class="table-container">
+        <div class="row align-items-end mb-4">
 
-        <table>
+            <div class="col-md-6">
 
-            <thead>
+                <label
+                        for="bookingSearch"
+                        class="form-label search-label">
+
+                    Search Bookings
+
+                </label>
+
+
+                <input
+                        type="text"
+                        id="bookingSearch"
+                        class="form-control"
+                        placeholder="Booking ID, User ID, passenger name or status">
+
+            </div>
+
+
+            <div class="col-md-6 text-md-end mt-3 mt-md-0">
+
+                <span
+                        id="bookingCount"
+                        class="text-muted">
+
+                    Loading bookings...
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- API MESSAGE -->
+
+        <div id="apiMessage"></div>
+
+
+
+        <!-- TABLE -->
+
+        <div class="table-responsive">
+
+            <table class="table table-bordered table-hover mb-0">
+
+
+                <thead>
 
                 <tr>
 
-                    <th>#</th>
+                    <th>
+                        #
+                    </th>
 
-                    <th>Booking ID</th>
+                    <th>
+                        Booking ID
+                    </th>
 
-                    <th>Passengers</th>
+                    <th>
+                        Passenger
+                    </th>
 
-                    <th>Passengers Count</th>
+                    <th>
+                        User ID
+                    </th>
 
-                    <th>Seat Class</th>
+                    <th>
+                        Booking Date
+                    </th>
 
-                    <th>Booking Date</th>
+                    <th>
+                        Seat Class
+                    </th>
 
-                    <th>Status</th>
+                    <th>
+                        Amount
+                    </th>
 
-                    <th>Amount</th>
+                    <th>
+                        Status
+                    </th>
 
-                    <th>Booked By</th>
+                    <th>
+                        Action
+                    </th>
 
                 </tr>
 
-            </thead>
+                </thead>
 
 
-            <tbody id="bookingTableBody">
+                <tbody id="bookingTableBody">
 
-            </tbody>
+                <tr>
 
-        </table>
+                    <td
+                            colspan="9"
+                            class="loading">
+
+                        Loading bookings...
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+
+            </table>
+
+        </div>
+
 
     </div>
+
 
 </div>
 
@@ -265,539 +396,114 @@
 <script>
 
 
-    // Flight ID received from Spring MVC
-
-    const flightId = "${flightId}";
-
-
-    // Application context path
+    /* =========================================================
+       CONTEXT
+       ========================================================= */
 
     const contextPath =
         "${pageContext.request.contextPath}";
 
 
-    // API URL
+    /* =========================================================
+       GET FLIGHT ID
+       ========================================================= */
 
-    const apiUrl =
+    const pathParts =
+        window.location.pathname
+            .split("/")
+            .filter(
+                function (part) {
+                    return part.length > 0;
+                }
+            );
+
+
+    /*
+     * URL:
+     *
+     * /admin/flights/FLT933393/bookings
+     *
+     * Flight ID is second last value.
+     */
+
+    const flightId =
+        pathParts[pathParts.length - 2];
+
+
+
+    /* =========================================================
+       API
+       ========================================================= */
+
+    const bookingsApi =
         contextPath +
         "/api/v1/admin/flights/" +
         encodeURIComponent(flightId) +
         "/bookings";
 
 
-    // Load bookings
 
-    async function loadBookings() {
+    /* =========================================================
+       ELEMENTS
+       ========================================================= */
 
-        try {
-
-            const token =
-                localStorage.getItem("jwtToken");
-
-
-            // Check login
-
-            if (!token) {
-
-                window.location.href =
-                    contextPath + "/users/login";
-
-                return;
-            }
-
-
-            // Call API
-
-            const response =
-                await fetch(apiUrl, {
-
-                    method: "GET",
-
-                    headers: {
-
-                        "Accept":
-                            "application/json",
-
-                        "Authorization":
-                            "Bearer " + token
-                    }
-
-                });
-
-
-            // Unauthorized
-
-            if (
-                response.status === 401 ||
-                response.status === 403
-            ) {
-
-                localStorage.removeItem("jwtToken");
-
-                window.location.href =
-                    contextPath + "/users/login";
-
-                return;
-            }
-
-
-            // Other error
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Failed to load bookings. HTTP Status: "
-                    + response.status
-                );
-
-            }
-
-
-            // Convert response to JSON
-
-            const bookings =
-                await response.json();
-
-
-            // Hide loading
-
-            document.getElementById(
-                "loading"
-            ).style.display = "none";
-
-
-            // No bookings
-
-            if (
-                !bookings ||
-                bookings.length === 0
-            ) {
-
-                document.getElementById(
-                    "emptyMessage"
-                ).style.display = "block";
-
-                return;
-            }
-
-
-            // Show flight information
-
-            showFlightInfo(
-                bookings[0]
-            );
-
-
-            // Display bookings
-
-            displayBookings(
-                bookings
-            );
-
-
-        } catch (error) {
-
-            console.error(error);
-
-
-            document.getElementById(
-                "loading"
-            ).style.display = "none";
-
-
-            const errorBox =
-                document.getElementById(
-                    "errorMessage"
-                );
-
-
-            errorBox.innerText =
-                error.message ||
-                "Unable to load bookings.";
-
-
-            errorBox.style.display =
-                "block";
-
-        }
-
-    }
-
-
-    // Show flight information
-
-    function showFlightInfo(booking) {
-
-        if (
-            !booking ||
-            !booking.flightBooked
-        ) {
-
-            return;
-        }
-
-
-        const flight =
-            booking.flightBooked;
-
-
+    const bookingTableBody =
         document.getElementById(
-            "flightSummary"
-        ).style.display = "block";
-
-
-        document.getElementById(
-            "flightCode"
-        ).innerText =
-            flight.flightCode || "-";
-
-
-        const source =
-            flight.source
-                ? flight.source.airportCode
-                : "-";
-
-
-        const destination =
-            flight.destination
-                ? flight.destination.airportCode
-                : "-";
-
-
-        document.getElementById(
-            "flightRoute"
-        ).innerText =
-            source + " → " + destination;
-
-
-        document.getElementById(
-            "departureTime"
-        ).innerText =
-            formatDateTime(
-                flight.departureDateTime
-            );
-
-
-        document.getElementById(
-            "flightStatus"
-        ).innerText =
-            flight.status || "-";
-
-    }
-
-
-    // Display booking table
-
-    function displayBookings(bookings) {
-
-        const tableBody =
-            document.getElementById(
-                "bookingTableBody"
-            );
-
-
-        tableBody.innerHTML = "";
-
-
-        bookings.forEach(
-            function(booking, index) {
-
-
-                const row =
-                    document.createElement("tr");
-
-
-                // Booking ID
-
-                const bookingId =
-                    booking.bookingId || "-";
-
-
-                // Passengers
-
-                const passengers =
-                    booking.passengers || [];
-
-
-                let passengerHtml = "";
-
-
-                if (
-                    passengers.length === 0
-                ) {
-
-                    passengerHtml =
-                        "No passenger";
-
-                } else {
-
-                    passengers.forEach(
-                        function(passenger) {
-
-                            const name =
-                                (passenger.firstName || "") +
-                                " " +
-                                (passenger.lastName || "");
-
-
-                            passengerHtml +=
-                                "<div class='passenger'>" +
-                                "<strong>" +
-                                escapeHtml(name) +
-                                "</strong>" +
-                                "<br>" +
-                                "<small>" +
-                                escapeHtml(
-                                    passenger.passengerId || "-"
-                                ) +
-                                "</small>" +
-                                "</div>";
-
-                        }
-                    );
-
-                }
-
-
-                // Seat class
-
-                const seatClass =
-                    formatSeatClass(
-                        booking.seatClass
-                    );
-
-
-                // Booking status
-
-                const status =
-                    booking.bookingStatus || "-";
-
-
-                const statusClass =
-                    getStatusClass(status);
-
-
-                // Amount
-
-                const amount =
-                    formatAmount(
-                        booking.amount
-                    );
-
-
-                // User
-
-                let userName = "-";
-
-
-                if (booking.userbooked) {
-
-                    userName =
-                        (booking.userbooked.firstName || "") +
-                        " " +
-                        (booking.userbooked.lastName || "");
-
-                }
-
-
-                // Booking date
-
-                const bookingDate =
-                    formatBookingDate(
-                        booking.bookingDateTime
-                    );
-
-
-                // Create row
-
-                row.innerHTML =
-
-                    "<td>" +
-                    (index + 1) +
-                    "</td>" +
-
-                    "<td>" +
-                    "<strong>" +
-                    escapeHtml(bookingId) +
-                    "</strong>" +
-                    "</td>" +
-
-                    "<td>" +
-                    passengerHtml +
-                    "</td>" +
-
-                    "<td>" +
-                    passengers.length +
-                    "</td>" +
-
-                    "<td>" +
-                    escapeHtml(seatClass) +
-                    "</td>" +
-
-                    "<td>" +
-                    escapeHtml(bookingDate) +
-                    "</td>" +
-
-                    "<td>" +
-                    "<span class='status " +
-                    statusClass +
-                    "'>" +
-                    escapeHtml(status) +
-                    "</span>" +
-                    "</td>" +
-
-                    "<td>" +
-                    formatAmount(
-                        booking.amount
-                    ) +
-                    "</td>" +
-
-                    "<td>" +
-                    escapeHtml(userName) +
-                    "</td>";
-
-
-                tableBody.appendChild(row);
-
-            }
+            "bookingTableBody"
         );
 
 
-        // Show table
-
+    const bookingSearch =
         document.getElementById(
-            "tableContainer"
-        ).style.display = "block";
+            "bookingSearch"
+        );
+
+
+    const bookingCount =
+        document.getElementById(
+            "bookingCount"
+        );
+
+
+    /* =========================================================
+       STORE BOOKINGS
+       ========================================================= */
+
+    let allBookings = [];
+
+
+
+    /* =========================================================
+       TOKEN
+       ========================================================= */
+
+    function getToken() {
+
+        return localStorage.getItem("token");
 
     }
 
 
-    // Format amount
 
-    function formatAmount(amount) {
+    /* =========================================================
+       FORMAT DATE
+       ========================================================= */
 
-        if (
-            amount === null ||
-            amount === undefined
-        ) {
+    function formatDateTime(
+        dateTime
+    ) {
 
-            amount = 0;
-
-        }
-
-
-        return "₹" +
-            Number(amount).toLocaleString(
-                "en-IN",
-                {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }
-            );
-
-    }
-
-
-    // Format seat class
-
-    function formatSeatClass(seatClass) {
-
-        if (!seatClass) {
-
+        if (!dateTime) {
             return "-";
-
-        }
-
-
-        return seatClass
-            .replaceAll("_", " ")
-            .toLowerCase()
-            .replace(
-                /\b\w/g,
-                function(character) {
-                    return character.toUpperCase();
-                }
-            );
-
-    }
-
-
-    // Status CSS class
-
-    function getStatusClass(status) {
-
-        switch (status) {
-
-            case "CONFIRMED":
-                return "confirmed";
-
-            case "CANCELLED":
-                return "cancelled";
-
-            case "CHECKED_IN":
-                return "checked";
-
-            default:
-                return "default-status";
-
-        }
-
-    }
-
-
-    // Format flight date
-
-    function formatDateTime(value) {
-
-        if (!value) {
-
-            return "-";
-
-        }
-
-
-        // Handle Spring LocalDateTime array
-
-        if (Array.isArray(value)) {
-
-            const year = value[0];
-
-            const month =
-                String(value[1]).padStart(2, "0");
-
-            const day =
-                String(value[2]).padStart(2, "0");
-
-            const hour =
-                String(value[3] || 0).padStart(2, "0");
-
-            const minute =
-                String(value[4] || 0).padStart(2, "0");
-
-
-            return (
-                day +
-                "-" +
-                month +
-                "-" +
-                year +
-                " " +
-                hour +
-                ":" +
-                minute
-            );
-
         }
 
 
         const date =
-            new Date(value);
+            new Date(dateTime);
 
 
         if (isNaN(date.getTime())) {
-
-            return value;
-
+            return dateTime;
         }
 
 
@@ -815,70 +521,597 @@
     }
 
 
-    // Format booking date
 
-    function formatBookingDate(value) {
+    /* =========================================================
+       FORMAT MONEY
+       ========================================================= */
 
-        return formatDateTime(value);
+    function formatMoney(
+        amount
+    ) {
+
+        return "₹ " +
+            Number(amount || 0)
+                .toLocaleString(
+                    "en-IN",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                );
 
     }
 
 
-    // Prevent HTML injection
 
-    function escapeHtml(value) {
+    /* =========================================================
+       LOAD BOOKINGS
+       ========================================================= */
 
-        if (value === null ||
-            value === undefined) {
+    async function loadBookings() {
 
-            return "";
+
+        const token =
+            getToken();
+
+
+        if (!token) {
+
+            window.location.href =
+                contextPath + "/login";
+
+            return;
 
         }
 
 
-        return String(value)
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#039;");
+        try {
+
+
+            const response =
+                await fetch(
+                    bookingsApi,
+                    {
+                        method: "GET",
+
+                        headers: {
+
+                            "Authorization":
+                                "Bearer " + token,
+
+                            "Content-Type":
+                                "application/json"
+
+                        }
+
+                    }
+                );
+
+
+            const result =
+                await response
+                    .json()
+                    .catch(
+                        function () {
+                            return null;
+                        }
+                    );
+
+
+
+            /* =================================================
+               SUCCESS
+               ================================================= */
+
+            if (
+                response.ok &&
+                result &&
+                result.status === "SUCCESS"
+            ) {
+
+
+                allBookings =
+                    result.responseData || [];
+
+
+                renderBookings(
+                    allBookings
+                );
+
+
+                return;
+
+            }
+
+
+
+            /* =================================================
+               ERROR
+               ================================================= */
+
+            const message =
+                result &&
+                result.message
+                    ? result.message
+                    : "Unable to retrieve bookings.";
+
+
+            showError(message);
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            showError(
+                "Unable to connect to the server."
+            );
+
+        }
 
     }
 
 
-    // Start API call
+
+    /* =========================================================
+       RENDER BOOKINGS
+       ========================================================= */
+
+    function renderBookings(
+        bookings
+    ) {
+
+
+        if (
+            !bookings ||
+            bookings.length === 0
+        ) {
+
+
+            bookingTableBody.innerHTML = `
+
+                <tr>
+
+                    <td
+                            colspan="9"
+                            class="empty-message">
+
+                        No bookings found.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+
+            bookingCount.innerText =
+                "0 bookings";
+
+
+            return;
+
+        }
+
+
+
+        let html = "";
+
+
+
+        bookings.forEach(
+            function (
+                booking,
+                index
+            ) {
+
+
+                /* ---------------------------------------------
+                   FIRST PASSENGER
+                   --------------------------------------------- */
+
+                let passengerName =
+                    "-";
+
+
+                if (
+                    booking.passengers &&
+                    booking.passengers.length > 0
+                ) {
+
+                    const passenger =
+                        booking.passengers[0];
+
+
+                    passengerName =
+                        passenger.firstName +
+                        " " +
+                        passenger.lastName;
+
+
+                    /*
+                     * If there are multiple passengers,
+                     * show the count as well.
+                     */
+
+                    if (
+                        booking.passengers.length > 1
+                    ) {
+
+                        passengerName +=
+                            " +" +
+                            (
+                                booking.passengers.length - 1
+                            );
+
+                    }
+
+                }
+
+
+
+                /* ---------------------------------------------
+                   STATUS CLASS
+                   --------------------------------------------- */
+
+                let statusClass =
+                    "status-other";
+
+
+                if (
+                    booking.bookingStatus ===
+                    "CONFIRMED" ||
+                    booking.bookingStatus ===
+                    "CONFIRMED_NOT_CHECKED_IN"
+                ) {
+
+                    statusClass =
+                        "status-confirmed";
+
+                }
+
+
+                if (
+                    booking.bookingStatus ===
+                    "CANCELLED"
+                ) {
+
+                    statusClass =
+                        "status-cancelled";
+
+                }
+
+
+                if (
+                    booking.bookingStatus ===
+                    "WAITLISTED"
+                ) {
+
+                    statusClass =
+                        "status-waitlisted";
+
+                }
+
+
+
+                /* ---------------------------------------------
+                   ROW
+                   --------------------------------------------- */
+
+                html += `
+
+                    <tr>
+
+                        <td>
+                            ${index + 1}
+                        </td>
+
+
+                        <td>
+
+                            <strong>
+                                ${booking.bookingId}
+                            </strong>
+
+                        </td>
+
+
+                        <td>
+
+                            ${passengerName}
+
+                        </td>
+
+
+                        <td>
+
+                            ${booking.userId || "-"}
+
+                        </td>
+
+
+                        <td>
+
+                            ${formatDateTime(
+                                booking.bookingDateTime
+                            )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${booking.seatClass || "-"}
+
+                        </td>
+
+
+                        <td>
+
+                            ${formatMoney(
+                                booking.amount
+                            )}
+
+                        </td>
+
+
+                        <td>
+
+                            <span
+                                    class="status-badge ${statusClass}">
+
+                                ${booking.bookingStatus}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                    href="${contextPath}/booking/${booking.bookingId}"
+                                    class="btn-details">
+
+                                Details
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        );
+
+
+        bookingTableBody.innerHTML =
+            html;
+
+
+        bookingCount.innerText =
+            bookings.length +
+            (
+                bookings.length === 1
+                    ? " booking"
+                    : " bookings"
+            );
+
+    }
+
+
+
+    /* =========================================================
+       FRONTEND SEARCH
+       ========================================================= */
+
+    bookingSearch.addEventListener(
+        "input",
+        function () {
+
+
+            const search =
+                this.value
+                    .trim()
+                    .toLowerCase();
+
+
+            /* Empty search */
+
+            if (!search) {
+
+                renderBookings(
+                    allBookings
+                );
+
+                return;
+
+            }
+
+
+
+            /* ---------------------------------------------
+               FILTER
+               --------------------------------------------- */
+
+            const filtered =
+                allBookings.filter(
+                    function (booking) {
+
+
+                        const bookingId =
+                            (
+                                booking.bookingId ||
+                                ""
+                            ).toLowerCase();
+
+
+                        const userId =
+                            (
+                                booking.userId ||
+                                ""
+                            ).toLowerCase();
+
+
+                        const status =
+                            (
+                                booking.bookingStatus ||
+                                ""
+                            ).toLowerCase();
+
+
+                        const seatClass =
+                            (
+                                booking.seatClass ||
+                                ""
+                            ).toLowerCase();
+
+
+                        let passengerName =
+                            "";
+
+
+                        if (
+                            booking.passengers &&
+                            booking.passengers.length > 0
+                        ) {
+
+                            passengerName =
+                                booking.passengers
+                                    .map(
+                                        function (passenger) {
+
+                                            return (
+                                                passenger.firstName +
+                                                " " +
+                                                passenger.lastName
+                                            );
+
+                                        }
+                                    )
+                                    .join(" ")
+                                    .toLowerCase();
+
+                        }
+
+
+
+                        return (
+                            bookingId.includes(search) ||
+                            userId.includes(search) ||
+                            status.includes(search) ||
+                            seatClass.includes(search) ||
+                            passengerName.includes(search)
+                        );
+
+                    }
+                );
+
+
+            renderBookings(
+                filtered
+            );
+
+        }
+    );
+
+
+
+    /* =========================================================
+       ERROR
+       ========================================================= */
+
+    function showError(
+        message
+    ) {
+
+
+        bookingTableBody.innerHTML = `
+
+            <tr>
+
+                <td
+                        colspan="9"
+                        class="empty-message">
+
+                    Unable to load bookings.
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        bookingCount.innerText =
+            "0 bookings";
+
+
+        document.getElementById(
+            "apiMessage"
+        ).innerHTML = `
+
+            <div class="alert alert-danger">
+
+                ${message}
+
+            </div>
+
+        `;
+
+    }
+
+
+
+    /* =========================================================
+       BACK BUTTON
+       ========================================================= */
+
+    document.getElementById(
+        "backButton"
+    ).href =
+        contextPath +
+        "/admin/flights/" +
+        encodeURIComponent(flightId);
+
+
+
+    /* =========================================================
+       LOGOUT
+       ========================================================= */
+
+    document.getElementById(
+        "logoutButton"
+    ).addEventListener(
+        "click",
+        function () {
+
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+
+            window.location.href =
+                contextPath + "/login";
+
+        }
+    );
+
+
+
+    /* =========================================================
+       START
+       ========================================================= */
 
     document.addEventListener(
         "DOMContentLoaded",
-        function() {
-
-            if (!flightId) {
-
-                document.getElementById(
-                    "loading"
-                ).style.display = "none";
-
-
-                document.getElementById(
-                    "errorMessage"
-                ).innerText =
-                    "Flight ID is missing.";
-
-
-                document.getElementById(
-                    "errorMessage"
-                ).style.display = "block";
-
-
-                return;
-            }
-
+        function () {
 
             loadBookings();
 
         }
     );
-
 
 </script>
 

@@ -1,10 +1,7 @@
 package com.crimsonlogic.arilinemanangmentsystem.controller.restcontroller;
 
 
-import com.crimsonlogic.arilinemanangmentsystem.dto.ApiResponse;
-import com.crimsonlogic.arilinemanangmentsystem.dto.BookingConfirmationResponse;
-import com.crimsonlogic.arilinemanangmentsystem.dto.BookingRequest;
-import com.crimsonlogic.arilinemanangmentsystem.dto.PasswordRequest;
+import com.crimsonlogic.arilinemanangmentsystem.dto.*;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.CancelType;
 import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
 import com.crimsonlogic.arilinemanangmentsystem.model.User;
@@ -67,15 +64,15 @@ public class BookingRestController {
     // =========================================================
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Booking>>> getMyBookings(
+    public ResponseEntity<ApiResponse<List<BookingDTO>>> getMyBookings(
             HttpServletRequest request) {
 
             // Get authenticated user from JWT.
             User user =
                     authService.getAuthenticatedUser(request);
 
-            List<Booking> bookings =
-                    bookingService.getAllBookingsForUser(
+            List<BookingDTO> bookings =
+                    bookingService.getAllBookingsForUserDTO(
                             user.getId()
                     );
 
@@ -96,12 +93,12 @@ public class BookingRestController {
     // =========================================================
 
     @GetMapping("/{bookingId}")
-    public ResponseEntity<ApiResponse<Booking>> getBookingById(
+    public ResponseEntity<ApiResponse<BookingDTO>> getBookingById(
             @PathVariable("bookingId") String bookingId) {
 
             // Retrieve booking.
-            Booking booking =
-                    bookingService.getBookingById(bookingId);
+        BookingDTO booking =
+                    bookingService.getBookingByIdDTO(bookingId);
 
             return ResponseEntity.ok(
                     new ApiResponse<>(

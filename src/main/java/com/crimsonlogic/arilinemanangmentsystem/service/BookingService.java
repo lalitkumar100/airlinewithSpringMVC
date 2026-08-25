@@ -1,6 +1,7 @@
 package com.crimsonlogic.arilinemanangmentsystem.service;
 
 import com.crimsonlogic.arilinemanangmentsystem.dto.BookingConfirmationResponse;
+import com.crimsonlogic.arilinemanangmentsystem.dto.BookingDTO;
 import com.crimsonlogic.arilinemanangmentsystem.dto.BookingRequest;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.BookingStatus;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.CancelType;
@@ -103,4 +104,12 @@ public interface BookingService {
     List<Booking> getFlightBookings(String flightId);
 
     void updateBookingStatus(String bookingId, BookingStatus status);
+
+
+    // New DTO methods
+    BookingDTO getBookingByIdDTO(String bookingId);
+
+    List<BookingDTO> getAllBookingsForUserDTO(String userId);
+
+    List<BookingDTO> getFlightBookingsDTO(String flightId);
 }

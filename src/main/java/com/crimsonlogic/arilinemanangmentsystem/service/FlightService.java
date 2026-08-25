@@ -21,7 +21,7 @@ public interface FlightService {
     boolean updateFlightStatus(String flightId, UpdateFlightStatusRequest request);
     boolean updateStatusOnly(String flightId, FlightStatus status);
     boolean updateScheduleOnly(String flightId, UpdateFlightScheduleRequest request);
-    public Flight addNewFlight(AddFlightRequest addnewFlightRequest);
+    public FlightDTO addNewFlight(AddFlightRequest addnewFlightRequest);
 
     List<Flight> searchFlights(String sourceAirport, String destinationAirport, LocalDate departureDate);
 

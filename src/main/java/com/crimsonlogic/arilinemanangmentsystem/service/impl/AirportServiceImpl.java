@@ -1,7 +1,7 @@
 package com.crimsonlogic.arilinemanangmentsystem.service.impl;
 
 import com.crimsonlogic.arilinemanangmentsystem.dto.AirportDTO;
-import com.crimsonlogic.arilinemanangmentsystem.repository.AirportRepository;
+import com.crimsonlogic.arilinemanangmentsystem.dao.AirportMapper;
 import com.crimsonlogic.arilinemanangmentsystem.exception.RecordNotFoundException;
 import com.crimsonlogic.arilinemanangmentsystem.model.Airport;
 import com.crimsonlogic.arilinemanangmentsystem.service.AirportService;
@@ -14,17 +14,17 @@ import java.util.stream.Collectors;
 @Service
 public class AirportServiceImpl implements AirportService {
 
-    private final AirportRepository airportRepository;
+    private final AirportMapper airportMapper;
 
-    public AirportServiceImpl(AirportRepository airportRepository) {
-        this.airportRepository = airportRepository;
+    public AirportServiceImpl(AirportMapper airportMapper) {
+        this.airportMapper = airportMapper;
     }
 
 
 
     @Override
     public List<Airport> getAllAirports() {
-        return airportRepository.findAll();
+        return airportMapper.findAllAirport();
     }
 
 
@@ -32,8 +32,12 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public Airport getAirportByCode(String airportCode) {
-        return airportRepository.findById(airportCode)
-                .orElseThrow(() -> new RecordNotFoundException("Airport not found with code: " + airportCode));
+        Airport airport =  airportMapper.findById(airportCode);
+
+        if(airport == null ){
+           throw  new RecordNotFoundException("Airport not found with code: " + airportCode);
+        }
+        return  airport;
     }
 
     @Override

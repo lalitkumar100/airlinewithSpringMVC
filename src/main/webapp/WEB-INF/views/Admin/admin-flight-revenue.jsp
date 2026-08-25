@@ -1,6 +1,4 @@
-<%@ page language="java"
-         contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,88 +8,132 @@
     <meta charset="UTF-8">
 
     <meta name="viewport"
-          content="width=device-width, initial-scale=1">
+          content="width=device-width, initial-scale=1.0">
 
-    <title>Flight Revenue</title>
+    <title>ABC Airline - Flight Revenue</title>
+
+
+    <!-- Bootstrap -->
+
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet">
+
 
     <style>
 
         body {
+            background-color: #f4f7fb;
             font-family: Arial, sans-serif;
-            background: #f5f6f8;
-            margin: 0;
-            padding: 30px;
         }
 
-        .container {
-            max-width: 800px;
-            margin: auto;
+        .navbar {
+            background-color: #071b3a;
         }
 
-        h2 {
-            color: #003366;
-        }
-
-        .card-container {
-            display: flex;
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            flex: 1;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
-
-        .card h4 {
-            margin-top: 0;
-            color: #666;
-        }
-
-        .amount {
+        .navbar-brand {
+            color: white !important;
             font-size: 24px;
             font-weight: bold;
         }
 
-        .booking {
-            color: #0d6efd;
+        .navbar-text {
+            color: white;
         }
 
-        .refund {
-            color: #dc3545;
+        .page-container {
+            max-width: 1100px;
+            margin: 40px auto;
         }
 
-        .net {
-            color: #198754;
+        .page-title {
+            color: #071b3a;
+            font-weight: bold;
+            margin-bottom: 5px;
         }
 
-        .message {
-            margin-top: 20px;
-            padding: 15px;
+        .page-subtitle {
+            color: #6c757d;
+        }
+
+        .btn-back {
+            background-color: white;
+            color: #071b3a;
+            border: 1px solid #071b3a;
+            padding: 8px 15px;
             border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
         }
 
-        .error {
-            background: #f8d7da;
-            color: #842029;
+        .btn-back:hover {
+            background-color: #071b3a;
+            color: white;
+        }
+
+        .revenue-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-top: 30px;
+
+            box-shadow:
+                    0 5px 20px
+                    rgba(0, 0, 0, 0.08);
+        }
+
+        .revenue-box {
+            background-color: #f8f9fa;
+            border-radius: 7px;
+            padding: 25px;
+            height: 100%;
+        }
+
+        .revenue-label {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .revenue-value {
+            color: #071b3a;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .net-revenue {
+            background-color: #071b3a;
+        }
+
+        .net-revenue .revenue-label,
+        .net-revenue .revenue-value {
+            color: white;
+        }
+
+        .flight-id {
+            color: #071b3a;
+            font-weight: bold;
+            font-size: 20px;
         }
 
         .loading {
             text-align: center;
-            margin-top: 30px;
+            color: #6c757d;
+            padding: 50px;
         }
 
-        .back-btn {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 10px 18px;
-            background: #003366;
+        .logout-btn {
+            border: 1px solid white;
             color: white;
-            text-decoration: none;
+            background: transparent;
+            padding: 5px 15px;
             border-radius: 5px;
+        }
+
+        .logout-btn:hover {
+            background-color: white;
+            color: #071b3a;
         }
 
     </style>
@@ -101,84 +143,203 @@
 
 <body>
 
-<div class="container">
 
-    <h2>Flight Revenue</h2>
+<!-- =========================================================
+     NAVBAR
+     ========================================================= -->
 
-    <p>
-        Flight ID:
-        <strong>${flightId}</strong>
-    </p>
+<nav class="navbar navbar-dark">
+
+    <div class="container">
+
+        <a
+                class="navbar-brand"
+                href="${pageContext.request.contextPath}/admin/menu">
+
+            ✈ ABC Airline
+
+        </a>
 
 
-    <!-- Loading -->
+        <div class="d-flex align-items-center gap-3">
 
-    <div id="loading" class="loading">
+            <span class="navbar-text">
+                Admin
+            </span>
+
+
+            <button
+                    type="button"
+                    id="logoutButton"
+                    class="logout-btn">
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+
+<!-- =========================================================
+     MAIN
+     ========================================================= -->
+
+<div class="container page-container">
+
+
+    <!-- HEADER -->
+
+    <div class="d-flex justify-content-between align-items-center">
+
+        <div>
+
+            <h2 class="page-title">
+                Flight Revenue
+            </h2>
+
+            <p class="page-subtitle mb-0">
+                Revenue information for this flight.
+            </p>
+
+        </div>
+
+
+        <a
+                id="backButton"
+                href="#"
+                class="btn-back">
+
+            ← Back to Flight
+
+        </a>
+
+    </div>
+
+
+
+    <!-- API MESSAGE -->
+
+    <div id="apiMessage"
+         class="mt-4">
+    </div>
+
+
+
+    <!-- LOADING -->
+
+    <div
+            id="loading"
+            class="revenue-card loading">
+
         Loading revenue...
+
     </div>
 
 
-    <!-- Error -->
 
-    <div id="error"
-         class="message error"
-         style="display:none;">
-    </div>
+    <!-- REVENUE -->
 
-
-    <!-- Revenue -->
-
-    <div id="revenue"
-         style="display:none;">
-
-        <div class="card-container">
-
-            <div class="card">
-
-                <h4>Total Booking Amount</h4>
-
-                <div id="bookingAmount"
-                     class="amount booking">
-                    ₹0.00
-                </div>
-
-            </div>
+    <div
+            id="revenueContent"
+            class="revenue-card d-none">
 
 
-            <div class="card">
+        <div class="mb-4">
 
-                <h4>Total Refund Amount</h4>
+            <div class="flight-id">
 
-                <div id="refundAmount"
-                     class="amount refund">
-                    ₹0.00
-                </div>
-
-            </div>
-
-
-            <div class="card">
-
-                <h4>Net Revenue</h4>
-
-                <div id="netRevenue"
-                     class="amount net">
-                    ₹0.00
-                </div>
+                Flight:
+                <span id="flightId"></span>
 
             </div>
 
         </div>
 
 
-        <a href="${pageContext.request.contextPath}/admin/flights"
-           class="back-btn">
+        <div class="row g-4">
 
-            Back to Flights
 
-        </a>
+            <!-- TOTAL BOOKING -->
+
+            <div class="col-md-4">
+
+                <div class="revenue-box">
+
+                    <div class="revenue-label">
+
+                        Total Booking Amount
+
+                    </div>
+
+                    <div
+                            id="totalBookingAmount"
+                            class="revenue-value">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TOTAL REFUND -->
+
+            <div class="col-md-4">
+
+                <div class="revenue-box">
+
+                    <div class="revenue-label">
+
+                        Total Refund Amount
+
+                    </div>
+
+                    <div
+                            id="totalRefundAmount"
+                            class="revenue-value">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- NET REVENUE -->
+
+            <div class="col-md-4">
+
+                <div class="revenue-box net-revenue">
+
+                    <div class="revenue-label">
+
+                        Net Revenue
+
+                    </div>
+
+                    <div
+                            id="netRevenue"
+                            class="revenue-value">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
 
     </div>
+
 
 </div>
 
@@ -186,238 +347,294 @@
 
 <script>
 
-    /*
-     * Flight ID from Spring MVC
-     */
 
-    const flightId =
-        "${flightId}";
-
-
-    /*
-     * Context path
-     */
+    /* =========================================================
+       CONTEXT
+       ========================================================= */
 
     const contextPath =
         "${pageContext.request.contextPath}";
 
 
-    /*
-     * API URL
-     */
+    /* =========================================================
+       GET FLIGHT ID
+       ========================================================= */
 
-    const apiUrl =
+    const pathParts =
+        window.location.pathname
+            .split("/")
+            .filter(
+                function (part) {
+                    return part.length > 0;
+                }
+            );
+
+
+    const flightId =
+        pathParts[pathParts.length - 2];
+
+
+
+    /* =========================================================
+       API
+       ========================================================= */
+
+    const revenueApi =
         contextPath +
         "/api/v1/admin/flights/" +
         encodeURIComponent(flightId) +
         "/revenue";
 
 
-    /*
-     * Format money
-     */
 
-    function formatAmount(amount) {
+    /* =========================================================
+       TOKEN
+       ========================================================= */
 
-        return "₹" +
-            Number(amount || 0).toLocaleString(
-                "en-IN",
-                {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                }
-            );
+    function getToken() {
+
+        return localStorage.getItem("token");
 
     }
 
 
-    /*
-     * Load revenue
-     */
+
+    /* =========================================================
+       FORMAT MONEY
+       ========================================================= */
+
+    function formatMoney(amount) {
+
+        return "₹ " +
+            Number(amount || 0)
+                .toLocaleString(
+                    "en-IN",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                );
+
+    }
+
+
+
+    /* =========================================================
+       LOAD REVENUE
+       ========================================================= */
 
     async function loadRevenue() {
 
+
+        const token =
+            getToken();
+
+
+        if (!token) {
+
+            window.location.href =
+                contextPath + "/login";
+
+            return;
+
+        }
+
+
         try {
 
-            const token =
-                localStorage.getItem("jwtToken");
-
-
-            /*
-             * No token
-             */
-
-            if (!token) {
-
-                window.location.href =
-                    contextPath +
-                    "/users/login";
-
-                return;
-
-            }
-
-
-            /*
-             * Call REST API
-             */
 
             const response =
                 await fetch(
-                    apiUrl,
+                    revenueApi,
                     {
                         method: "GET",
 
                         headers: {
 
-                            "Accept":
-                                "application/json",
-
                             "Authorization":
-                                "Bearer " + token
+                                "Bearer " + token,
+
+                            "Content-Type":
+                                "application/json"
 
                         }
+
                     }
                 );
 
 
-            /*
-             * Unauthorized
-             */
+            const result =
+                await response
+                    .json()
+                    .catch(
+                        function () {
+                            return null;
+                        }
+                    );
+
+
+
+            /* SUCCESS */
 
             if (
-                response.status === 401 ||
-                response.status === 403
+                response.ok &&
+                result &&
+                result.status === "SUCCESS"
             ) {
 
-                localStorage.removeItem(
-                    "jwtToken"
-                );
 
-                window.location.href =
-                    contextPath +
-                    "/users/login";
+                const data =
+                    result.responseData;
+
+
+                document.getElementById(
+                    "flightId"
+                ).innerText =
+                    data.flightId;
+
+
+                document.getElementById(
+                    "totalBookingAmount"
+                ).innerText =
+                    formatMoney(
+                        data.totalBookingAmount
+                    );
+
+
+                document.getElementById(
+                    "totalRefundAmount"
+                ).innerText =
+                    formatMoney(
+                        data.totalRefundAmount
+                    );
+
+
+                document.getElementById(
+                    "netRevenue"
+                ).innerText =
+                    formatMoney(
+                        data.netRevenue
+                    );
+
+
+                document.getElementById(
+                    "loading"
+                ).classList.add("d-none");
+
+
+                document.getElementById(
+                    "revenueContent"
+                ).classList.remove("d-none");
+
 
                 return;
 
             }
 
 
-            /*
-             * API error
-             */
 
-            if (!response.ok) {
+            /* ERROR */
 
-                throw new Error(
-                    "Unable to load revenue."
-                );
-
-            }
+            const message =
+                result &&
+                result.message
+                    ? result.message
+                    : "Unable to retrieve revenue.";
 
 
-            /*
-             * JSON response
-             */
-
-            const data =
-                await response.json();
+            showError(message);
 
 
-            console.log(
-                "Revenue:",
-                data
+        } catch (error) {
+
+            console.error(error);
+
+            showError(
+                "Unable to connect to the server."
             );
-
-
-            /*
-             * Display values
-             */
-
-            document.getElementById(
-                "bookingAmount"
-            ).textContent =
-                formatAmount(
-                    data.totalBookingAmount
-                );
-
-
-            document.getElementById(
-                "refundAmount"
-            ).textContent =
-                formatAmount(
-                    data.totalRefundAmount
-                );
-
-
-            document.getElementById(
-                "netRevenue"
-            ).textContent =
-                formatAmount(
-                    data.netRevenue
-                );
-
-
-            /*
-             * Hide loading
-             */
-
-            document.getElementById(
-                "loading"
-            ).style.display =
-                "none";
-
-
-            /*
-             * Show revenue
-             */
-
-            document.getElementById(
-                "revenue"
-            ).style.display =
-                "block";
-
-        }
-
-
-        catch (error) {
-
-            console.error(
-                error
-            );
-
-
-            document.getElementById(
-                "loading"
-            ).style.display =
-                "none";
-
-
-            const errorBox =
-                document.getElementById(
-                    "error"
-                );
-
-
-            errorBox.textContent =
-                error.message;
-
-
-            errorBox.style.display =
-                "block";
 
         }
 
     }
 
 
-    /*
-     * Start API call
-     */
 
-    loadRevenue();
+    /* =========================================================
+       ERROR
+       ========================================================= */
+
+    function showError(message) {
+
+        document.getElementById(
+            "loading"
+        ).classList.add("d-none");
+
+
+        document.getElementById(
+            "apiMessage"
+        ).innerHTML = `
+
+            <div class="alert alert-danger">
+
+                ${message}
+
+            </div>
+
+        `;
+
+    }
+
+
+
+    /* =========================================================
+       BACK
+       ========================================================= */
+
+    document.getElementById(
+        "backButton"
+    ).href =
+        contextPath +
+        "/admin/flights/" +
+        encodeURIComponent(flightId);
+
+
+
+    /* =========================================================
+       LOGOUT
+       ========================================================= */
+
+    document.getElementById(
+        "logoutButton"
+    ).addEventListener(
+        "click",
+        function () {
+
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+
+            window.location.href =
+                contextPath + "/login";
+
+        }
+    );
+
+
+
+    /* =========================================================
+       START
+       ========================================================= */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            loadRevenue();
+
+        }
+    );
 
 </script>
+
 
 </body>
 

@@ -1,5 +1,6 @@
 package com.crimsonlogic.arilinemanangmentsystem.service;
 
+import com.crimsonlogic.arilinemanangmentsystem.dto.PassengerDTO;
 import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
 import com.crimsonlogic.arilinemanangmentsystem.model.Passenger;
 import java.util.List;
@@ -29,5 +30,10 @@ public interface PassengerService {
     List<Passenger> getPassengersByBookingId(String bookingId);
 
     void cancelPassenger(String passengerId);
+
+
+    List<PassengerDTO> getPassengersByBookingIdDTO(String bookingId);
+
+    PassengerDTO getPassengerByIdDTO(String passengerId);
 
 }

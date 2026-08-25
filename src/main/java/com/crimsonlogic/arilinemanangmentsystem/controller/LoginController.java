@@ -8,9 +8,9 @@ package com.crimsonlogic.arilinemanangmentsystem.controller;
 	@Controller
 	public class LoginController {
 
-     @GetMapping("/users/login")
+     @GetMapping("/login")
      public String showLoginPage() {
-         return "login"; // Maps to login.jsp
+         return "user/login"; // Maps to login.jsp
      }
 
      @GetMapping("/logout")
@@ -29,6 +29,12 @@ package com.crimsonlogic.arilinemanangmentsystem.controller;
          
          return "redirect:/users/login";
      }
+     
+     @GetMapping("user/menu")
+     public String userMenu() {
+         return "user/user-menu"; // Maps to login.jsp
+     
+	}
 	}
 
 

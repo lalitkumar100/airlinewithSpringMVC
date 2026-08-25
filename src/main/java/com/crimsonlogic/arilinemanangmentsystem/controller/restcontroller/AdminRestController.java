@@ -32,11 +32,11 @@ public class AdminRestController {
     }
 
     @GetMapping("/flights")
-    public ResponseEntity<ApiResponse<List<Flight>>> getAllFlights() {
-        List<Flight> flights = flightService.getAllFlights();
+    public ResponseEntity<ApiResponse<List<FlightDTO>>> getAllFlights() {
+        List<FlightDTO> flights = flightService.getAllFlightsDTO();
 
         return ResponseEntity.ok(
-                new com.crimsonlogic.arilinemanangmentsystem.dto.ApiResponse<>(
+                new ApiResponse<>(
                         "SUCCESS",
                         "Flgiht retrieved successfully",
                         flights
@@ -45,12 +45,12 @@ public class AdminRestController {
     }
 
     @GetMapping("/flights/{id}")
-    public ResponseEntity<ApiResponse<Flight>> getFlightById(@PathVariable("id") String id) {
+    public ResponseEntity<ApiResponse<FlightDTO>> getFlightById(@PathVariable("id") String id) {
 
-        Flight flight = flightService.getFlightById(id);
+        FlightDTO flight = flightService.getFlightByIdDTO(id);
 
         return ResponseEntity.ok(
-                new com.crimsonlogic.arilinemanangmentsystem.dto.ApiResponse<>(
+                new ApiResponse<>(
                         "SUCCESS",
                         "Flgiht retrieved successfully",
                         flight
@@ -59,8 +59,8 @@ public class AdminRestController {
     }
 
     @GetMapping("/flights/{flightId}/bookings")
-    public ResponseEntity<ApiResponse<List<Booking>>> getFlightBookings(@PathVariable String flightId) {
-        List<Booking> bookings = bookingService.getFlightBookings(flightId);
+    public ResponseEntity<ApiResponse<List<BookingDTO>>> getFlightBookings(@PathVariable String flightId) {
+        List<BookingDTO> bookings = bookingService.getFlightBookingsDTO(flightId);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
@@ -87,10 +87,10 @@ public class AdminRestController {
     }
 
     @PostMapping("flights/add")
-    public  ResponseEntity<ApiResponse<Flight>> addNewFlgiht(
+    public  ResponseEntity<ApiResponse<FlightDTO>> addNewFlgiht(
             @Valid  @RequestBody AddFlightRequest addFlightRequest){
 
-        Flight newFlight = flightService.addNewFlight(addFlightRequest);
+        FlightDTO newFlight = flightService.addNewFlight(addFlightRequest);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(

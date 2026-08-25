@@ -1,8 +1,7 @@
 package com.crimsonlogic.arilinemanangmentsystem.service.impl;
 
 import com.crimsonlogic.arilinemanangmentsystem.dao.BookingMapper;
-import com.crimsonlogic.arilinemanangmentsystem.dto.BookingConfirmationResponse;
-import com.crimsonlogic.arilinemanangmentsystem.dto.BookingRequest;
+import com.crimsonlogic.arilinemanangmentsystem.dto.*;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.*;
 import com.crimsonlogic.arilinemanangmentsystem.exception.*;
 import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
@@ -868,6 +867,41 @@ public class BookingServiceImpl implements BookingService {
     }
 
 
+    @Override
+    @Transactional(readOnly = true)
+    public BookingDTO getBookingByIdDTO(String bookingId) {
+
+        Booking booking = getBookingById(bookingId);
+
+        return convertToBookingDTO(booking);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BookingDTO> getAllBookingsForUserDTO(String userId) {
+
+        List<Booking> bookings =
+                getAllBookingsForUser(userId);
+
+        return bookings.stream()
+                .map(this::convertToBookingDTO)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BookingDTO> getFlightBookingsDTO(String flightId) {
+
+        List<Booking> bookings =
+                getFlightBookings(flightId);
+
+        return bookings.stream()
+                .map(this::convertToBookingDTO)
+                .toList();
+    }
+
+
+
 
     @Override
     @Transactional
@@ -947,78 +981,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
 
-
-
-    /**
-     * Validates the authenticated user object.
-     *
-     * @param user authenticated user to validate
-     * @throws CustomException if the user is null
-     */
-    private void validateUser(User user) {
-
-        if (user == null) {
-            throw new NullValueException("User not found");
-        }
-    }
-
-    /**
-     * Validates the refund percentage.
-     *
-     * <p>
-     * The refund percentage is represented as a decimal value:
-     * {@code 1.0} means 100%, {@code 0.70} means 70% and
-     * {@code 0.0} means no refund.
-     * </p>
-     *
-     * @param refundPercentage refund percentage represented as
-     *                         a value between 0 and 1
-     * @throws CustomException if the supplied value is outside
-     *                         the valid range
-     */
-    private void validateRefundPercentage(
-            float refundPercentage) {
-
-        if (Float.isNaN(refundPercentage) ||
-                Float.isInfinite(refundPercentage) ||
-                refundPercentage < 0 ||
-                refundPercentage > 1) {
-
-            throw new CustomException(
-                    "Refund percentage must be between 0 and 1",
-                    HttpStatus.BAD_REQUEST
-            );
-        }
-    }
-
-    /**
-     * Verifies the supplied password against the authenticated user's
-     * stored password hash.
-     *
-     * @param user authenticated user whose password should be verified
-     * @param password plain-text password supplied for verification
-     * @throws PasswordVerificationException if the password is incorrect
-     */
-    private void verifyUserPassword(User user, String password) {
-
-        if (password == null || !user.verifyPassword(password)) {
-            throw new PasswordVerificationException(
-                    "Incorrect password"
-            );
-        }
-    }
-
-    private  void verifyUserBooking(Booking booking ,User user){
-        // Ensure that the authenticated user owns the booking.
-        if (booking.getUserbooked() == null ||
-                !booking.getUserbooked()
-                        .getId()
-                        .equals(user.getId())) {
-
-            throw new BookingAuthorizationException("You are not authorized to check in for this booking");
-        }
-    }
-
     @Override
     public int getBookedSeatCount(String flightId, SeatClass seatClass) {
 
@@ -1080,6 +1042,47 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
+    private BookingDTO convertToBookingDTO(Booking booking) {
+
+        FlightDTO flightDTO = null;
+
+        if (booking.getFlightBooked() != null) {
+
+            flightDTO =
+                    flightService.getFlightByIdDTO(
+                            booking.getFlightBooked().getFlightId()
+                    );
+        }
+
+        List<PassengerDTO> passengerDTOs = passengerService.getPassengersByBookingIdDTO(booking.getBookingId());
+
+
+
+        String userId = null;
+
+        if (booking.getUserbooked() != null) {
+            userId = booking.getUserbooked().getId();
+        }
+
+        String paymentId = null;
+
+        if (booking.getPayment() != null) {
+            paymentId = booking.getPayment().getPaymentId();
+        }
+
+        return new BookingDTO(
+                booking.getBookingId(),
+                passengerDTOs,
+                flightDTO,
+                booking.getBookingDateTime(),
+                booking.getBookingStatus(),
+                booking.getSeatClass(),
+                userId,
+                booking.getAmount(),
+                paymentId
+        );
+    }
+
     private  void cancelFullBooking(String bookingId){
 
         if (bookingId == null || bookingId.isBlank()) {
@@ -1119,5 +1122,55 @@ public class BookingServiceImpl implements BookingService {
                         + flightStatus,
                 HttpStatus.CONFLICT
         );
+    }
+
+
+    private  void verifyUserBooking(Booking booking ,User user){
+        // Ensure that the authenticated user owns the booking.
+        if (booking.getUserbooked() == null ||
+                !booking.getUserbooked()
+                        .getId()
+                        .equals(user.getId())) {
+
+            throw new BookingAuthorizationException("You are not authorized to check in for this booking");
+        }
+    }
+
+    private void verifyUserPassword(User user, String password) {
+
+        if (password == null || !user.verifyPassword(password)) {
+            throw new PasswordVerificationException(
+                    "Incorrect password"
+            );
+        }
+    }
+
+    private void validateRefundPercentage(
+            float refundPercentage) {
+
+        if (Float.isNaN(refundPercentage) ||
+                Float.isInfinite(refundPercentage) ||
+                refundPercentage < 0 ||
+                refundPercentage > 1) {
+
+            throw new CustomException(
+                    "Refund percentage must be between 0 and 1",
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+    }
+
+
+    /**
+     * Validates the authenticated user object.
+     *
+     * @param user authenticated user to validate
+     * @throws CustomException if the user is null
+     */
+    private void validateUser(User user) {
+
+        if (user == null) {
+            throw new NullValueException("User not found");
+        }
     }
 }

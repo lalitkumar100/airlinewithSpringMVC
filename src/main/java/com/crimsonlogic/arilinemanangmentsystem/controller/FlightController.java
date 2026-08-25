@@ -66,7 +66,7 @@ public class FlightController {
     public String showSearchForm(Model model) {
         List<Airport> airports = airportService.getAllAirports();
         model.addAttribute("airports", airports);
-        return "flight-search"; // Maps to flight-search.jsp
+        return "Flight/flight-search"; // Maps to flight-search.jsp
     }
     
     @GetMapping("/search")
@@ -89,6 +89,6 @@ public class FlightController {
         model.addAttribute("selectedDestination", destination);
         model.addAttribute("selectedDate", departureDate);
         
-        return "flight-search-results"; // Maps to flight-search-results.jsp
+        return "Flight/flight-search-results"; // Maps to flight-search-results.jsp
     }
 }
