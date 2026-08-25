@@ -42,7 +42,7 @@ public class Booking implements Comparable<Booking> {
     private LocalDateTime bookingDateTime;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "booking_status", length = 20)
+    @Column(name = "booking_status", length = 50)
     private BookingStatus bookingStatus;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)

@@ -1,6 +1,7 @@
 package com.crimsonlogic.arilinemanangmentsystem.controller.restcontroller;
 
 import com.crimsonlogic.arilinemanangmentsystem.dto.ApiResponse;
+import com.crimsonlogic.arilinemanangmentsystem.dto.FlightDTO;
 import com.crimsonlogic.arilinemanangmentsystem.dto.UpdateFlightStatusRequest;
 import com.crimsonlogic.arilinemanangmentsystem.dto.UpdateFlightScheduleRequest;
 import com.crimsonlogic.arilinemanangmentsystem.model.Flight;
@@ -29,8 +30,8 @@ public class FlightRestController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Flight>>> getAllFlights() {
-        List<Flight> flights = flightService.getAllFlights();
+    public ResponseEntity<ApiResponse<List<FlightDTO>>> getAllFlights() {
+        List<FlightDTO> flights = flightService.getAllFlightsDTO();
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
@@ -42,9 +43,9 @@ public class FlightRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<Flight>> getFlightById(@PathVariable("id") String id) {
+    public ResponseEntity<ApiResponse<FlightDTO>> getFlightById(@PathVariable("id") String id) {
 
-        Flight flight = flightService.getFlightById(id);
+        FlightDTO flight = flightService.getFlightByIdDTO(id);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
@@ -60,7 +61,7 @@ public class FlightRestController {
 
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<Flight>>> searchFlights(
+    public ResponseEntity<ApiResponse<List<FlightDTO>>> searchFlights(
             @RequestParam(value = "source", required = false) String source,
             @RequestParam(value = "destination", required = false) String destination,
             @RequestParam(value = "date", required = false)
@@ -74,7 +75,7 @@ public class FlightRestController {
                     new ApiResponse<>(
                             "SUCCESS",
                             "Flgihts retrieved successfully",
-                            flightService.getAllFlights()
+                            flightService.getAllFlightsDTO()
                     )
             );
 
@@ -87,8 +88,8 @@ public class FlightRestController {
             return ResponseEntity.badRequest().build();
         }
 
-        List<Flight> flights =
-                flightService.searchFlights(
+        List<FlightDTO> flights =
+                flightService.searchFlightsDTO(
                         source,
                         destination,
                         date

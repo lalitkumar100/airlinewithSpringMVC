@@ -64,9 +64,7 @@ public class Flight {
     @JsonIgnore
     private final List<Booking> bookings = new ArrayList<>();
 
-    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private final List<Ticket> tickets = new ArrayList<>();
+
 
     @Column(name = "base_fare")
     private double baseFare;
@@ -211,40 +209,6 @@ public class Flight {
 
 
 
-        /**
-
-
-
-         * Executes the displayAllTickets operation.
-
-
-
-         */
-
-
-
-        public void displayAllTickets() {
-
-            if (tickets.isEmpty()) {
-                System.out.println("\nNo Tickets Found.");
-                return;
-            }
-
-            Ticket.printHeader();
-
-            for (Ticket ticket : tickets) {
-                System.out.println(ticket.toRow());
-            }
-        }
-
-
-    /**
-
-
-     * Executes the cancelBooking operation.
-
-
-     */
 
 
     public void cancelBooking(Booking booking) {
@@ -252,11 +216,6 @@ public class Flight {
         bookings.remove(booking);
     }
 
-    /**
-
-     * Retrieves the nextwaitingbooking.
-
-     */
 
     public Booking getNextWaitingBooking() {
 
@@ -266,28 +225,8 @@ public class Flight {
         return null;
     }
 
-    /**
 
-     * Executes the cancelFlight operation.
 
-     */
-
-    public void cancelFlight() {
-
-        this.status = FlightStatus.CANCELLED;
-
-        // TODO:
-        // 1. Cancel all bookings
-        // 2. Cancel all tickets
-        // 3. Notify passengers
-        // 4. Process refunds
-    }
-
-    /**
-
-     * Executes the changeStatus operation.
-
-     */
 
     public void changeStatus(FlightStatus status) {
 
@@ -300,12 +239,6 @@ public class Flight {
 
      */
 
-    public void addTicket(Ticket ticket) {
-
-        if (ticket != null) {
-            tickets.add(ticket);
-        }
-    }
 
     /**
 
@@ -552,9 +485,7 @@ public class Flight {
 
      */
 
-    public List<Ticket> getTickets() {
-        return tickets;
-    }
+
 
     /**
 

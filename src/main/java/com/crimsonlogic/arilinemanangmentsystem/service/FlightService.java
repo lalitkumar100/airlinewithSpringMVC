@@ -1,6 +1,7 @@
 package com.crimsonlogic.arilinemanangmentsystem.service;
 
 import com.crimsonlogic.arilinemanangmentsystem.dto.AddFlightRequest;
+import com.crimsonlogic.arilinemanangmentsystem.dto.FlightDTO;
 import com.crimsonlogic.arilinemanangmentsystem.dto.UpdateFlightStatusRequest;
 import com.crimsonlogic.arilinemanangmentsystem.dto.UpdateFlightScheduleRequest;
 import com.crimsonlogic.arilinemanangmentsystem.model.Booking;
@@ -25,6 +26,12 @@ public interface FlightService {
     List<Flight> searchFlights(String sourceAirport, String destinationAirport, LocalDate departureDate);
 
     double calculateFare(String flightId, SeatClass seatClass);
+
+    List<FlightDTO> getAllFlightsDTO();
+
+    FlightDTO getFlightByIdDTO(String flightId);
+
+    public List<FlightDTO> searchFlightsDTO(String sourceAirport, String destinationAirport, LocalDate departureDate);
 
 
 

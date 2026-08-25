@@ -6,9 +6,7 @@ import com.crimsonlogic.arilinemanangmentsystem.dao.FlightMapper;
 import com.crimsonlogic.arilinemanangmentsystem.dao.PassengerMapper;
 import com.crimsonlogic.arilinemanangmentsystem.dao.PaymentMapper;
 import com.crimsonlogic.arilinemanangmentsystem.dao.RefundMapper;
-import com.crimsonlogic.arilinemanangmentsystem.dto.AddFlightRequest;
-import com.crimsonlogic.arilinemanangmentsystem.dto.UpdateFlightStatusRequest;
-import com.crimsonlogic.arilinemanangmentsystem.dto.UpdateFlightScheduleRequest;
+import com.crimsonlogic.arilinemanangmentsystem.dto.*;
 import com.crimsonlogic.arilinemanangmentsystem.exception.DBException;
 import com.crimsonlogic.arilinemanangmentsystem.exception.NullValueException;
 import com.crimsonlogic.arilinemanangmentsystem.exception.RecordNotFoundException;
@@ -164,6 +162,24 @@ public class FlightServiceImpl implements FlightService {
             throw new IllegalArgumentException("Error: Source airport, destination airport, and departure date are required.");
         }
         return flightMapper.searchFlightsByDate(sourceAirport.toUpperCase(), destinationAirport.toUpperCase(), departureDate);
+
+
+    }
+
+    @Override
+    public List<FlightDTO> searchFlightsDTO(
+            String sourceAirport,
+            String destinationAirport,
+            LocalDate departureDate) {
+
+        return searchFlights(
+                sourceAirport,
+                destinationAirport,
+                departureDate
+        )
+                .stream()
+                .map(this::convertToFlightDTO)
+                .toList();
     }
 
 
@@ -202,5 +218,53 @@ public class FlightServiceImpl implements FlightService {
         }
     }
 
+    @Override
+    public List<FlightDTO> getAllFlightsDTO() {
+
+        return getAllFlights()
+                .stream()
+                .map(this::convertToFlightDTO)
+                .toList();
+    }
+
+    @Override
+    public FlightDTO getFlightByIdDTO(String flightId) {
+
+        Flight flight = getFlightById(flightId);
+
+        return convertToFlightDTO(flight);
+    }
+
+
+
+    private FlightDTO convertToFlightDTO(Flight flight) {
+
+        AirportDTO sourceDTO =
+                airportService.getAirportByCodeDTO(
+                        flight.getSource().getAirportCode()
+                );
+
+        AirportDTO destinationDTO =
+                airportService.getAirportByCodeDTO(
+                        flight.getDestination().getAirportCode()
+                );
+
+        AircraftDTO aircraftDTO =
+                aircraftService.findByIdDTO(
+                        flight.getAircraft().getAircraftId()
+                );
+
+        return new FlightDTO(
+                flight.getFlightId(),
+                flight.getFlightCode(),
+                sourceDTO,
+                destinationDTO,
+                flight.getDepartureDateTime(),
+                flight.getArrivalDateTime(),
+                aircraftDTO,
+                flight.getBaseFare(),
+                flight.getStatus()
+        );
+    }
 
 }

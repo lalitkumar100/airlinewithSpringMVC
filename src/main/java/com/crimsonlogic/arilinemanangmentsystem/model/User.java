@@ -99,56 +99,11 @@ public class User {
         return this.password.equals(hashPassword(inputPassword));
     }
 
-    @Override
-    public String toString() {
-        return String.format("""
-            +-----------------------------------------------------------------------------------------------+
-            | %-18s | %-50s |
-            +-----------------------------------------------------------------------------------------------+
-            | %-18s | %-50s |
-            | %-18s | %-50s |
-            | %-18s | %-50s |
-            | %-18s | %-50s |
-            | %-18s | %-50s |
-            | %-18s | %-50s |
-            | %-18s | %-50s |
-            | %-18s | %-50s |
-            | %-18s | %-50s |
-            | %-18s | %-50s |
-            | %-18s | %-50s |
-            +-----------------------------------------------------------------------------------------------+
-            """,
-                "Field", "Value",
-                "ID", id,
-                "First Name", firstName,
-                "Last Name", lastName,
-                "Date of Birth", dateOfBirth,
-                "Gender", gender,
-                "Email", email,
-                "Phone Number", phoneNumber,
-                "Password", "********",
-                "Created At", createdAt,
-                "Updated At", updatedAt,
-                "Deleted", deleted
-        );
-    }
 
-    public static void printHeader() {
-        System.out.printf("%-5s %-15s %-15s %-12s %-10s %-30s %-15s%n",
-                "ID", "First Name", "Last Name", "DOB", "Gender", "Email", "Phone");
-        System.out.println("-----------------------------------------------------------------------------------------------");
-    }
 
-    public String toRow() {
-        return String.format("%-5s %-15s %-15s %-12s %-10s %-30s %-15s",
-                id,
-                firstName,
-                lastName,
-                dateOfBirth,
-                gender,
-                email,
-                phoneNumber);
-    }
+
+
+
 
     public String getId() {
         return id;

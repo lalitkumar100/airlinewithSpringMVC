@@ -70,7 +70,7 @@ public class AppConfig implements WebMvcConfigurer {
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/airline_management_system");
+        dataSource.setUrl("jdbc:mysql://localhost:3306/airline_management_system2");
         dataSource.setUsername("root");
         dataSource.setPassword("root");
         return dataSource;
@@ -88,21 +88,48 @@ public class AppConfig implements WebMvcConfigurer {
         return sessionFactory.getObject();
     }
 
+
+
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(dataSource());
-        em.setPackagesToScan("com.crimsonlogic.arilinemanangmentsystem.model");
+        LocalContainerEntityManagerFactoryBean em =
+                new LocalContainerEntityManagerFactoryBean();
 
-        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        em.setDataSource(dataSource());
+
+        em.setPackagesToScan(
+                "com.crimsonlogic.arilinemanangmentsystem.model"
+        );
+
+        HibernateJpaVendorAdapter vendorAdapter =
+                new HibernateJpaVendorAdapter();
+
         em.setJpaVendorAdapter(vendorAdapter);
 
         Properties jpaProperties = new Properties();
-        jpaProperties.setProperty("hibernate.hbm2ddl.auto", "validate");
-        jpaProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
-        jpaProperties.setProperty("hibernate.show_sql", "true");
-        jpaProperties.setProperty("hibernate.format_sql", "true");
+
+        jpaProperties.setProperty(
+                "hibernate.hbm2ddl.auto",
+                "none"
+        );
+
+        jpaProperties.setProperty(
+                "hibernate.dialect",
+                "org.hibernate.dialect.MySQL8Dialect"
+        );
+
+        jpaProperties.setProperty(
+                "hibernate.show_sql",
+                "true"
+        );
+
+        jpaProperties.setProperty(
+                "hibernate.format_sql",
+                "true"
+        );
+
         em.setJpaProperties(jpaProperties);
+
         return em;
     }
 

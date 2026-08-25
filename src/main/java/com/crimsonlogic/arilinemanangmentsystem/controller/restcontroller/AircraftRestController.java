@@ -1,5 +1,6 @@
 package com.crimsonlogic.arilinemanangmentsystem.controller.restcontroller;
 
+import com.crimsonlogic.arilinemanangmentsystem.dto.AircraftDTO;
 import com.crimsonlogic.arilinemanangmentsystem.dto.ApiResponse;
 import com.crimsonlogic.arilinemanangmentsystem.model.Aircraft;
 import com.crimsonlogic.arilinemanangmentsystem.service.AircraftService;
@@ -24,10 +25,10 @@ public class AircraftRestController {
     // =========================================================
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Aircraft>>> getAllAircraft() {
+    public ResponseEntity<ApiResponse<List<AircraftDTO>>> getAllAircraft() {
 
-        List<Aircraft> aircraftList =
-                aircraftService.findAllAircraft();
+        List<AircraftDTO> aircraftList =
+                aircraftService.findAllAircraftDTO();
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
@@ -44,11 +45,11 @@ public class AircraftRestController {
     // =========================================================
 
     @GetMapping("/{aircraftId}")
-    public ResponseEntity<ApiResponse<Aircraft>> getAircraftById(
+    public ResponseEntity<ApiResponse<AircraftDTO>> getAircraftById(
             @PathVariable String aircraftId) {
 
-        Aircraft aircraft =
-                aircraftService.findById(aircraftId);
+        AircraftDTO aircraft =
+                aircraftService.findByIdDTO(aircraftId);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(

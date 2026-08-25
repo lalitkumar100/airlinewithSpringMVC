@@ -1,5 +1,6 @@
 package com.crimsonlogic.arilinemanangmentsystem.controller.restcontroller;
 
+import com.crimsonlogic.arilinemanangmentsystem.dto.AirportDTO;
 import com.crimsonlogic.arilinemanangmentsystem.dto.ApiResponse;
 import com.crimsonlogic.arilinemanangmentsystem.model.Airport;
 import com.crimsonlogic.arilinemanangmentsystem.service.AirportService;
@@ -24,10 +25,10 @@ public class AirportRestController {
     // =========================================================
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<Airport>>> getAllAirportsRest() {
+    public ResponseEntity<ApiResponse<List<AirportDTO>>> getAllAirportsRest() {
 
-        List<Airport> airports =
-                airportService.getAllAirports();
+        List<AirportDTO> airports =
+                airportService.getAllAirportsDTO();
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
@@ -44,11 +45,11 @@ public class AirportRestController {
     // =========================================================
 
     @GetMapping("/{code}")
-    public ResponseEntity<ApiResponse<Airport>> getAirportByCodeRest(
+    public ResponseEntity<ApiResponse<AirportDTO>> getAirportByCodeRest(
             @PathVariable("code") String code) {
 
-        Airport airport =
-                airportService.getAirportByCode(code);
+        AirportDTO airport =
+                airportService.getAirportByCodeDTO(code);
 
         return ResponseEntity.ok(
                 new ApiResponse<>(
