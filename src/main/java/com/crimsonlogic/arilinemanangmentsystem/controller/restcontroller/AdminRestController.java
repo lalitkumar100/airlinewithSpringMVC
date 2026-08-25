@@ -22,13 +22,17 @@ public class AdminRestController {
     private final FlightReportService flightReportService;
     private final BookingService bookingService;
     private final FlightOrchestratorService flightOrchestratorService;
+    private final AirportService airportService;
+    private final AircraftService aircraftService;
 
-    public AdminRestController(TicketService ticketService, FlightService flightService, FlightReportService flightReportService, BookingService bookingService,  FlightOrchestratorService flightOrchestratorService) {
+    public AdminRestController(TicketService ticketService, FlightService flightService, FlightReportService flightReportService, BookingService bookingService,  FlightOrchestratorService flightOrchestratorService, AirportService airportService, AircraftService aircraftService) {
         this.ticketService = ticketService;
         this.flightService = flightService;
         this.flightReportService = flightReportService;
         this.bookingService = bookingService;
         this.flightOrchestratorService= flightOrchestratorService;
+        this.airportService = airportService;
+        this.aircraftService = aircraftService;
     }
 
     @GetMapping("/flights")
@@ -148,6 +152,22 @@ public class AdminRestController {
         flightOrchestratorService.updateFlightSchedule(flightId, request);
         return ResponseEntity.ok(
                 new ApiResponse<>("SUCCESS", "Flight schedule updated successfully", null)
+        );
+    }
+    
+    @PostMapping("/airports/add")
+    public ResponseEntity<ApiResponse<AirportDTO>> addAirport(@Valid @RequestBody AirportDTO airportDTO) {
+        AirportDTO newAirport = airportService.addAirport(airportDTO);
+        return ResponseEntity.status(org.springframework.http.HttpStatus.CREATED).body(
+                new ApiResponse<>("SUCCESS", "Airport added successfully", newAirport)
+        );
+    }
+
+    @PostMapping("/aircraft/add")
+    public ResponseEntity<ApiResponse<AircraftDTO>> addAircraft(@Valid @RequestBody AircraftDTO aircraftDTO) {
+        AircraftDTO newAircraft = aircraftService.addAircraft(aircraftDTO);
+        return ResponseEntity.status(org.springframework.http.HttpStatus.CREATED).body(
+                new ApiResponse<>("SUCCESS", "Aircraft added successfully", newAircraft)
         );
     }
 }

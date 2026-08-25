@@ -57,4 +57,24 @@ public class AircraftServiceImpl implements AircraftService {
                 aircraft.getCapacity()
         );
     }
+
+    @Override
+    public AircraftDTO addAircraft(AircraftDTO aircraftDTO) {
+        if (aircraftRepository.existsById(aircraftDTO.getAircraftId())) {
+            throw new com.crimsonlogic.arilinemanangmentsystem.exception.CustomException("Aircraft with ID " + aircraftDTO.getAircraftId() + " already exists.", org.springframework.http.HttpStatus.CONFLICT);
+        }
+        
+        Aircraft newAircraft = new Aircraft();
+        newAircraft.setAircraftId(aircraftDTO.getAircraftId());
+        newAircraft.setModel(aircraftDTO.getModel());
+        newAircraft.setCapacity(aircraftDTO.getCapacity());
+        
+        Aircraft saved = aircraftRepository.save(newAircraft);
+        
+        return new AircraftDTO(
+                saved.getAircraftId(),
+                saved.getModel(),
+                saved.getCapacity()
+        );
+    }
 }

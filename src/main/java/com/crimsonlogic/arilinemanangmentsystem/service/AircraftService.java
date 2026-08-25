@@ -16,4 +16,6 @@ public interface AircraftService {
     List<AircraftDTO> findAllAircraftDTO();
 
     AircraftDTO findByIdDTO(String aircraftId);
+    
+    AircraftDTO addAircraft(AircraftDTO aircraftDTO);
 }

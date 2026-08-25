@@ -69,4 +69,24 @@ public class AirportServiceImpl implements AirportService {
                 airport.getCity()
         );
     }
+    
+    @Override
+    public AirportDTO addAirport(AirportDTO airportDTO) {
+        if (airportMapper.findById(airportDTO.getAirportCode()) != null) {
+            throw new com.crimsonlogic.arilinemanangmentsystem.exception.CustomException("Airport with code " + airportDTO.getAirportCode() + " already exists.", org.springframework.http.HttpStatus.CONFLICT);
+        }
+        
+        Airport newAirport = new Airport();
+        newAirport.setAirportCode(airportDTO.getAirportCode());
+        newAirport.setAirportName(airportDTO.getAirportName());
+        newAirport.setCity(airportDTO.getCity());
+        
+        Airport saved = airportMapper.save(newAirport);
+        
+        return new AirportDTO(
+                saved.getAirportCode(),
+                saved.getAirportName(),
+                saved.getCity()
+        );
+    }
 }

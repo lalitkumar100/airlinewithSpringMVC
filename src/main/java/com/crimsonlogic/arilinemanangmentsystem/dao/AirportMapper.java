@@ -14,4 +14,6 @@ public interface AirportMapper extends Repository<Airport, String> {
 
     @Query("SELECT a FROM Airport a WHERE a.airportCode = ?1 AND a.deleted = false")
     Airport findById(String airportCode);
+    
+    Airport save(Airport airport);
 }

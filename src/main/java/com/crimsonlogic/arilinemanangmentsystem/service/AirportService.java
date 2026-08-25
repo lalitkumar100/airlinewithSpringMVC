@@ -11,4 +11,6 @@ public interface AirportService {
     List<AirportDTO> getAllAirportsDTO();
 
     AirportDTO getAirportByCodeDTO(String airportCode);
+    
+    AirportDTO addAirport(AirportDTO airportDTO);
 }

@@ -110,7 +110,7 @@ public class AppConfig implements WebMvcConfigurer {
 
         jpaProperties.setProperty(
                 "hibernate.hbm2ddl.auto",
-                "none"
+                "create"
         );
 
         jpaProperties.setProperty(
