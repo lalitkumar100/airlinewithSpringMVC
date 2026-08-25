@@ -1,31 +1,52 @@
 package com.crimsonlogic.arilinemanangmentsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Entity representing a Airport in the system.
- *
- * @author System Architect
- * @version 1.0
+ * Entity representing an Airport in the system.
  */
+@Entity
+@Table(name = "airport")
 public class Airport {
 
+    @Id
+    @Column(name = "airport_code", length = 3)
     private String airportCode;
+
+    @Column(name = "airport_name", nullable = false, length = 100)
     private String airportName;
+
+    @Column(nullable = false, length = 100)
     private String city;
 
-    /**
+    @OneToMany(mappedBy = "source")
+    @JsonIgnore
+    private List<Flight> departingFlights = new ArrayList<>();
 
-     * Executes the Airport operation.
+    @OneToMany(mappedBy = "destination")
+    @JsonIgnore
+    private List<Flight> arrivingFlights = new ArrayList<>();
 
-     */
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "is_deleted")
+    private boolean deleted;
 
     public Airport() {
     }
-
-    /**
-
-     * Executes the Airport operation.
-
-     */
 
     public Airport(String airportCode, String airportName, String city) {
         this.airportCode = airportCode;
@@ -33,48 +54,17 @@ public class Airport {
         this.city = city;
     }
 
-
-
-
-
-    /**
-
-
-
-
-
-     * Executes the printHeader operation.
-
-
-
-
-
-     */
-
-
-
-
-
     public static void printHeader() {
-
         System.out.printf(
                 "%-15s %-35s %-25s%n",
                 "Airport Code",
                 "Airport Name",
                 "City"
         );
-
         System.out.println("---------------------------------------------------------------------------");
     }
 
-    /**
-
-     * Executes the toRow operation.
-
-     */
-
     public String toRow() {
-
         return String.format(
                 "%-15s %-35s %-25s",
                 airportCode,
@@ -82,17 +72,9 @@ public class Airport {
                 city
         );
     }
-    /**
-     * Displays complete airport information.
-     *
-     * @return
-     */
-    @Override
-    /**
-     * Executes the toString operation.
-     */
-    public String toString() {
 
+    @Override
+    public String toString() {
         return String.format("""
         +-----------------------------------------------------------------------+
         | %-15s | %-45s |
@@ -109,70 +91,67 @@ public class Airport {
         );
     }
 
-
-    /**
-
-
-     * Retrieves the airportcode.
-
-
-     */
-
-
     public String getAirportCode() {
         return airportCode;
     }
-
-    /**
-
-     * Updates the airportcode.
-
-     */
 
     public void setAirportCode(String airportCode) {
         this.airportCode = airportCode;
     }
 
-    /**
-
-     * Retrieves the airportname.
-
-     */
-
     public String getAirportName() {
         return airportName;
     }
-
-    /**
-
-     * Updates the airportname.
-
-     */
 
     public void setAirportName(String airportName) {
         this.airportName = airportName;
     }
 
-    /**
-
-     * Retrieves the city.
-
-     */
-
     public String getCity() {
         return city;
     }
-
-    /**
-
-     * Updates the city.
-
-     */
 
     public void setCity(String city) {
         this.city = city;
     }
 
+    public List<Flight> getDepartingFlights() {
+        return departingFlights;
+    }
 
+    public void setDepartingFlights(List<Flight> departingFlights) {
+        this.departingFlights = departingFlights;
+    }
 
+    public List<Flight> getArrivingFlights() {
+        return arrivingFlights;
+    }
+
+    public void setArrivingFlights(List<Flight> arrivingFlights) {
+        this.arrivingFlights = arrivingFlights;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
 }

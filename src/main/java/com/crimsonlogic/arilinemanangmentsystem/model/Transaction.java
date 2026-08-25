@@ -4,6 +4,8 @@ import com.crimsonlogic.arilinemanangmentsystem.enumrator.PaymentMethod;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.TransactionStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 
 /**
@@ -12,24 +14,44 @@ import java.time.LocalDateTime;
  * @author System Architect
  * @version 1.0
  */
+@Entity
+@Table(name = "`transaction`")
 public class Transaction {
 
+    @Id
+    @Column(name = "transaction_id", length = 20)
     private String transactionId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_user_id")
     private User sender;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_user_id")
     private User receiver;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "from_payment_method", length = 20)
     private PaymentMethod fromPaymentMethod;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "to_payment_method", length = 20)
     private PaymentMethod toPaymentMethod;
 
+    @Column(name = "sender_upi", length = 100)
     private String senderUpi;      // null if Wallet
+    
+    @Column(name = "receiver_upi", length = 100)
     private String receiverUpi;    // null if Wallet
 
+    @Column(name = "amount")
     private double amount;
 
-
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 20)
     private TransactionStatus status;
 
+    @Column(name = "transaction_time")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime transactionTime;
 

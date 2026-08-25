@@ -2,24 +2,50 @@ package com.crimsonlogic.arilinemanangmentsystem.model;
 
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
 
+import javax.persistence.*;
+import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDateTime;
+
 /**
  * Entity representing a Payment in the system.
  *
  * @author System Architect
  * @version 1.0
  */
+@Entity
+@Table(name = "payment")
 public class Payment {
 
+    @Id
+    @Column(name = "payment_id", length = 20)
     private String paymentId;
 
+    @Column(name = "amount")
     private double amount;
 
+    @Column(name = "paid")
     private boolean paid;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id")
     private Booking booking;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transaction_id")
     private Transaction transaction;
 
+    @Column(name = "created_at", updatable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime createdAt;
+    
+    @Column(name = "updated_at")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "is_deleted")
+    private boolean deleted;
+    
     public Payment() {
     }
 

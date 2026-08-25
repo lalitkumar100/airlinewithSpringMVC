@@ -10,50 +10,80 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import com.crimsonlogic.arilinemanangmentsystem.enumrator.FlightStatus;
+import com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+
 /**
  * Entity representing a Flight in the system.
  *
  * @author System Architect
  * @version 1.0
  */
+@Entity
+@Table(name = "flight")
 public class Flight {
 
+    @Id
+    @Column(name = "flight_id", length = 20)
     private String flightId;
 
-    // Generated automatically
+    @Column(name = "flight_code", length = 20)
     private String flightCode;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "source_airport")
     private Airport source;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "destination_airport")
     private Airport destination;
 
-
+    @Column(name = "departure_time")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime departureDateTime;
     
+    @Column(name = "arrival_time")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime arrivalDateTime;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "aircraft_id")
     private Aircraft aircraft;
 
-
+    @OneToMany(mappedBy = "flightBooked", cascade = CascadeType.ALL)
     @JsonIgnore
-    private final ArrayList<Booking> bookings = new ArrayList<>();
+    private final List<Booking> bookings = new ArrayList<>();
 
-
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
     @JsonIgnore
-    private final ArrayList<Ticket> tickets = new ArrayList<>();
+    private final List<Ticket> tickets = new ArrayList<>();
 
+    @Column(name = "base_fare")
     private double baseFare;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 20)
     private FlightStatus status;
-
     
+    @Column(name = "created_at", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
     
+    @Column(name = "updated_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
     
+    @Column(name = "is_deleted")
     private boolean deleted;
 
 
@@ -512,7 +542,7 @@ public class Flight {
 
      */
 
-    public ArrayList<Booking> getBookings() {
+    public List<Booking> getBookings() {
         return bookings;
     }
 
@@ -522,7 +552,7 @@ public class Flight {
 
      */
 
-    public ArrayList<Ticket> getTickets() {
+    public List<Ticket> getTickets() {
         return tickets;
     }
 

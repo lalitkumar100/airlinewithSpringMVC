@@ -1,126 +1,31 @@
 package com.crimsonlogic.arilinemanangmentsystem.dao;
 
 import com.crimsonlogic.arilinemanangmentsystem.model.Passenger;
-import org.apache.ibatis.annotations.*;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Mapper
-public interface PassengerMapper {
+@org.springframework.stereotype.Repository
+public interface PassengerMapper extends org.springframework.data.repository.Repository<Passenger, String> {
+    Passenger save(Passenger entity);
 
-    /**
-     * Inserts a new passenger record into the database.
-     */
-    @Insert("""
-        INSERT INTO `passenger` (
-            `passenger_id`, 
-            `user_id`, 
-            `booking_id`, 
-            `first_name`, 
-            `last_name`, 
-            `date_of_birth`, 
-            `gender`, 
-            `email`, 
-            `phone_number`, 
-            `created_at`, 
-            `updated_at`, 
-            `is_deleted`, 
-            `is_cancelled`
-        ) VALUES (
-            #{passengerId}, 
-            #{user.id}, 
-            #{booking.bookingId}, 
-            #{firstName}, 
-            #{lastName}, 
-            #{dateOfBirth}, 
-            #{gender, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, 
-            #{email}, 
-            #{phoneNumber}, 
-            #{createdAt}, 
-            #{updatedAt}, 
-            #{deleted}, 
-            #{isCancelled}
-        )
-    """)
-    int insertPassenger(Passenger passenger);
 
-    /**
-     * Retrieves a specific passenger by their unique passenger ID.
-     */
-    @Select("""
-        SELECT 
-            p.passenger_id AS passengerId,
-            p.user_id AS userId,
-            p.booking_id AS bookingId,
-            p.first_name AS firstName,
-            p.last_name AS lastName,
-            p.date_of_birth AS dateOfBirth,
-            p.gender AS gender,
-            p.email AS email,
-            p.phone_number AS phoneNumber,
-            p.created_at AS createdAt,
-            p.updated_at AS updatedAt,
-            p.is_deleted AS deleted,
-            p.is_cancelled AS cancelled,
-            b.booking_id AS b_bookingId,
-            b.booking_datetime AS b_bookingDatetime,
-            b.seat_class AS b_seatClass,
-            b.amount AS b_amount,
-            b.booking_status AS b_bookingStatus
-        FROM `passenger` p
-        LEFT JOIN `booking` b ON p.booking_id = b.booking_id
-        WHERE p.passenger_id = #{passengerId} AND p.is_deleted = 0
-    """)
-    @Results(id = "PassengerResultMap", value = {
-            @Result(property = "passengerId", column = "passengerId"),
-            @Result(property = "firstName", column = "firstName"),
-            @Result(property = "lastName", column = "lastName"),
-            @Result(property = "dateOfBirth", column = "dateOfBirth"),
-            @Result(property = "gender", column = "gender", javaType = com.crimsonlogic.arilinemanangmentsystem.enumrator.Gender.class, typeHandler = org.apache.ibatis.type.EnumTypeHandler.class),
-            @Result(property = "email", column = "email"),
-            @Result(property = "phoneNumber", column = "phoneNumber"),
-            @Result(property = "createdAt", column = "createdAt"),
-            @Result(property = "updatedAt", column = "updatedAt"),
-            @Result(property = "deleted", column = "deleted"),
-            @Result(property = "isCancelled", column = "cancelled"),
-            @Result(property = "booking.bookingId", column = "b_bookingId"),
-            @Result(property = "booking.bookingDateTime", column = "b_bookingDatetime"),
-            @Result(property = "booking.seatClass", column = "b_seatClass", javaType = com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass.class, typeHandler = org.apache.ibatis.type.EnumTypeHandler.class),
-            @Result(property = "booking.amount", column = "b_amount"),
-            @Result(property = "booking.bookingStatus", column = "b_bookingStatus", javaType = com.crimsonlogic.arilinemanangmentsystem.enumrator.BookingStatus.class, typeHandler = org.apache.ibatis.type.EnumTypeHandler.class)
-    })
-    Passenger getPassengerById(String passengerId);
+    default int insertPassenger(Passenger passenger) {
+        save(passenger);
+        return 1;
+    }
 
-    /**
-     * Retrieves all active passengers associated with a specific booking ID.
-     */
-    @Select("""
-        SELECT 
-            p.passenger_id AS passengerId,
-            p.user_id AS userId,
-            p.booking_id AS bookingId,
-            p.first_name AS firstName,
-            p.last_name AS lastName,
-            p.date_of_birth AS dateOfBirth,
-            p.gender AS gender,
-            p.email AS email,
-            p.phone_number AS phoneNumber,
-            p.created_at AS createdAt,
-            p.updated_at AS updatedAt,
-            p.is_deleted AS deleted,
-            p.is_cancelled AS cancelled,
-            b.booking_id AS b_bookingId,
-            b.booking_datetime AS b_bookingDatetime,
-            b.seat_class AS b_seatClass,
-            b.amount AS b_amount,
-            b.booking_status AS b_bookingStatus
-        FROM `passenger` p
-        LEFT JOIN `booking` b ON p.booking_id = b.booking_id
-        WHERE p.booking_id = #{bookingId} AND p.is_deleted = 0
-    """)
-    @ResultMap("PassengerResultMap")
-    List<Passenger> getPassengersByBookingId(String bookingId);
+    @Query("SELECT p FROM Passenger p LEFT JOIN FETCH p.booking b WHERE p.passengerId = :passengerId AND p.deleted = false")
+    Passenger getPassengerById(@Param("passengerId") String passengerId);
 
-    @Update("UPDATE passenger SET is_cancelled = 1, updated_at = NOW() WHERE passenger_id = #{passengerId}")
+    @Query("SELECT p FROM Passenger p LEFT JOIN FETCH p.booking b WHERE b.bookingId = :bookingId AND p.deleted = false")
+    List<Passenger> getPassengersByBookingId(@Param("bookingId") String bookingId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Passenger p SET p.isCancelled = true WHERE p.passengerId = :passengerId")
     int cancelPassenger(@Param("passengerId") String passengerId);
 }

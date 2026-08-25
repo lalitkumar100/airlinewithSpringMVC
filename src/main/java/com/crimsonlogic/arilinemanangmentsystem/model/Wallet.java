@@ -7,28 +7,52 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.*;
+import com.crimsonlogic.arilinemanangmentsystem.enumrator.WalletStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import java.time.LocalDateTime;
+
 /**
  * Entity representing a Wallet in the system.
  *
  * @author System Architect
  * @version 1.0
  */
+@Entity
+@Table(name = "wallet")
 public class Wallet {
 
+    @Id
+    @Column(name = "wallet_id", length = 20)
     private String walletId;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
 
+    @Column(name = "balance")
     private double balance;
+    
+    @Column(name = "currency", length = 10)
     private String currency;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 20)
     private WalletStatus status;
 
+    @Column(name = "created_at", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
+    
+    @Column(name = "is_deleted")
     private boolean deleted;
 
 

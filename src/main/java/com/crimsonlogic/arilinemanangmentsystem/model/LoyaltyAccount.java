@@ -5,24 +5,46 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDateTime;
 
+import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 /**
  * Entity representing a LoyaltyAccount in the system.
  *
  * @author System Architect
  * @version 1.0
  */
+@Entity
+@Table(name = "loyalty_account")
 public class LoyaltyAccount {
 
+    @Id
+    @Column(name = "loyalty_account_id", length = 20)
+    private String loyaltyAccountId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonBackReference
+    private User user;
 
 
+
+    @Column(name = "points")
     private int points;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tier", length = 20)
     private LoyaltyTier tier;
 
+    @Column(name = "created_at", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
+    
+    @Column(name = "updated_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
+    
+    @Column(name = "is_deleted")
     private boolean deleted;
 
 
@@ -38,6 +60,22 @@ public class LoyaltyAccount {
     public LoyaltyAccount() {
         this.points = 0;
         this.tier = LoyaltyTier.SILVER;
+    }
+
+    public String getLoyaltyAccountId() {
+        return loyaltyAccountId;
+    }
+
+    public void setLoyaltyAccountId(String loyaltyAccountId) {
+        this.loyaltyAccountId = loyaltyAccountId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     /**

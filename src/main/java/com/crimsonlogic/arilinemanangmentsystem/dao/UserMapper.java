@@ -1,51 +1,28 @@
 package com.crimsonlogic.arilinemanangmentsystem.dao;
 
-
 import com.crimsonlogic.arilinemanangmentsystem.model.User;
-import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.type.EnumTypeHandler;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
-@Mapper
-public interface UserMapper {
+@org.springframework.stereotype.Repository
+public interface UserMapper extends org.springframework.data.repository.Repository<User, String> {
 
-    @Results(id = "UserResultMap", value = {
-            @Result(property = "id", column = "id"),
-            @Result(property = "firstName", column = "first_name"),
-            @Result(property = "lastName", column = "last_name"),
-            @Result(property = "dateOfBirth", column = "date_of_birth"),
-            @Result(property = "gender", column = "gender", javaType = com.crimsonlogic.arilinemanangmentsystem.enumrator.Gender.class, typeHandler = EnumTypeHandler.class),
-            @Result(property = "email", column = "email"),
-            @Result(property = "phoneNumber", column = "phone_number"),
-            @Result(property = "password", column = "password_hash"),
-            @Result(property = "createdAt", column = "created_at"),
-            @Result(property = "updatedAt", column = "updated_at"),
-            @Result(property = "deleted", column = "is_deleted"),
-            @Result(property = "role", column = "role", javaType = com.crimsonlogic.arilinemanangmentsystem.enumrator.Role.class, typeHandler = EnumTypeHandler.class),
-            @Result(property = "lastLoginAt", column = "last_login_at")
-    })
-    @Select("SELECT * FROM user WHERE email = #{email} AND is_deleted = 0")
+    @Query("SELECT u FROM User u WHERE u.email = ?1 AND u.deleted = false")
     User findByEmail(String email);
 
-    @ResultMap("UserResultMap")
-    @Select("SELECT * FROM user WHERE id = #{id} AND is_deleted = 0")
-    User findById(@Param("id") String id);
+    @Query("SELECT u FROM User u WHERE u.id = ?1 AND u.deleted = false")
+    User findById(String id);
 
-    @Insert("""
-        INSERT INTO user (
-            id, first_name, last_name, date_of_birth, gender, 
-            email, phone_number, password_hash, created_at, 
-            updated_at, is_deleted, role, last_login_at
-        ) VALUES (
-            #{id}, #{firstName}, #{lastName}, #{dateOfBirth}, 
-            #{gender, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, 
-            #{email}, #{phoneNumber}, #{password}, #{createdAt}, 
-            #{updatedAt}, #{deleted}, 
-            #{role, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
-            #{lastLoginAt}
-        )
-    """)
-    int insertUser(User user);
+    User save(User user);
 
-    @Update("UPDATE user SET last_login_at = #{lastLoginAt} WHERE id = #{id}")
-    int updateLastLogin(@Param("id") String id, @Param("lastLoginAt") java.time.LocalDateTime lastLoginAt);
+    default int insertUser(User user) {
+        save(user);
+        return 1;
+    }
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE User u SET u.lastLoginAt = ?2 WHERE u.id = ?1")
+    int updateLastLogin(String id, java.time.LocalDateTime lastLoginAt);
 }

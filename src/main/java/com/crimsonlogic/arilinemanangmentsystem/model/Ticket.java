@@ -2,8 +2,8 @@ package com.crimsonlogic.arilinemanangmentsystem.model;
 
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.SeatClass;
 import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
+import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.time.LocalDateTime;
 
 /**
@@ -12,25 +12,42 @@ import java.time.LocalDateTime;
  * @author System Architect
  * @version 1.0
  */
+@Entity
+@Table(name = "ticket")
 public class Ticket {
 
+    @Id
+    @Column(name = "ticket_id", length = 20)
     private String ticketId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id")
     private Booking booking;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 
+    @Column(name = "fare")
     private double fare;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "seat_class", length = 20)
     private SeatClass seatClass;
 
+    @Column(name = "seat_number", length = 10)
     private String seatNumber;
 
     // Audit fields
+    @Column(name = "created_at", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
+    
+    @Column(name = "updated_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
+    
+    @Column(name = "is_deleted")
     private boolean deleted;
 
     /**

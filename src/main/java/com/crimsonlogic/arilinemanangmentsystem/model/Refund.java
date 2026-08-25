@@ -3,6 +3,8 @@ package com.crimsonlogic.arilinemanangmentsystem.model;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.RefundStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -12,29 +14,45 @@ import java.util.ArrayList;
  * @author System Architect
  * @version 1.0
  */
+@Entity
+@Table(name = "refund")
 public class Refund {
 
     public static final ArrayList<Refund> refundArrayList = new ArrayList<>();
 
+    @Id
+    @Column(name = "refund_id", length = 20)
     private String refundId;
 
+    @Column(name = "refund_time")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime refundTime;
 
+    @Column(name = "amount")
     private double amount;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id")
     private Booking booking;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transaction_id")
     private Transaction transaction;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", length = 20)
     private RefundStatus status;
 
+    @Column(name = "reason")
     private String reason;
 
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "is_deleted")
     private boolean deleted;
 
 

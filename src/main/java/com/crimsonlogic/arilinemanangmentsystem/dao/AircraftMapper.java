@@ -1,42 +1,17 @@
 package com.crimsonlogic.arilinemanangmentsystem.dao;
 
 import com.crimsonlogic.arilinemanangmentsystem.model.Aircraft;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.Repository;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+@org.springframework.stereotype.Repository
+public interface AircraftMapper extends Repository<Aircraft, String> {
 
-import java.util.List;
-
-@Mapper
-public interface AircraftMapper {
-
-    @Select("""
-        SELECT
-            aircraft_id,
-            model,
-            capacity,
-            created_at,
-            updated_at,
-            is_deleted
-        FROM aircraft
-        WHERE is_deleted = 0
-        """)
+    @Query("SELECT a FROM Aircraft a WHERE a.deleted = false")
     List<Aircraft> findAllAircraft();
 
-
-    @Select("""
-        SELECT
-            aircraft_id,
-            model,
-            capacity,
-            created_at,
-            updated_at,
-            is_deleted
-        FROM aircraft
-        WHERE aircraft_id = #{aircraftId}
-          AND is_deleted = 0
-        """)
+    @Query("SELECT a FROM Aircraft a WHERE a.aircraftId = ?1 AND a.deleted = false")
     Aircraft findById(String aircraftId);
 }

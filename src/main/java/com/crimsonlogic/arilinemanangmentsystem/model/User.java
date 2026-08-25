@@ -4,79 +4,77 @@ import com.crimsonlogic.arilinemanangmentsystem.enumrator.Gender;
 import com.crimsonlogic.arilinemanangmentsystem.enumrator.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Entity representing a User in the system.
- *
- * @author System Architect
- * @version 1.0
  */
+@Entity
+@Table(name = "user")
 public class User {
 
+    @Id
+    @Column(length = 20)
     private String id;
 
+    @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
+
+    @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
-    // Change pattern to match "yyyy-MM-dd"
+
+    @Column(name = "date_of_birth", nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private Gender gender;
 
+    @Column(nullable = false, unique = true, length = 100)
     private String email;
 
+    @Column(name = "phone_number", nullable = false, length = 15)
     private String phoneNumber;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private Role role;
 
+    @Column(name = "password_hash", nullable = false)
     private String password;
 
-    // One user can have multiple UPI IDs
-    private List<String> upiIds = new ArrayList<>();
-
-    // Loyalty wallet (implement later)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Wallet wallet;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private LoyaltyAccount loyaltyAccount;
 
-    private  LoyaltyAccount loyaltyAccount;
-
-    // Audit fields
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
 
+    @Column(name = "last_login_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private  LocalDateTime lastLoginAt;
+    private LocalDateTime lastLoginAt;
 
-
-
+    @Column(name = "is_deleted")
     private boolean deleted;
-
-
-    /**
-
-
-     * Executes the User operation.
-
-
-     */
-
 
     public User() {
     }
-
-    /**
-
-     * Executes the hashPassword operation.
-
-     */
 
     public static String hashPassword(String password) {
         try {
@@ -96,28 +94,17 @@ public class User {
         }
     }
 
-    /**
-
-     * Executes the verifyPassword operation.
-
-     */
-
     public boolean verifyPassword(String inputPassword) {
         if (this.password == null) return false;
         return this.password.equals(hashPassword(inputPassword));
     }
 
-
     @Override
-    /**
-     * Executes the toString operation.
-     */
     public String toString() {
         return String.format("""
             +-----------------------------------------------------------------------------------------------+
             | %-18s | %-50s |
             +-----------------------------------------------------------------------------------------------+
-            | %-18s | %-50d |
             | %-18s | %-50s |
             | %-18s | %-50s |
             | %-18s | %-50s |
@@ -140,34 +127,17 @@ public class User {
                 "Email", email,
                 "Phone Number", phoneNumber,
                 "Password", "********",
-                "UPI IDs", upiIds.isEmpty() ? "None" : String.join(", ", upiIds),
                 "Created At", createdAt,
                 "Updated At", updatedAt,
                 "Deleted", deleted
         );
     }
 
-
-    /**
-
-
-     * Executes the printHeader operation.
-
-
-     */
-
-
     public static void printHeader() {
         System.out.printf("%-5s %-15s %-15s %-12s %-10s %-30s %-15s%n",
                 "ID", "First Name", "Last Name", "DOB", "Gender", "Email", "Phone");
         System.out.println("-----------------------------------------------------------------------------------------------");
     }
-
-    /**
-
-     * Executes the toRow operation.
-
-     */
 
     public String toRow() {
         return String.format("%-5s %-15s %-15s %-12s %-10s %-30s %-15s",
@@ -180,290 +150,60 @@ public class User {
                 phoneNumber);
     }
 
-  //display  all upi id
-
-
-    /**
-
-
-     * Retrieves the id.
-
-
-     */
-
-
     public String getId() {
         return id;
     }
-
-    /**
-
-     * Updates the id.
-
-     */
 
     public void setId(String id) {
         this.id = id;
     }
 
-    /**
-
-     * Retrieves the firstname.
-
-     */
-
     public String getFirstName() {
         return firstName;
     }
-
-    /**
-
-     * Updates the firstname.
-
-     */
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    /**
-
-     * Retrieves the lastname.
-
-     */
-
     public String getLastName() {
         return lastName;
     }
-
-    /**
-
-     * Updates the lastname.
-
-     */
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    /**
-
-     * Retrieves the dateofbirth.
-
-     */
-
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
-
-    /**
-
-     * Updates the dateofbirth.
-
-     */
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
-    /**
-
-     * Retrieves the gender.
-
-     */
-
     public Gender getGender() {
         return gender;
     }
-
-    /**
-
-     * Updates the gender.
-
-     */
 
     public void setGender(Gender gender) {
         this.gender = gender;
     }
 
-    /**
-
-     * Retrieves the email.
-
-     */
-
     public String getEmail() {
         return email;
     }
-
-    /**
-
-     * Updates the email.
-
-     */
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    /**
-
-     * Retrieves the phonenumber.
-
-     */
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    /**
-
-     * Updates the phonenumber.
-
-     */
-
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-    }
-
-    /**
-
-     * Retrieves the password.
-
-     */
-
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-
-     * Updates the password.
-
-     */
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    /**
-
-     * Retrieves the upiids.
-
-     */
-
-    public List<String> getUpiIds() {
-        return upiIds;
-    }
-
-    /**
-
-     * Updates the upiids.
-
-     */
-
-    public void setUpiIds(List<String> upiIds) {
-        this.upiIds = upiIds;
-    }
-
-    /**
-
-     * Retrieves the wallet.
-
-     */
-
-    public Wallet getWallet() {
-        return wallet;
-    }
-
-    /**
-
-     * Updates the wallet.
-
-     */
-
-    public void setWallet(Wallet wallet) {
-        this.wallet = wallet;
-    }
-
-    /**
-
-     * Retrieves the loyaltyaccount.
-
-     */
-
-    public LoyaltyAccount getLoyaltyAccount() {
-        return loyaltyAccount;
-    }
-
-    /**
-
-     * Updates the loyaltyaccount.
-
-     */
-
-    public void setLoyaltyAccount(LoyaltyAccount loyaltyAccount) {
-        this.loyaltyAccount = loyaltyAccount;
-    }
-
-    /**
-
-     * Retrieves the createdat.
-
-     */
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    /**
-
-     * Updates the createdat.
-
-     */
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    /**
-
-     * Retrieves the updatedat.
-
-     */
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    /**
-
-     * Updates the updatedat.
-
-     */
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    /**
-
-     * Executes the isDeleted operation.
-
-     */
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    /**
-
-     * Updates the deleted.
-
-     */
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public Role getRole() {
@@ -474,11 +214,59 @@ public class User {
         this.role = role;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Wallet getWallet() {
+        return wallet;
+    }
+
+    public void setWallet(Wallet wallet) {
+        this.wallet = wallet;
+    }
+
+    public LoyaltyAccount getLoyaltyAccount() {
+        return loyaltyAccount;
+    }
+
+    public void setLoyaltyAccount(LoyaltyAccount loyaltyAccount) {
+        this.loyaltyAccount = loyaltyAccount;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     public LocalDateTime getLastLoginAt() {
         return lastLoginAt;
     }
 
     public void setLastLoginAt(LocalDateTime lastLoginAt) {
         this.lastLoginAt = lastLoginAt;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

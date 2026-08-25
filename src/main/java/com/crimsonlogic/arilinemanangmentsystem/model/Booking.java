@@ -7,40 +7,72 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Entity representing a Booking in the system.
  *
  * @author System Architect
  * @version 1.0
  */
+@Entity
+@Table(name = "booking")
 public class Booking implements Comparable<Booking> {
 
+    @Id
+    @Column(name = "booking_id", length = 20)
     private String bookingId;
 
-    private ArrayList<Passenger> passengers = new ArrayList<>();
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Passenger> passengers = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "flight_id")
     private Flight flightBooked;
 
+    @Column(name = "booking_datetime")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime bookingDateTime;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "booking_status", length = 20)
     private BookingStatus bookingStatus;
 
-    private ArrayList<Ticket> tickets = new ArrayList<>();
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Ticket> tickets = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "seat_class", length = 20)
     private SeatClass seatClass;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User userbooked;
 
-
-
+    @Column(name = "amount")
     private double amount;
 
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Payment payment;
+    
+    @Column(name = "created_at", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
+    
+    @Column(name = "is_deleted")
     private boolean deleted;
 
 
@@ -224,7 +256,7 @@ public class Booking implements Comparable<Booking> {
 
      */
 
-    public ArrayList<Passenger> getPassengers() {
+    public List<Passenger> getPassengers() {
         return passengers;
     }
 
@@ -304,7 +336,7 @@ public class Booking implements Comparable<Booking> {
 
      */
 
-    public ArrayList<Ticket> getTickets() {
+    public List<Ticket> getTickets() {
         return tickets;
     }
 

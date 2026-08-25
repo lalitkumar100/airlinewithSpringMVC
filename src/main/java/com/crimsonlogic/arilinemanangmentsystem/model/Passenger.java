@@ -7,36 +7,68 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 /**
  * Entity representing a Passenger in the system.
  *
  * @author System Architect
  * @version 1.0
  */
+@Entity
+@Table(name = "passenger")
 public class Passenger {
 
+    @Id
+    @Column(name = "passenger_id", length = 20)
     private String passengerId;
 
     // Nullable if passenger is not a registered user
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "first_name", length = 50)
     private String firstName;
+    
+    @Column(name = "last_name", length = 50)
     private String lastName;
+    
+    @Column(name = "date_of_birth")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender", length = 20)
     private Gender gender;
 
+    @Column(name = "email", length = 100)
     private String email;
+    
+    @Column(name = "phone_number", length = 15)
     private String phoneNumber;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id")
     private Booking booking;
 
+    @Column(name = "created_at", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
+    
+    @Column(name = "updated_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
 
+    @Column(name = "is_deleted")
     private boolean deleted;
+    
+    @Column(name = "is_cancelled")
     private boolean isCancelled;
 
     // Registered User Passenger

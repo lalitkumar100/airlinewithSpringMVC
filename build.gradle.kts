@@ -32,14 +32,30 @@ dependencies {
 
     implementation("org.springframework:spring-webmvc:5.3.39")
     implementation("org.springframework:spring-jdbc:5.3.39")
+    implementation("org.springframework:spring-orm:5.3.39")
+    implementation("org.springframework.data:spring-data-jpa:2.7.18")
+
+    // =========================================================
+    // HIBERNATE
+    // =========================================================
+
+    implementation("org.hibernate:hibernate-core:5.6.15.Final")
+
 
 
     // =========================================================
-    // MYBATIS
+    // MYBATIS (Leaving unused as requested)
     // =========================================================
 
     implementation("org.mybatis:mybatis:3.5.19")
     implementation("org.mybatis:mybatis-spring:2.1.2")
+
+    // =========================================================
+    // SPRING DATA JPA & HIBERNATE
+    // =========================================================
+    implementation("org.springframework.data:spring-data-jpa:2.7.18")
+    implementation("org.hibernate:hibernate-core:5.6.15.Final")
+
 
 
     // =========================================================

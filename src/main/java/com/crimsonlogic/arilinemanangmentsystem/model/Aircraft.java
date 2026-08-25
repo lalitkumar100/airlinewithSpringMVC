@@ -1,33 +1,48 @@
 package com.crimsonlogic.arilinemanangmentsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Entity representing a Aircraft in the system.
- *
- * @author System Architect
- * @version 1.0
  */
+@Entity
+@Table(name = "aircraft")
 public class Aircraft {
 
+    @Id
+    @Column(name = "aircraft_id", length = 20)
     private String aircraftId;
 
+    @Column(nullable = false, length = 100)
     private String model;
 
+    @Column(nullable = false)
     private int capacity;
 
-    /**
+    @OneToMany(mappedBy = "aircraft")
+    @JsonIgnore
+    private List<Flight> flights = new ArrayList<>();
 
-     * Executes the Aircraft operation.
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
 
-     */
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "is_deleted")
+    private boolean deleted;
 
     public Aircraft() {
     }
-
-    /**
-
-     * Executes the Aircraft operation.
-
-     */
 
     public Aircraft(String aircraftId, String model, int capacity) {
         this.aircraftId = aircraftId;
@@ -35,48 +50,17 @@ public class Aircraft {
         this.capacity = capacity;
     }
 
-
-
-
-
-    /**
-
-
-
-
-
-     * Executes the printHeader operation.
-
-
-
-
-
-     */
-
-
-
-
-
     public static void printHeader() {
-
         System.out.printf(
                 "%-15s %-35s %-10s%n",
                 "Aircraft ID",
                 "Model",
                 "Capacity"
         );
-
         System.out.println("---------------------------------------------------------------");
     }
 
-    /**
-
-     * Executes the toRow operation.
-
-     */
-
     public String toRow() {
-
         return String.format(
                 "%-15s %-35s %-10d",
                 aircraftId,
@@ -86,11 +70,7 @@ public class Aircraft {
     }
 
     @Override
-    /**
-     * Executes the toString operation.
-     */
     public String toString() {
-
         return String.format("""
         +-----------------------------------------------------------------------+
         | %-18s | %-45s |
@@ -107,81 +87,66 @@ public class Aircraft {
         );
     }
 
-    /**
-     * Displays complete aircraft information.
-     */
-    /**
-     * Executes the displayInfo operation.
-     */
     public void displayInfo() {
-
         System.out.println("\n========== AIRCRAFT DETAILS ==========");
         System.out.println("Aircraft ID : " + aircraftId);
         System.out.println("Model       : " + model);
         System.out.println("Capacity    : " + capacity);
     }
 
-    /**
-
-     * Updates the aircraftid.
-
-     */
-
     public void setAircraftId(String aircraftId) {
         this.aircraftId = aircraftId;
     }
-
-    /**
-
-     * Retrieves the aircraftid.
-
-     */
 
     public String getAircraftId() {
         return aircraftId;
     }
 
-
-    /**
-
-
-     * Retrieves the model.
-
-
-     */
-
-
     public String getModel() {
         return model;
     }
-
-    /**
-
-     * Updates the model.
-
-     */
 
     public void setModel(String model) {
         this.model = model;
     }
 
-    /**
-
-     * Retrieves the capacity.
-
-     */
-
     public int getCapacity() {
         return capacity;
     }
 
-    /**
-
-     * Updates the capacity.
-
-     */
-
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    public List<Flight> getFlights() {
+        return flights;
+    }
+
+    public void setFlights(List<Flight> flights) {
+        this.flights = flights;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }

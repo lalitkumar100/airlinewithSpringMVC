@@ -1,26 +1,18 @@
 package com.crimsonlogic.arilinemanangmentsystem.dao;
 
 import com.crimsonlogic.arilinemanangmentsystem.model.LoyaltyAccount;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+import com.crimsonlogic.arilinemanangmentsystem.model.User;
+@org.springframework.stereotype.Repository
+public interface LoyaltyAccountMapper extends org.springframework.data.repository.Repository<LoyaltyAccount, String> {
+    LoyaltyAccount save(LoyaltyAccount entity);
 
-@Mapper
-public interface LoyaltyAccountMapper {
 
-    @Insert("""
-        INSERT INTO loyalty_account (
-            loyalty_account_id, user_id, points, tier, 
-            created_at, updated_at, is_deleted
-        ) VALUES (
-            #{loyaltyAccountId}, #{userId}, #{account.points}, 
-            #{account.tier, typeHandler=org.apache.ibatis.type.EnumTypeHandler}, 
-            #{account.createdAt}, #{account.updatedAt}, #{account.deleted}
-        )
-    """)
-     int insertLoyaltyAccount(
-            @Param("loyaltyAccountId") String loyaltyAccountId,
-            @Param("userId") String userId,
-            @Param("account") LoyaltyAccount account
-    );
+    default int insertLoyaltyAccount(String loyaltyAccountId, String userId, LoyaltyAccount account) {
+        account.setLoyaltyAccountId(loyaltyAccountId);
+        User user = new User();
+        user.setId(userId);
+        account.setUser(user);
+        save(account);
+        return 1;
+    }
 }

@@ -1,29 +1,17 @@
 package com.crimsonlogic.arilinemanangmentsystem.dao;
 
 import com.crimsonlogic.arilinemanangmentsystem.model.Airport;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.Repository;
 
 import java.util.List;
 
-@Mapper
-public interface AirportMapper {
+@org.springframework.stereotype.Repository
+public interface AirportMapper extends Repository<Airport, String> {
 
-    @Results(id = "AirportResultMap", value = {
-            @Result(property = "airportCode", column = "airport_code"),
-            @Result(property = "airportName", column = "airport_name"),
-            @Result(property = "city", column = "city")
-    })
-    @Select("SELECT airport_code, airport_name, city FROM airport WHERE is_deleted = 0")
+    @Query("SELECT a FROM Airport a WHERE a.deleted = false")
     List<Airport> findAllAirport();
 
-    @Results(id = "AirportDetailResultMap", value = {
-            @Result(property = "airportCode", column = "airport_code"),
-            @Result(property = "airportName", column = "airport_name"),
-            @Result(property = "city", column = "city")
-    })
-    @Select("SELECT airport_code, airport_name, city FROM airport WHERE airport_code = #{airportCode} AND is_deleted = 0")
+    @Query("SELECT a FROM Airport a WHERE a.airportCode = ?1 AND a.deleted = false")
     Airport findById(String airportCode);
 }

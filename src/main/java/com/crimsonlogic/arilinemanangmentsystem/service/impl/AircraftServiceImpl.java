@@ -4,7 +4,7 @@ import com.crimsonlogic.arilinemanangmentsystem.exception.RecordNotFoundExceptio
 import com.crimsonlogic.arilinemanangmentsystem.service.AircraftService;
 import org.springframework.stereotype.Service;
 
-import com.crimsonlogic.arilinemanangmentsystem.dao.AircraftMapper;
+import com.crimsonlogic.arilinemanangmentsystem.repository.AircraftRepository;
 import com.crimsonlogic.arilinemanangmentsystem.model.Aircraft;
 
 import java.util.List;
@@ -12,27 +12,21 @@ import java.util.List;
 @Service
 public class AircraftServiceImpl implements AircraftService {
 
-    private final AircraftMapper aircraftMapper;
+    private final AircraftRepository aircraftRepository;
 
-    public AircraftServiceImpl(AircraftMapper aircraftMapper) {
-        this.aircraftMapper = aircraftMapper;
+    public AircraftServiceImpl(AircraftRepository aircraftRepository) {
+        this.aircraftRepository = aircraftRepository;
     }
 
     @Override
     public List<Aircraft> findAllAircraft() {
-        return aircraftMapper.findAllAircraft();
+        return aircraftRepository.findAll();
     }
 
     @Override
     public Aircraft findById(String aircraftId) {
 
-        Aircraft aircraft =
-                aircraftMapper.findById(aircraftId);
-
-        if (aircraft == null) {
-            throw new RecordNotFoundException("Aircraft not found with ID: " + aircraftId);
-        }
-
-        return aircraft;
+        return aircraftRepository.findById(aircraftId)
+                .orElseThrow(() -> new RecordNotFoundException("Aircraft not found with ID: " + aircraftId));
     }
 }
