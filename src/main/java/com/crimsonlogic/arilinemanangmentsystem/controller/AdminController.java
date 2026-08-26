@@ -22,6 +22,15 @@ public class AdminController {
         this.aircraftService = aircraftService;
     }
 
+    // ==========================================
+    // AIRPORT & AIRCRAFT
+    // ==========================================
+
+    @GetMapping("/admin/airport-aircraft")
+    public String showAirportAircraftPage() {
+        return "Admin/airport-aircraft";
+    }
+
 
     // ==========================================
     // ADMIN FLIGHT LIST
@@ -104,6 +113,15 @@ public class AdminController {
         );
 
         return "admin-flight-revenue";
+    }
+
+    // ==========================================
+    // OVERALL REVENUE
+    // ==========================================
+
+    @GetMapping("/admin/revenue")
+    public String showOverallRevenue() {
+        return "Admin/admin-revenue";
     }
 
 

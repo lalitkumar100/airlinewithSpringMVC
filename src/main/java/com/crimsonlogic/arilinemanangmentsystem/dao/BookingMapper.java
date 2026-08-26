@@ -47,6 +47,12 @@ public interface BookingMapper extends org.springframework.data.repository.Repos
 
         @Query("SELECT b FROM Booking b WHERE b.flightBooked.flightId = :flightId AND b.deleted = false")
         List<Booking> getBookingsByFlightId(@Param("flightId") String flightId);
+        
+        @Query("SELECT COUNT(b) FROM Booking b WHERE b.deleted = false")
+        long getTotalBookingsCount();
+
+        @Query("SELECT COUNT(b) FROM Booking b WHERE b.bookingStatus = 'CANCELLED' AND b.deleted = false")
+        long getTotalCancelledBookingsCount();
     }
 
 

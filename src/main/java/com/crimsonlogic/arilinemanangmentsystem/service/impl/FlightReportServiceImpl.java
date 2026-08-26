@@ -24,11 +24,18 @@ public class FlightReportServiceImpl implements FlightReportService {
     private final PaymentService paymentService;
     private final RefundService refundService;
 
-    public FlightReportServiceImpl(FlightService flightService, BookingService bookingService, PaymentService paymentService, RefundService refundService) {
+    private final com.crimsonlogic.arilinemanangmentsystem.dao.BookingMapper bookingMapper;
+    private final com.crimsonlogic.arilinemanangmentsystem.dao.PaymentMapper paymentMapper;
+    private final com.crimsonlogic.arilinemanangmentsystem.dao.RefundMapper refundMapper;
+
+    public FlightReportServiceImpl(FlightService flightService, BookingService bookingService, PaymentService paymentService, RefundService refundService, com.crimsonlogic.arilinemanangmentsystem.dao.BookingMapper bookingMapper, com.crimsonlogic.arilinemanangmentsystem.dao.PaymentMapper paymentMapper, com.crimsonlogic.arilinemanangmentsystem.dao.RefundMapper refundMapper) {
         this.flightService = flightService;
         this.bookingService = bookingService;
         this.paymentService = paymentService;
         this.refundService = refundService;
+        this.bookingMapper = bookingMapper;
+        this.paymentMapper = paymentMapper;
+        this.refundMapper = refundMapper;
     }
 
     @Override
@@ -104,5 +111,25 @@ public class FlightReportServiceImpl implements FlightReportService {
                         seatClass
                 );
         return Math.max(0, classCapacity - bookedSeats);
+    }
+    
+    @Override
+    public com.crimsonlogic.arilinemanangmentsystem.dto.AirlineRevenueDTO getOverallRevenueReport() {
+        long totalBookings = bookingMapper.getTotalBookingsCount();
+        long totalCancelled = bookingMapper.getTotalCancelledBookingsCount();
+        Double totalBookingAmt = paymentMapper.getTotalBookingAmount();
+        Double totalRefundAmt = refundMapper.getTotalRefundAmount();
+        
+        double bookingSum = (totalBookingAmt != null) ? totalBookingAmt : 0.0;
+        double refundSum = (totalRefundAmt != null) ? totalRefundAmt : 0.0;
+        double netRevenue = bookingSum - refundSum;
+        
+        return new com.crimsonlogic.arilinemanangmentsystem.dto.AirlineRevenueDTO(
+            totalBookings,
+            totalCancelled,
+            bookingSum,
+            refundSum,
+            netRevenue
+        );
     }
 }

@@ -16,5 +16,8 @@ public interface RefundMapper extends org.springframework.data.repository.Reposi
 
     @Query("SELECT r FROM Refund r WHERE r.booking.bookingId = :bookingId AND r.deleted = false")
     Refund getRefundByBookingId(@Param("bookingId") String bookingId);
+    
+    @Query("SELECT SUM(r.amount) FROM Refund r WHERE r.deleted = false")
+    Double getTotalRefundAmount();
 }
 

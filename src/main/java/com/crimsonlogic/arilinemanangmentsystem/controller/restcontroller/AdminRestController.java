@@ -170,4 +170,16 @@ public class AdminRestController {
                 new ApiResponse<>("SUCCESS", "Aircraft added successfully", newAircraft)
         );
     }
+    
+    @GetMapping("/revenue/overall")
+    public ResponseEntity<ApiResponse<AirlineRevenueDTO>> getOverallRevenue() {
+        AirlineRevenueDTO report = flightReportService.getOverallRevenueReport();
+        return ResponseEntity.ok(
+                new ApiResponse<>(
+                        "SUCCESS",
+                        "Overall revenue retrieved successfully",
+                        report
+                )
+        );
+    }
 }

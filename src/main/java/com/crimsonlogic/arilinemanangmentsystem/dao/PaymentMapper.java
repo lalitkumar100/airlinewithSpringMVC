@@ -24,4 +24,7 @@ public interface PaymentMapper extends org.springframework.data.repository.Repos
 
     @Query("SELECT p FROM Payment p WHERE p.deleted = false ORDER BY p.createdAt DESC")
     List<Payment> getAllPayments();
+    
+    @Query("SELECT SUM(p.amount) FROM Payment p WHERE p.deleted = false")
+    Double getTotalBookingAmount();
 }
