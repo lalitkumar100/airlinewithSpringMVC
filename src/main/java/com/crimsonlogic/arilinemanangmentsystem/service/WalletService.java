@@ -32,5 +32,5 @@ public interface WalletService {
             String reason
     );
 
-  ;
+    void addMoneyToWallet(String userId, double amount);
 }

@@ -305,6 +305,19 @@ public class WalletServiceImpl implements WalletService {
                 reason
         );
     }
+    
+    @Override
+    @Transactional
+    public void addMoneyToWallet(String userId, double amount) {
+        if (amount <= 0) {
+            throw new TransactionException("Amount to add must be greater than zero.");
+        }
+        
+        Wallet wallet = walletMapper.getWalletByUserId(userId);
+        validateWalletActive(wallet, userId);
+        
+        walletMapper.updateWalletBalance(wallet.getWalletId(), amount);
+    }
 
 
 
