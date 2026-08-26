@@ -2,9 +2,16 @@ package com.crimsonlogic.arilinemanangmentsystem.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+/**
+ * Entity class representing a error response in the system.
+ * Maps to the corresponding database table or domain object.
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL) // Hides stackTrace field if it's null (e.g., in production)
 public class ErrorResponse {
     private int statusCode;
+    /**
+     * The message.
+     */
     private String message;
     private String stackTrace; // New field for development mode
     private long timestamp;

@@ -4,6 +4,11 @@ import com.crimsonlogic.arilinemanangmentsystem.model.LoyaltyAccount;
 import com.crimsonlogic.arilinemanangmentsystem.model.User;
 @org.springframework.stereotype.Repository
 public interface LoyaltyAccountMapper extends org.springframework.data.repository.Repository<LoyaltyAccount, String> {
+    /**
+     * Action for save.
+     * @param entity input parameter
+     * @return LoyaltyAccount output
+     */
     LoyaltyAccount save(LoyaltyAccount entity);
 
 

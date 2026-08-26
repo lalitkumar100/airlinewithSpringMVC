@@ -25,6 +25,9 @@ import java.util.UUID;
 @Service
 public class PassengerServiceImpl implements PassengerService {
 
+    /**
+     * The passenger mapper.
+     */
     private final PassengerMapper passengerMapper;
 
     public PassengerServiceImpl(PassengerMapper passengerMapper) {
@@ -33,6 +36,12 @@ public class PassengerServiceImpl implements PassengerService {
 
 
 
+    /**
+     * Creates or saves save passengers for booking.
+     * @param booking the booking
+     * @param passengers the passengers
+     * @return List<Passenger> the result of the operation
+     */
     @Override
     @Transactional
     public List<Passenger> savePassengersForBooking(Booking booking, List<Passenger> passengers) {
@@ -84,6 +93,11 @@ public class PassengerServiceImpl implements PassengerService {
 
 
 
+    /**
+     * Retrieves the passenger by id.
+     * @param passengerId the passenger id
+     * @return Passenger the result of the operation
+     */
     @Override
     public Passenger getPassengerById(String passengerId) {
 
@@ -98,11 +112,20 @@ public class PassengerServiceImpl implements PassengerService {
         return passenger;
     }
 
+    /**
+     * Retrieves the passengers by booking id.
+     * @param bookingId the booking id
+     * @return List<Passenger> the result of the operation
+     */
     @Override
     public List<Passenger> getPassengersByBookingId(String bookingId) {
         return passengerMapper.getPassengersByBookingId(bookingId);
     }
 
+    /**
+     * Executes the cancel passenger operation.
+     * @param passengerId the passenger id
+     */
     @Override
     public void cancelPassenger(String passengerId) {
 
@@ -118,6 +141,11 @@ public class PassengerServiceImpl implements PassengerService {
             throw new DBException( "Failed to cancel passenger" );
         }
     }
+    /**
+     * Retrieves the passenger by id dto.
+     * @param passengerId the passenger id
+     * @return PassengerDTO the result of the operation
+     */
     @Override
     public PassengerDTO getPassengerByIdDTO(String passengerId) {
 
@@ -126,6 +154,11 @@ public class PassengerServiceImpl implements PassengerService {
         return convertToDTO(passenger);
     }
 
+    /**
+     * Retrieves the passengers by booking id dto.
+     * @param bookingId the booking id
+     * @return List<PassengerDTO> the result of the operation
+     */
     @Override
     public List<PassengerDTO> getPassengersByBookingIdDTO(String bookingId) {
 
@@ -136,6 +169,11 @@ public class PassengerServiceImpl implements PassengerService {
                 .toList();
     }
 
+    /**
+     * Executes the convert to dto operation.
+     * @param passenger the passenger
+     * @return PassengerDTO the result of the operation
+     */
     private PassengerDTO convertToDTO(Passenger passenger) {
 
         return new PassengerDTO(

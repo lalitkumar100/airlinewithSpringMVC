@@ -25,6 +25,9 @@ import java.util.List;
 @Table(name = "booking")
 public class Booking implements Comparable<Booking> {
 
+    /**
+     * The booking id.
+     */
     @Id
     @Column(name = "booking_id", length = 20)
     private String bookingId;
@@ -33,14 +36,23 @@ public class Booking implements Comparable<Booking> {
     @JsonIgnore
     private List<Passenger> passengers = new ArrayList<>();
 
+    /**
+     * The flight booked.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flight_id")
     private Flight flightBooked;
 
+    /**
+     * The booking date time.
+     */
     @Column(name = "booking_datetime")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime bookingDateTime;
 
+    /**
+     * The booking status.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "booking_status", length = 50)
     private BookingStatus bookingStatus;
@@ -49,29 +61,50 @@ public class Booking implements Comparable<Booking> {
     @JsonIgnore
     private List<Ticket> tickets = new ArrayList<>();
 
+    /**
+     * The seat class.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "seat_class", length = 20)
     private SeatClass seatClass;
 
+    /**
+     * The userbooked.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User userbooked;
 
+    /**
+     * The amount.
+     */
     @Column(name = "amount")
     private double amount;
 
+    /**
+     * The payment.
+     */
     @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL)
     @JsonIgnore
     private Payment payment;
     
+    /**
+     * The created at.
+     */
     @Column(name = "created_at", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
 
+    /**
+     * The updated at.
+     */
     @Column(name = "updated_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
     
+    /**
+     * The deleted.
+     */
     @Column(name = "is_deleted")
     private boolean deleted;
 
@@ -470,10 +503,18 @@ public class Booking implements Comparable<Booking> {
         this.deleted = deleted;
     }
 
+    /**
+     * Retrieves the userbooked.
+     * @return User the result of the operation
+     */
     public User getUserbooked() {
         return userbooked;
     }
 
+    /**
+     * Sets the userbooked.
+     * @param userbooked the userbooked
+     */
     public void setUserbooked(User userbooked) {
         this.userbooked = userbooked;
     }

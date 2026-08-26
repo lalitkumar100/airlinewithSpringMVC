@@ -46,6 +46,10 @@ public class AppConfig implements WebMvcConfigurer {
     }
 
 
+    /**
+     * Action for addInterceptors.
+     * @param registry input parameter
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         // 1. Interceptor for Regular Users & protected web routes

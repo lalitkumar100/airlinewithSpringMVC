@@ -32,6 +32,11 @@ public interface PassengerService {
     void cancelPassenger(String passengerId);
 
 
+    /**
+     * Retrieves the passengers by booking id dto.
+     * @param bookingId the booking id
+     * @return List<PassengerDTO> the result of the operation
+     */
     List<PassengerDTO> getPassengersByBookingIdDTO(String bookingId);
 
     PassengerDTO getPassengerByIdDTO(String passengerId);

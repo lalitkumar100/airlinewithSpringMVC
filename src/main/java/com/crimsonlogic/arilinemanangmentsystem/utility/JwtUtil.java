@@ -20,6 +20,13 @@ public class JwtUtil {
 
 
     // New overloaded generateToken method including lastLoginAt claim
+    /**
+     * Action for generateToken.
+     * @param email input parameter
+     * @param role input parameter
+     * @param lastLoginAt input parameter
+     * @return String output
+     */
     public String generateToken(String email, String role, String lastLoginAt) {
         return Jwts.builder()
                 .subject(email)
@@ -32,6 +39,11 @@ public class JwtUtil {
     }
 
     // Validate and extract claims from token
+    /**
+     * Action for extractAllClaims.
+     * @param token input parameter
+     * @return Claims output
+     */
     public Claims extractAllClaims(String token) {
         return Jwts.parser()
                 .verifyWith(key)
@@ -41,15 +53,31 @@ public class JwtUtil {
     }
 
     // Extract email from token
+    /**
+     * Action for extractEmail.
+     * @param token input parameter
+     * @return String output
+     */
     public String extractEmail(String token) {
         return extractAllClaims(token).getSubject();
     }
 
     // Extract specific claim (like lastLoginAt)
+    /**
+     * Action for extractClaim.
+     * @param token input parameter
+     * @param claimKey input parameter
+     * @return String output
+     */
     public String extractClaim(String token, String claimKey) {
         return extractAllClaims(token).get(claimKey, String.class);
     }
 
+    /**
+     * Action for validateToken.
+     * @param token input parameter
+     * @return boolean output
+     */
     public boolean validateToken(String token) {
         try {
             extractAllClaims(token);

@@ -33,29 +33,50 @@ import java.util.List;
 @Table(name = "flight")
 public class Flight {
 
+    /**
+     * The flight id.
+     */
     @Id
     @Column(name = "flight_id", length = 20)
     private String flightId;
 
+    /**
+     * The flight code.
+     */
     @Column(name = "flight_code", length = 20)
     private String flightCode;
 
+    /**
+     * The source.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source_airport")
     private Airport source;
     
+    /**
+     * The destination.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "destination_airport")
     private Airport destination;
 
+    /**
+     * The departure date time.
+     */
     @Column(name = "departure_time")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime departureDateTime;
     
+    /**
+     * The arrival date time.
+     */
     @Column(name = "arrival_time")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime arrivalDateTime;
 
+    /**
+     * The aircraft.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "aircraft_id")
     private Aircraft aircraft;
@@ -66,21 +87,36 @@ public class Flight {
 
 
 
+    /**
+     * The base fare.
+     */
     @Column(name = "base_fare")
     private double baseFare;
 
+    /**
+     * The status.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 20)
     private FlightStatus status;
     
+    /**
+     * The created at.
+     */
     @Column(name = "created_at", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
     
+    /**
+     * The updated at.
+     */
     @Column(name = "updated_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
     
+    /**
+     * The deleted.
+     */
     @Column(name = "is_deleted")
     private boolean deleted;
 
@@ -211,12 +247,20 @@ public class Flight {
 
 
 
+    /**
+     * Executes the cancel booking operation.
+     * @param booking the booking
+     */
     public void cancelBooking(Booking booking) {
 
         bookings.remove(booking);
     }
 
 
+    /**
+     * Retrieves the next waiting booking.
+     * @return Booking the result of the operation
+     */
     public Booking getNextWaitingBooking() {
 
         // TODO:
@@ -228,6 +272,10 @@ public class Flight {
 
 
 
+    /**
+     * Executes the change status operation.
+     * @param status the status
+     */
     public void changeStatus(FlightStatus status) {
 
         this.status = status;

@@ -13,9 +13,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+/**
+ * Service responsible for refund service impl business logic.
+ * Encapsulates core application rules and data manipulation.
+ */
 @Service
 public class RefundServiceImpl implements RefundService {
 
+    /**
+     * The refund mapper.
+     */
     private final RefundMapper refundMapper;
 
     public RefundServiceImpl(RefundMapper refundMapper) {
@@ -48,6 +55,11 @@ public class RefundServiceImpl implements RefundService {
 
         return refund;
     }
+    /**
+     * Retrieves the refund by booking id.
+     * @param bookingId the booking id
+     * @return Refund the result of the operation
+     */
     @Override
     public Refund getRefundByBookingId(String bookingId) {
 

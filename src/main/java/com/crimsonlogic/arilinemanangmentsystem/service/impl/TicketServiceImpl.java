@@ -17,9 +17,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service responsible for ticket service impl business logic.
+ * Encapsulates core application rules and data manipulation.
+ */
 @Service
 public class TicketServiceImpl implements TicketService {
 
+    /**
+     * The ticket mapper.
+     */
     private final TicketMapper ticketMapper;
     private final BookingService bookingService;
 
@@ -28,6 +35,10 @@ public class TicketServiceImpl implements TicketService {
         this.bookingService = bookingService;
     }
 
+    /**
+     * Executes the generate tickets operation.
+     * @param flight the flight
+     */
     @Override
     @Transactional
     public void generateTickets(Flight flight) {
@@ -72,10 +83,22 @@ public class TicketServiceImpl implements TicketService {
         assignSeatsAndGenerate(economyClassBookings, SeatClass.ECONOMY_CLASS, "EC", economyClassCapacity);
     }
 
+    /**
+     * Executes the count passengers operation.
+     * @param bookings the bookings
+     * @return int the result of the operation
+     */
     private int countPassengers(List<Booking> bookings) {
         return bookings.stream().mapToInt(b -> b.getPassengers().size()).sum();
     }
 
+    /**
+     * Executes the assign seats and generate operation.
+     * @param bookings the bookings
+     * @param seatClass the seat class
+     * @param prefix the prefix
+     * @param capacity the capacity
+     */
     private void assignSeatsAndGenerate(List<Booking> bookings, SeatClass seatClass, String prefix, int capacity) {
         int currentSeat = 1;
         int totalAssigned = 0;
@@ -109,6 +132,11 @@ public class TicketServiceImpl implements TicketService {
         }
     }
 
+    /**
+     * Retrieves the tickets by flight.
+     * @param flightId the flight id
+     * @return List<Ticket> the result of the operation
+     */
     @Override
     public List<Ticket> getTicketsByFlight(String flightId) {
         return ticketMapper.getTicketsByFlightId(flightId);

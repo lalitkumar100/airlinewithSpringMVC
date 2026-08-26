@@ -16,6 +16,11 @@ public class GlobalRestExceptionHandler {
 
     private final boolean developmentMode = true; // Set to false in production
 
+    /**
+     * Action for handleMissingParams.
+     * @param ex input parameter
+     * @return ResponseEntity<ErrorResponse> output
+     */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ErrorResponse> handleMissingParams(MissingServletRequestParameterException ex) {
         ErrorResponse error;
@@ -29,6 +34,11 @@ public class GlobalRestExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Action for handleCustomException.
+     * @param ex input parameter
+     * @return ResponseEntity<ErrorResponse> output
+     */
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
         ErrorResponse error;
@@ -43,6 +53,11 @@ public class GlobalRestExceptionHandler {
         return new ResponseEntity<>(error, ex.getStatus());
     }
 
+    /**
+     * Action for handleGlobalException.
+     * @param ex input parameter
+     * @return ResponseEntity<ErrorResponse> output
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
         ErrorResponse error;

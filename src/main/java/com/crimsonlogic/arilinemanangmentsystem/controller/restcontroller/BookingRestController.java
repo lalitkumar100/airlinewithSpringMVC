@@ -15,6 +15,10 @@ import javax.validation.Valid;
 import java.util.List;
 
 
+/**
+ * REST/MVC Controller for managing booking rest controller operations.
+ * Handles HTTP requests and delegates to the appropriate services.
+ */
 @RestController
 @RequestMapping("/api/v1/user/bookings")
 public class BookingRestController {
@@ -23,6 +27,9 @@ public class BookingRestController {
     // SERVICES
     // =========================================================
 
+    /**
+     * The booking service.
+     */
     private final BookingService bookingService;
     private final AuthService authService;
 

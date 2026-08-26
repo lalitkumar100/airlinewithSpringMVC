@@ -17,32 +17,56 @@ import java.time.LocalDateTime;
 @Table(name = "payment")
 public class Payment {
 
+    /**
+     * The payment id.
+     */
     @Id
     @Column(name = "payment_id", length = 20)
     private String paymentId;
 
+    /**
+     * The amount.
+     */
     @Column(name = "amount")
     private double amount;
 
+    /**
+     * The paid.
+     */
     @Column(name = "paid")
     private boolean paid;
 
+    /**
+     * The booking.
+     */
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
+    /**
+     * The transaction.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_id")
     private Transaction transaction;
 
+    /**
+     * The created at.
+     */
     @Column(name = "created_at", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
     
+    /**
+     * The updated at.
+     */
     @Column(name = "updated_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
 
+    /**
+     * The deleted.
+     */
     @Column(name = "is_deleted")
     private boolean deleted;
     

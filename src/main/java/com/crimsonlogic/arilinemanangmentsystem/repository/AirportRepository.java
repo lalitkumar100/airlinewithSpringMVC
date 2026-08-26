@@ -8,6 +8,10 @@ import java.util.List;
 
 @Repository
 public interface AirportRepository extends JpaRepository<Airport, String> {
+    /**
+     * Action for findByDeletedFalse.
+     * @return List<Airport> output
+     */
     List<Airport> findByDeletedFalse();
     Airport findByAirportCodeAndDeletedFalse(String airportCode);
 }

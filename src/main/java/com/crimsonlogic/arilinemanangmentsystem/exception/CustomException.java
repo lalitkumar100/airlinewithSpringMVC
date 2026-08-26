@@ -10,6 +10,10 @@ public class CustomException extends RuntimeException {
         this.status = status;
     }
 
+    /**
+     * Action for getStatus.
+     * @return HttpStatus output
+     */
     public HttpStatus getStatus() {
         return status;
     }

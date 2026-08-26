@@ -6,6 +6,10 @@ import com.crimsonlogic.arilinemanangmentsystem.model.User;
 
 import java.time.LocalDateTime;
 
+/**
+ * Service responsible for user service business logic.
+ * Encapsulates core application rules and data manipulation.
+ */
 public interface UserService {
 
     /**
@@ -18,6 +22,11 @@ public interface UserService {
     User getUserByEmail(String email);
     User getUserById(String id);
 
+    /**
+     * Checks if the object is email exists.
+     * @param email the email
+     * @return boolean the result of the operation
+     */
     public boolean isEmailExists(String email);
 
     void UpdateLoginTime(User user, LocalDateTime time);

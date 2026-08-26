@@ -10,9 +10,16 @@ import com.crimsonlogic.arilinemanangmentsystem.utility.IdGenerator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Service responsible for payment service impl business logic.
+ * Encapsulates core application rules and data manipulation.
+ */
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
+    /**
+     * The payment mapper.
+     */
     private final PaymentMapper paymentMapper;
 
     public PaymentServiceImpl(PaymentMapper paymentMapper) {
@@ -40,6 +47,11 @@ public class PaymentServiceImpl implements PaymentService {
         return payment;
     }
 
+    /**
+     * Retrieves the payment by booking id.
+     * @param bookingId the booking id
+     * @return Payment the result of the operation
+     */
     @Override
     public Payment getPaymentByBookingId(String bookingId) {
 

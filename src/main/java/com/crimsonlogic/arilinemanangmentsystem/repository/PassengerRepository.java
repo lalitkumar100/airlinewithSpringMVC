@@ -9,5 +9,10 @@ import java.util.List;
 
 @Repository
 public interface PassengerRepository extends JpaRepository<Passenger, String> {
+    /**
+     * Action for findByBookingAndDeletedFalse.
+     * @param booking input parameter
+     * @return List<Passenger> output
+     */
     List<Passenger> findByBookingAndDeletedFalse(Booking booking);
 }

@@ -18,10 +18,16 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Table(name = "loyalty_account")
 public class LoyaltyAccount {
 
+    /**
+     * The loyalty account id.
+     */
     @Id
     @Column(name = "loyalty_account_id", length = 20)
     private String loyaltyAccountId;
 
+    /**
+     * The user.
+     */
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference
@@ -29,21 +35,36 @@ public class LoyaltyAccount {
 
 
 
+    /**
+     * The points.
+     */
     @Column(name = "points")
     private int points;
 
+    /**
+     * The tier.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "tier", length = 20)
     private LoyaltyTier tier;
 
+    /**
+     * The created at.
+     */
     @Column(name = "created_at", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
     
+    /**
+     * The updated at.
+     */
     @Column(name = "updated_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
     
+    /**
+     * The deleted.
+     */
     @Column(name = "is_deleted")
     private boolean deleted;
 
@@ -62,18 +83,34 @@ public class LoyaltyAccount {
         this.tier = LoyaltyTier.SILVER;
     }
 
+    /**
+     * Retrieves the loyalty account id.
+     * @return String the result of the operation
+     */
     public String getLoyaltyAccountId() {
         return loyaltyAccountId;
     }
 
+    /**
+     * Sets the loyalty account id.
+     * @param loyaltyAccountId the loyalty account id
+     */
     public void setLoyaltyAccountId(String loyaltyAccountId) {
         this.loyaltyAccountId = loyaltyAccountId;
     }
 
+    /**
+     * Retrieves the user.
+     * @return User the result of the operation
+     */
     public User getUser() {
         return user;
     }
 
+    /**
+     * Sets the user.
+     * @param user the user
+     */
     public void setUser(User user) {
         this.user = user;
     }

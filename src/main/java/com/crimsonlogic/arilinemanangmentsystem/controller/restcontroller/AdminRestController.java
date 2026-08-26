@@ -13,16 +13,29 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+/**
+ * REST/MVC Controller for managing admin rest controller operations.
+ * Handles HTTP requests and delegates to the appropriate services.
+ */
 @RestController
 @RequestMapping("/api/v1/admin")
 public class AdminRestController {
 
+    /**
+     * The ticket service.
+     */
     private final TicketService ticketService;
     private final FlightService flightService;
     private final FlightReportService flightReportService;
+    /**
+     * The booking service.
+     */
     private final BookingService bookingService;
     private final FlightOrchestratorService flightOrchestratorService;
     private final AirportService airportService;
+    /**
+     * The aircraft service.
+     */
     private final AircraftService aircraftService;
 
     public AdminRestController(TicketService ticketService, FlightService flightService, FlightReportService flightReportService, BookingService bookingService,  FlightOrchestratorService flightOrchestratorService, AirportService airportService, AircraftService aircraftService) {
@@ -35,6 +48,10 @@ public class AdminRestController {
         this.aircraftService = aircraftService;
     }
 
+    /**
+     * Retrieves the all flights.
+     * @return ResponseEntity<ApiResponse<List<FlightDTO>>> the result of the operation
+     */
     @GetMapping("/flights")
     public ResponseEntity<ApiResponse<List<FlightDTO>>> getAllFlights() {
         List<FlightDTO> flights = flightService.getAllFlightsDTO();
@@ -48,6 +65,11 @@ public class AdminRestController {
         );
     }
 
+    /**
+     * Retrieves the flight by id.
+     * @param id the id
+     * @return ResponseEntity<ApiResponse<FlightDTO>> the result of the operation
+     */
     @GetMapping("/flights/{id}")
     public ResponseEntity<ApiResponse<FlightDTO>> getFlightById(@PathVariable("id") String id) {
 
@@ -62,6 +84,11 @@ public class AdminRestController {
         );
     }
 
+    /**
+     * Retrieves the flight bookings.
+     * @param flightId the flight id
+     * @return ResponseEntity<ApiResponse<List<BookingDTO>>> the result of the operation
+     */
     @GetMapping("/flights/{flightId}/bookings")
     public ResponseEntity<ApiResponse<List<BookingDTO>>> getFlightBookings(@PathVariable String flightId) {
         List<BookingDTO> bookings = bookingService.getFlightBookingsDTO(flightId);
@@ -77,6 +104,11 @@ public class AdminRestController {
 
     }
 
+    /**
+     * Retrieves the flight revenue.
+     * @param flightId the flight id
+     * @return ResponseEntity<ApiResponse<RevenueReport>> the result of the operation
+     */
     @GetMapping("/flights/{flightId}/revenue")
     public ResponseEntity<ApiResponse<RevenueReport>> getFlightRevenue(@PathVariable String flightId) {
         RevenueReport report = flightReportService.getFlightRevenueReport(flightId);
@@ -105,6 +137,11 @@ public class AdminRestController {
         );
     }
 
+    /**
+     * Retrieves the tickets by flight.
+     * @param id the id
+     * @return ResponseEntity<ApiResponse<List<Ticket>>> the result of the operation
+     */
     @GetMapping("/flights/{id}/tickets")
     public ResponseEntity<ApiResponse<List<Ticket>>> getTicketsByFlight(@PathVariable("id") String id) {
 
@@ -155,6 +192,11 @@ public class AdminRestController {
         );
     }
     
+    /**
+     * Creates or saves add airport.
+     * @param airportDTO the airport dto
+     * @return ResponseEntity<ApiResponse<AirportDTO>> the result of the operation
+     */
     @PostMapping("/airports/add")
     public ResponseEntity<ApiResponse<AirportDTO>> addAirport(@Valid @RequestBody AirportDTO airportDTO) {
         AirportDTO newAirport = airportService.addAirport(airportDTO);
@@ -163,6 +205,11 @@ public class AdminRestController {
         );
     }
 
+    /**
+     * Creates or saves add aircraft.
+     * @param aircraftDTO the aircraft dto
+     * @return ResponseEntity<ApiResponse<AircraftDTO>> the result of the operation
+     */
     @PostMapping("/aircraft/add")
     public ResponseEntity<ApiResponse<AircraftDTO>> addAircraft(@Valid @RequestBody AircraftDTO aircraftDTO) {
         AircraftDTO newAircraft = aircraftService.addAircraft(aircraftDTO);
@@ -171,6 +218,10 @@ public class AdminRestController {
         );
     }
     
+    /**
+     * Retrieves the overall revenue.
+     * @return ResponseEntity<ApiResponse<AirlineRevenueDTO>> the result of the operation
+     */
     @GetMapping("/revenue/overall")
     public ResponseEntity<ApiResponse<AirlineRevenueDTO>> getOverallRevenue() {
         AirlineRevenueDTO report = flightReportService.getOverallRevenueReport();

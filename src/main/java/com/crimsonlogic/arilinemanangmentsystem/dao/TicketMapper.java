@@ -8,6 +8,11 @@ import java.util.List;
 
 @org.springframework.stereotype.Repository
 public interface TicketMapper extends org.springframework.data.repository.Repository<Ticket, String> {
+    /**
+     * Action for save.
+     * @param entity input parameter
+     * @return Ticket output
+     */
     Ticket save(Ticket entity);
 
 
@@ -16,6 +21,11 @@ public interface TicketMapper extends org.springframework.data.repository.Reposi
         return 1;
     }
 
+    /**
+     * Action for getTicketsByFlightId.
+     * @param flightId input parameter
+     * @return List<Ticket> output
+     */
     @Query("SELECT t FROM Ticket t WHERE t.booking.flightBooked.flightId = :flightId AND t.deleted = false")
     List<Ticket> getTicketsByFlightId(@Param("flightId") String flightId);
 }

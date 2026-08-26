@@ -12,13 +12,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+/**
+ * REST/MVC Controller for managing booking controller operations.
+ * Handles HTTP requests and delegates to the appropriate services.
+ */
 @Controller
 @RequestMapping("/bookings")
 public class BookingController {
 
+    /**
+     * The flight service.
+     */
     private final FlightService flightService;
     private final FlightReportService flightReportService;
     private final BookingService bookingService;
+    /**
+     * The user service.
+     */
     private final UserService userService;
 
     public BookingController(FlightService flightService, FlightReportService flightReportService, BookingService bookingService, UserService userService) {
@@ -28,6 +38,12 @@ public class BookingController {
         this.userService = userService;
     }
 
+    /**
+     * Executes the show booking flow operation.
+     * @param flightId the flight id
+     * @param model the model
+     * @return String the result of the operation
+     */
     @GetMapping("/new")
     public String showBookingFlow(@RequestParam("flightId") String flightId, Model model) {
         Flight flight = flightService.getFlightById(flightId);
@@ -50,6 +66,12 @@ public class BookingController {
         return "booking-flow";
     }
 
+    /**
+     * Executes the show user bookings operation.
+     * @param request the request
+     * @param model the model
+     * @return String the result of the operation
+     */
     @GetMapping("/my-bookings")
     public String showUserBookings(javax.servlet.http.HttpServletRequest request, Model model) {
         io.jsonwebtoken.Claims claims = (io.jsonwebtoken.Claims) request.getAttribute("claims");
@@ -69,6 +91,12 @@ public class BookingController {
         return "show-bookings";
     }
 
+    /**
+     * Executes the show booking detail operation.
+     * @param bookingId the booking id
+     * @param model the model
+     * @return String the result of the operation
+     */
     @GetMapping("/detail")
     public String showBookingDetail(@RequestParam("bookingId") String bookingId, Model model) {
 
@@ -76,6 +104,12 @@ public class BookingController {
     }
 
     // Redirect old endpoints to the new unified flow to prevent 400 errors from old links
+    /**
+     * Executes the redirect old passenger form operation.
+     * @param "flightId" the "flight id"
+     * @param flightId the flight id
+     * @return String the result of the operation
+     */
     @GetMapping("/passenger-form")
     public String redirectOldPassengerForm(@RequestParam(value = "flightId", required = false) String flightId) {
         if (flightId == null || flightId.isEmpty()) {
@@ -84,6 +118,10 @@ public class BookingController {
         return "redirect:/bookings/new?flightId=" + flightId;
     }
 
+    /**
+     * Executes the redirect old payment operation.
+     * @return String the result of the operation
+     */
     @GetMapping("/payment")
     public String redirectOldPayment() {
         return "redirect:/flights/search-form";

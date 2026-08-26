@@ -9,6 +9,9 @@ package com.crimsonlogic.arilinemanangmentsystem.model;
 public class RevenueReport {
 
     private String flightId;
+    /**
+     * The total booking amount.
+     */
     private double totalBookingAmount;
     private double totalRefundAmount;
     private double netRevenue;

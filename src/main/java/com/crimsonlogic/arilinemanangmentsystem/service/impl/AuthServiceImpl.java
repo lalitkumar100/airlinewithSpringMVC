@@ -14,9 +14,16 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 
 
+/**
+ * Service responsible for auth service impl business logic.
+ * Encapsulates core application rules and data manipulation.
+ */
 @Service
 public class AuthServiceImpl implements AuthService {
 
+    /**
+     * The user service.
+     */
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
@@ -25,6 +32,11 @@ public class AuthServiceImpl implements AuthService {
         this.jwtUtil = jwtUtil;
     }
 
+    /**
+     * Executes the authenticate user operation.
+     * @param loginRequest the login request
+     * @return LoginResponse the result of the operation
+     */
     @Override
     public LoginResponse authenticateUser(LoginRequest loginRequest) {
         // 1. Find user and verify password

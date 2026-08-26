@@ -12,10 +12,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST/MVC Controller for managing registration rest controller operations.
+ * Handles HTTP requests and delegates to the appropriate services.
+ */
 @RestController
 @RequestMapping("/api/v1/register")
 public class RegistrationRestController {
 
+    /**
+     * The user service.
+     */
     private final UserService userService;
 
     public RegistrationRestController(UserService userService) {

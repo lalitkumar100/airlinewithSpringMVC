@@ -12,9 +12,16 @@ import com.crimsonlogic.arilinemanangmentsystem.service.AircraftService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Service responsible for flight orchestrator service impl business logic.
+ * Encapsulates core application rules and data manipulation.
+ */
 @Service
 public class FlightOrchestratorServiceImpl implements FlightOrchestratorService {
 
+    /**
+     * The flight service.
+     */
     private final FlightService flightService;
     private final TicketService ticketService;
     private final AircraftService aircraftService;
@@ -25,6 +32,12 @@ public class FlightOrchestratorServiceImpl implements FlightOrchestratorService 
         this.aircraftService = aircraftService;
     }
 
+    /**
+     * Updates flight schedule.
+     * @param flightId the flight id
+     * @param request the request
+     * @return boolean the result of the operation
+     */
     @Override
     @Transactional
     public boolean updateFlightSchedule(String flightId, UpdateFlightScheduleRequest request) {
@@ -46,6 +59,12 @@ public class FlightOrchestratorServiceImpl implements FlightOrchestratorService 
         return flightService.updateScheduleOnly(flightId, request);
     }
 
+    /**
+     * Updates flight status.
+     * @param flightId the flight id
+     * @param request the request
+     * @return boolean the result of the operation
+     */
     @Override
     @Transactional
     public boolean updateFlightStatus(String flightId, UpdateFlightStatusRequest request) {

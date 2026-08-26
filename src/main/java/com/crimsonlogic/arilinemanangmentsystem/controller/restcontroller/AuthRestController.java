@@ -9,10 +9,17 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+/**
+ * REST/MVC Controller for managing auth rest controller operations.
+ * Handles HTTP requests and delegates to the appropriate services.
+ */
 @RestController
 @RequestMapping("/api/v1")
 public class AuthRestController {
 
+    /**
+     * The auth service.
+     */
     private final AuthService authService;
 
     public AuthRestController(AuthService authService) {

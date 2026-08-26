@@ -10,10 +10,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
+/**
+ * REST/MVC Controller for managing aircraft controller operations.
+ * Handles HTTP requests and delegates to the appropriate services.
+ */
 @Controller
 @RequestMapping("/aircraft")
 public class AircraftController {
 
+    /**
+     * The aircraft service.
+     */
     private final AircraftService aircraftService;
 
     public AircraftController(AircraftService aircraftService) {
@@ -21,6 +28,11 @@ public class AircraftController {
     }
 
     // Get all aircraft and display in JSP table
+    /**
+     * Retrieves the all aircraft.
+     * @param model the model
+     * @return String the result of the operation
+     */
     @GetMapping("/")
     public String getAllAircraft(Model model) {
         List<Aircraft> aircraftList = aircraftService.findAllAircraft();
@@ -31,6 +43,12 @@ public class AircraftController {
     }
 
     // Get aircraft by ID and display details in a JSP page
+    /**
+     * Retrieves the aircraft by id.
+     * @param aircraftId the aircraft id
+     * @param model the model
+     * @return String the result of the operation
+     */
     @GetMapping("/{aircraftId}")
     public String getAircraftById(@PathVariable String aircraftId, Model model) {
         Aircraft aircraft = aircraftService.findById(aircraftId);

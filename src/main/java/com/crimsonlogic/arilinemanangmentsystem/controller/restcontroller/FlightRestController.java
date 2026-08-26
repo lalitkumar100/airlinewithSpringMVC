@@ -17,10 +17,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * REST/MVC Controller for managing flight rest controller operations.
+ * Handles HTTP requests and delegates to the appropriate services.
+ */
 @RestController
 @RequestMapping("/api/v1/flights")
 public class FlightRestController {
 
+    /**
+     * The flight service.
+     */
     private final FlightService flightService;
     private final FlightOrchestratorService flightOrchestratorService;
 
@@ -29,6 +36,10 @@ public class FlightRestController {
         this.flightOrchestratorService = flightOrchestratorService;
     }
 
+    /**
+     * Retrieves the all flights.
+     * @return ResponseEntity<ApiResponse<List<FlightDTO>>> the result of the operation
+     */
     @GetMapping
     public ResponseEntity<ApiResponse<List<FlightDTO>>> getAllFlights() {
         List<FlightDTO> flights = flightService.getAllFlightsDTO();
@@ -42,6 +53,11 @@ public class FlightRestController {
         );
     }
 
+    /**
+     * Retrieves the flight by id.
+     * @param id the id
+     * @return ResponseEntity<ApiResponse<FlightDTO>> the result of the operation
+     */
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<FlightDTO>> getFlightById(@PathVariable("id") String id) {
 

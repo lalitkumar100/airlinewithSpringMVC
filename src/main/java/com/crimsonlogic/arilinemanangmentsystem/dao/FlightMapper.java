@@ -12,12 +12,26 @@ import java.util.List;
 
 @org.springframework.stereotype.Repository
 public interface FlightMapper extends org.springframework.data.repository.Repository<Flight, String> {
+    /**
+     * Action for save.
+     * @param entity input parameter
+     * @return Flight output
+     */
     Flight save(Flight entity);
 
 
+    /**
+     * Action for findAllFlights.
+     * @return List<Flight> output
+     */
     @Query("SELECT f FROM Flight f WHERE f.deleted = false")
     List<Flight> findAllFlights();
 
+    /**
+     * Action for findById.
+     * @param flightId input parameter
+     * @return Flight output
+     */
     @Query("SELECT f FROM Flight f WHERE f.flightId = :flightId AND f.deleted = false")
     Flight findById(@Param("flightId") String flightId);
 

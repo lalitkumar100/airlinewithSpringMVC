@@ -20,38 +20,68 @@ public class Refund {
 
     public static final ArrayList<Refund> refundArrayList = new ArrayList<>();
 
+    /**
+     * The refund id.
+     */
     @Id
     @Column(name = "refund_id", length = 20)
     private String refundId;
 
+    /**
+     * The refund time.
+     */
     @Column(name = "refund_time")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime refundTime;
 
+    /**
+     * The amount.
+     */
     @Column(name = "amount")
     private double amount;
 
+    /**
+     * The booking.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
+    /**
+     * The transaction.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transaction_id")
     private Transaction transaction;
 
+    /**
+     * The status.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 20)
     private RefundStatus status;
 
+    /**
+     * The reason.
+     */
     @Column(name = "reason")
     private String reason;
 
+    /**
+     * The created at.
+     */
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    /**
+     * The updated at.
+     */
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    /**
+     * The deleted.
+     */
     @Column(name = "is_deleted")
     private boolean deleted;
 
@@ -269,26 +299,50 @@ public class Refund {
         this.reason = reason;
     }
 
+    /**
+     * Retrieves the created at.
+     * @return LocalDateTime the result of the operation
+     */
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
+    /**
+     * Sets the created at.
+     * @param createdAt the created at
+     */
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
+    /**
+     * Retrieves the updated at.
+     * @return LocalDateTime the result of the operation
+     */
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
+    /**
+     * Sets the updated at.
+     * @param updatedAt the updated at
+     */
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 
+    /**
+     * Checks if the object is deleted.
+     * @return boolean the result of the operation
+     */
     public boolean isDeleted() {
         return deleted;
     }
 
+    /**
+     * Sets the deleted.
+     * @param deleted the deleted
+     */
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }

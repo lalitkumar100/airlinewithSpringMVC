@@ -11,6 +11,10 @@ import com.crimsonlogic.arilinemanangmentsystem.model.User;
 
 import java.util.List;
 
+/**
+ * Service responsible for booking service business logic.
+ * Encapsulates core application rules and data manipulation.
+ */
 public interface BookingService {
 
 
@@ -22,6 +26,11 @@ public interface BookingService {
     public List<Booking> getAllBookingsForUser(
             String userId);
 
+    /**
+     * Retrieves the booking by id.
+     * @param bookingId the booking id
+     * @return Booking the result of the operation
+     */
     public Booking getBookingById(String bookingId);
     /**
      * Performs check-in for a booking.
@@ -80,6 +89,10 @@ public interface BookingService {
             String password,
             CancelType cancelType);
 
+    /**
+     * Executes the cancel flight and refund all bookings operation.
+     * @param flightId the flight id
+     */
     void cancelFlightAndRefundAllBookings(String flightId);
 
 
@@ -99,17 +112,38 @@ public interface BookingService {
             String password,
             CancelType cancelType);
 
+    /**
+     * Retrieves the booked seat count.
+     * @param flightId the flight id
+     * @param seatClass the seat class
+     * @return int the result of the operation
+     */
     int getBookedSeatCount(String flightId, SeatClass seatClass);
 
     List<Booking> getFlightBookings(String flightId);
 
+    /**
+     * Updates booking status.
+     * @param bookingId the booking id
+     * @param status the status
+     */
     void updateBookingStatus(String bookingId, BookingStatus status);
 
 
     // New DTO methods
+    /**
+     * Retrieves the booking by id dto.
+     * @param bookingId the booking id
+     * @return BookingDTO the result of the operation
+     */
     BookingDTO getBookingByIdDTO(String bookingId);
 
     List<BookingDTO> getAllBookingsForUserDTO(String userId);
 
+    /**
+     * Retrieves the flight bookings dto.
+     * @param flightId the flight id
+     * @return List<BookingDTO> the result of the operation
+     */
     List<BookingDTO> getFlightBookingsDTO(String flightId);
 }

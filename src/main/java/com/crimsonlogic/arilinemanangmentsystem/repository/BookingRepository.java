@@ -9,6 +9,10 @@ import java.util.List;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, String> {
+    /**
+     * Action for findByDeletedFalse.
+     * @return List<Booking> output
+     */
     List<Booking> findByDeletedFalse();
     List<Booking> findByUserbookedAndDeletedFalse(User user);
     Booking findByBookingIdAndDeletedFalse(String bookingId);

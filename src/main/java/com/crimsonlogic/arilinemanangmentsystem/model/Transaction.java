@@ -18,22 +18,37 @@ import java.time.LocalDateTime;
 @Table(name = "`transaction`")
 public class Transaction {
 
+    /**
+     * The transaction id.
+     */
     @Id
     @Column(name = "transaction_id", length = 20)
     private String transactionId;
 
+    /**
+     * The sender.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_user_id")
     private User sender;
     
+    /**
+     * The receiver.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_user_id")
     private User receiver;
 
+    /**
+     * The from payment method.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "from_payment_method", length = 20)
     private PaymentMethod fromPaymentMethod;
     
+    /**
+     * The to payment method.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "to_payment_method", length = 20)
     private PaymentMethod toPaymentMethod;
@@ -44,13 +59,22 @@ public class Transaction {
     @Column(name = "receiver_upi", length = 100)
     private String receiverUpi;    // null if Wallet
 
+    /**
+     * The amount.
+     */
     @Column(name = "amount")
     private double amount;
 
+    /**
+     * The status.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 20)
     private TransactionStatus status;
 
+    /**
+     * The transaction time.
+     */
     @Column(name = "transaction_time")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime transactionTime;

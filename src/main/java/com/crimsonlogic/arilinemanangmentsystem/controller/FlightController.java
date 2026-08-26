@@ -17,12 +17,22 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * REST/MVC Controller for managing flight controller operations.
+ * Handles HTTP requests and delegates to the appropriate services.
+ */
 @Controller
 @RequestMapping("/flights")
 public class FlightController {
+ /**
+  * The flight service.
+  */
  private final FlightService flightService;
     private final AirportService airportService;
     private final FlightOrchestratorService flightOrchestratorService;
+    /**
+     * The aircraft service.
+     */
     private final AircraftService aircraftService;
 
     public FlightController(FlightService flightService, AirportService airportService, FlightOrchestratorService flightOrchestratorService, AircraftService aircraftService) {
@@ -32,6 +42,11 @@ public class FlightController {
         this.aircraftService = aircraftService;
     }
 
+    /**
+     * Executes the list flights operation.
+     * @param model the model
+     * @return String the result of the operation
+     */
     @GetMapping
     public String listFlights(Model model) {
         List<Flight> flights = flightService.getAllFlights();
@@ -39,6 +54,12 @@ public class FlightController {
         return "flight-list";
     }
 
+    /**
+     * Retrieves the flight details.
+     * @param id the id
+     * @param model the model
+     * @return String the result of the operation
+     */
     @GetMapping("/{id}")
     public String getFlightDetails(@PathVariable("id") String id, Model model) {
         Flight flight = flightService.getFlightById(id);
@@ -51,6 +72,11 @@ public class FlightController {
 
 
 
+    /**
+     * Executes the show add flight page operation.
+     * @param model the model
+     * @return String the result of the operation
+     */
     @GetMapping("/add")
     public String showAddFlightPage(Model model) {
 
@@ -62,6 +88,11 @@ public class FlightController {
         return "add-flight"; // Maps to add-flight.jsp
     }
     
+    /**
+     * Executes the show search form operation.
+     * @param model the model
+     * @return String the result of the operation
+     */
     @GetMapping("/search-form")
     public String showSearchForm(Model model) {
         List<Airport> airports = airportService.getAllAirports();

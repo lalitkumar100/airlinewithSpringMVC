@@ -10,10 +10,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
+/**
+ * REST/MVC Controller for managing airport controller operations.
+ * Handles HTTP requests and delegates to the appropriate services.
+ */
 @Controller
 @RequestMapping("/airports")
 public class AirportController {
 
+    /**
+     * The airport service.
+     */
     private final AirportService airportService;
 
     public AirportController(AirportService airportService) {
@@ -21,6 +28,11 @@ public class AirportController {
     }
 
     // View all airports in JSP
+    /**
+     * Executes the list airports operation.
+     * @param model the model
+     * @return String the result of the operation
+     */
     @GetMapping
     public String listAirports(Model model) {
         List<Airport> airports = airportService.getAllAirports();
@@ -29,6 +41,12 @@ public class AirportController {
     }
 
     // View single airport details in JSP
+    /**
+     * Retrieves the airport details.
+     * @param code the code
+     * @param model the model
+     * @return String the result of the operation
+     */
     @GetMapping("/{code}")
     public String getAirportDetails(@PathVariable("code") String code, Model model) {
         Airport airport = airportService.getAirportByCode(code);

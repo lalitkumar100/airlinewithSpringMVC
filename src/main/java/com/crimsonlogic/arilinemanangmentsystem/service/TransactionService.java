@@ -4,6 +4,10 @@ import com.crimsonlogic.arilinemanangmentsystem.enumrator.PaymentMethod;
 import com.crimsonlogic.arilinemanangmentsystem.model.Transaction;
 import com.crimsonlogic.arilinemanangmentsystem.model.User;
 
+/**
+ * Service responsible for transaction service business logic.
+ * Encapsulates core application rules and data manipulation.
+ */
 public interface TransactionService {
 
     Transaction createAndProcessTransaction(

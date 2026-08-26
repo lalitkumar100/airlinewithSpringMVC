@@ -20,17 +20,30 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+/**
+ * Service responsible for wallet service impl business logic.
+ * Encapsulates core application rules and data manipulation.
+ */
 @Service
 public class WalletServiceImpl implements WalletService {
 
+    /**
+     * The wallet mapper.
+     */
     private final WalletMapper walletMapper;
     private final TransactionService transactionService;
     private final PaymentService paymentService;
+    /**
+     * The refund service.
+     */
     private final RefundService refundService;
 
 
     // Fetching receiver ID for bookings from environment properties (e.g., application.properties)
 //    @Value("${booking.receiver.user.id}")
+    /**
+     * The platform receiver user id.
+     */
     private String platformReceiverUserId ="USR447367";
 
     public WalletServiceImpl(
@@ -45,6 +58,12 @@ public class WalletServiceImpl implements WalletService {
         this.refundService = refundService;
     }
 
+    /**
+     * Creates or saves create wallet.
+     * @param user the user
+     * @param now the now
+     * @return Wallet the result of the operation
+     */
     @Override
     @Transactional
     public Wallet createWallet(User user, LocalDateTime now) {
@@ -71,6 +90,13 @@ public class WalletServiceImpl implements WalletService {
         return wallet;
     }
 
+    /**
+     * Executes the transfer wallet to wallet operation.
+     * @param senderUserId the sender user id
+     * @param receiverUserId the receiver user id
+     * @param amount the amount
+     * @return Transaction the result of the operation
+     */
     @Override
     @Transactional
     public Transaction transferWalletToWallet(String senderUserId, String receiverUserId, double amount) {
@@ -306,6 +332,11 @@ public class WalletServiceImpl implements WalletService {
         );
     }
     
+    /**
+     * Creates or saves add money to wallet.
+     * @param userId the user id
+     * @param amount the amount
+     */
     @Override
     @Transactional
     public void addMoneyToWallet(String userId, double amount) {

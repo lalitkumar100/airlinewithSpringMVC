@@ -16,9 +16,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+/**
+ * Service responsible for transaction service impl business logic.
+ * Encapsulates core application rules and data manipulation.
+ */
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
+    /**
+     * The transaction mapper.
+     */
     private final TransactionMapper transactionMapper;
 
     public TransactionServiceImpl(TransactionMapper transactionMapper) {

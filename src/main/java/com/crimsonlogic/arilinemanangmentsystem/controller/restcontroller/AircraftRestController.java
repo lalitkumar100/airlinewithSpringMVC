@@ -10,10 +10,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST/MVC Controller for managing aircraft rest controller operations.
+ * Handles HTTP requests and delegates to the appropriate services.
+ */
 @RestController
 @RequestMapping("/api/v1/aircraft")
 public class AircraftRestController {
 
+    /**
+     * The aircraft service.
+     */
     private final AircraftService aircraftService;
 
     public AircraftRestController(AircraftService aircraftService) {
@@ -24,6 +31,10 @@ public class AircraftRestController {
     // GET ALL AIRCRAFT
     // =========================================================
 
+    /**
+     * Retrieves the all aircraft.
+     * @return ResponseEntity<ApiResponse<List<AircraftDTO>>> the result of the operation
+     */
     @GetMapping
     public ResponseEntity<ApiResponse<List<AircraftDTO>>> getAllAircraft() {
 

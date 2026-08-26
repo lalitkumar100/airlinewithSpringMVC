@@ -12,10 +12,16 @@ public class Seat {
     final char   SEAT_B ='B';
     final char   SEAT_C ='C';
 
+    /**
+     * The seat no.
+     */
     private int seatNo;
 
 
 
+    /**
+     * The seat type.
+     */
     private char SeatType ;
     private boolean available;
     private boolean upgraded;

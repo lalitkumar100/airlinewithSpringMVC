@@ -12,6 +12,10 @@ public enum SeatClass {
         this.displayName = displayName;
     }
 
+    /**
+     * Action for toString.
+     * @return String output
+     */
     @Override
     public String toString() {
         return displayName;

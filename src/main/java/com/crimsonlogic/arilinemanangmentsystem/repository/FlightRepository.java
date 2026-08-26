@@ -8,6 +8,10 @@ import java.util.List;
 
 @Repository
 public interface FlightRepository extends JpaRepository<Flight, String> {
+    /**
+     * Action for findByDeletedFalse.
+     * @return List<Flight> output
+     */
     List<Flight> findByDeletedFalse();
     Flight findByFlightIdAndDeletedFalse(String flightId);
 }

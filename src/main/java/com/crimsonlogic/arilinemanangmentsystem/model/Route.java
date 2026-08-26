@@ -9,6 +9,9 @@ package com.crimsonlogic.arilinemanangmentsystem.model;
 public class Route {
 
     private final String sourceAirportId;
+    /**
+     * The destination airport id.
+     */
     private final String destinationAirportId;
 
     /**
@@ -50,9 +53,15 @@ public class Route {
 
     public static class RevenueReport {
 
+        /**
+         * The flight id.
+         */
         private String flightId;
         private double totalBookingAmount;
         private double totalRefundAmount;
+        /**
+         * The net revenue.
+         */
         private double netRevenue;
 
         /**

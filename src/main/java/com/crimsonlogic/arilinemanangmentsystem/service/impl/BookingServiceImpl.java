@@ -46,9 +46,15 @@ import java.util.List;
 @Service
 public class BookingServiceImpl implements BookingService {
 
+    /**
+     * The booking mapper.
+     */
     private final BookingMapper bookingMapper;
     private final FlightService flightService;
     private final FlightReportService flightReportService;
+    /**
+     * The passenger service.
+     */
     private final PassengerService passengerService;
     private final WalletService walletService;
 
@@ -867,6 +873,11 @@ public class BookingServiceImpl implements BookingService {
     }
 
 
+    /**
+     * Retrieves the booking by id dto.
+     * @param bookingId the booking id
+     * @return BookingDTO the result of the operation
+     */
     @Override
     @Transactional(readOnly = true)
     public BookingDTO getBookingByIdDTO(String bookingId) {
@@ -876,6 +887,11 @@ public class BookingServiceImpl implements BookingService {
         return convertToBookingDTO(booking);
     }
 
+    /**
+     * Retrieves the all bookings for user dto.
+     * @param userId the user id
+     * @return List<BookingDTO> the result of the operation
+     */
     @Override
     @Transactional(readOnly = true)
     public List<BookingDTO> getAllBookingsForUserDTO(String userId) {
@@ -888,6 +904,11 @@ public class BookingServiceImpl implements BookingService {
                 .toList();
     }
 
+    /**
+     * Retrieves the flight bookings dto.
+     * @param flightId the flight id
+     * @return List<BookingDTO> the result of the operation
+     */
     @Override
     @Transactional(readOnly = true)
     public List<BookingDTO> getFlightBookingsDTO(String flightId) {
@@ -903,6 +924,10 @@ public class BookingServiceImpl implements BookingService {
 
 
 
+    /**
+     * Executes the cancel flight and refund all bookings operation.
+     * @param flightId the flight id
+     */
     @Override
     @Transactional
     public void cancelFlightAndRefundAllBookings(String flightId) {
@@ -981,6 +1006,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
 
+    /**
+     * Retrieves the booked seat count.
+     * @param flightId the flight id
+     * @param seatClass the seat class
+     * @return int the result of the operation
+     */
     @Override
     public int getBookedSeatCount(String flightId, SeatClass seatClass) {
 
@@ -995,6 +1026,11 @@ public class BookingServiceImpl implements BookingService {
         return bookingMapper.getBookedSeatCount(flightId, seatClass);
     }
 
+    /**
+     * Retrieves the flight bookings.
+     * @param flightId the flight id
+     * @return List<Booking> the result of the operation
+     */
     @Override
     public List<Booking> getFlightBookings(String flightId) {
 
@@ -1027,6 +1063,11 @@ public class BookingServiceImpl implements BookingService {
         return bookings;
     }
 
+    /**
+     * Updates booking status.
+     * @param bookingId the booking id
+     * @param status the status
+     */
     @Override
     public void updateBookingStatus(String bookingId, BookingStatus status) {
         if (bookingId == null || bookingId.isBlank()) {
@@ -1042,6 +1083,11 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
+    /**
+     * Executes the convert to booking dto operation.
+     * @param booking the booking
+     * @return BookingDTO the result of the operation
+     */
     private BookingDTO convertToBookingDTO(Booking booking) {
 
         FlightDTO flightDTO = null;
@@ -1083,6 +1129,10 @@ public class BookingServiceImpl implements BookingService {
         );
     }
 
+    /**
+     * Executes the cancel full booking operation.
+     * @param bookingId the booking id
+     */
     private  void cancelFullBooking(String bookingId){
 
         if (bookingId == null || bookingId.isBlank()) {
@@ -1100,6 +1150,11 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
+    /**
+     * Retrieves the cancellation refund percentage.
+     * @param flightStatus the flight status
+     * @return float the result of the operation
+     */
     private float getCancellationRefundPercentage(FlightStatus flightStatus) {
 
         if (flightStatus == null) {
@@ -1125,6 +1180,11 @@ public class BookingServiceImpl implements BookingService {
     }
 
 
+    /**
+     * Executes the verify user booking operation.
+     * @param booking the booking
+     * @param user the user
+     */
     private  void verifyUserBooking(Booking booking ,User user){
         // Ensure that the authenticated user owns the booking.
         if (booking.getUserbooked() == null ||
@@ -1136,6 +1196,11 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
+    /**
+     * Executes the verify user password operation.
+     * @param user the user
+     * @param password the password
+     */
     private void verifyUserPassword(User user, String password) {
 
         if (password == null || !user.verifyPassword(password)) {

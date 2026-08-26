@@ -16,37 +16,64 @@ import java.time.LocalDateTime;
 @Table(name = "ticket")
 public class Ticket {
 
+    /**
+     * The ticket id.
+     */
     @Id
     @Column(name = "ticket_id", length = 20)
     private String ticketId;
 
+    /**
+     * The booking.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
+    /**
+     * The passenger.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "passenger_id")
     private Passenger passenger;
 
+    /**
+     * The fare.
+     */
     @Column(name = "fare")
     private double fare;
 
+    /**
+     * The seat class.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "seat_class", length = 20)
     private SeatClass seatClass;
 
+    /**
+     * The seat number.
+     */
     @Column(name = "seat_number", length = 10)
     private String seatNumber;
 
     // Audit fields
+    /**
+     * The created at.
+     */
     @Column(name = "created_at", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
     
+    /**
+     * The updated at.
+     */
     @Column(name = "updated_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
     
+    /**
+     * The deleted.
+     */
     @Column(name = "is_deleted")
     private boolean deleted;
 

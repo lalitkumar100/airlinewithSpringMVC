@@ -11,6 +11,11 @@ import java.util.List;
 
 @org.springframework.stereotype.Repository
 public interface BookingMapper extends org.springframework.data.repository.Repository<Booking, String> {
+    /**
+     * Action for save.
+     * @param entity input parameter
+     * @return Booking output
+     */
     Booking save(Booking entity);
 
 
@@ -20,9 +25,19 @@ public interface BookingMapper extends org.springframework.data.repository.Repos
     }
 
 
+        /**
+         * Action for getBookingById.
+         * @param bookingId input parameter
+         * @return Booking output
+         */
         @Query("SELECT b FROM Booking b WHERE b.bookingId = :bookingId AND b.deleted = false")
         Booking getBookingById(@Param("bookingId") String bookingId);
 
+        /**
+         * Action for getAllBookingsByUserId.
+         * @param userId input parameter
+         * @return List<Booking> output
+         */
         @Query("SELECT b FROM Booking b WHERE b.userbooked.id = :userId AND b.deleted = false ORDER BY b.bookingDateTime DESC")
         List<Booking> getAllBookingsByUserId(@Param("userId") String userId);
 
@@ -45,12 +60,25 @@ public interface BookingMapper extends org.springframework.data.repository.Repos
                 @Param("status") com.crimsonlogic.arilinemanangmentsystem.enumrator.BookingStatus status
         );
 
+        /**
+         * Action for getBookingsByFlightId.
+         * @param flightId input parameter
+         * @return List<Booking> output
+         */
         @Query("SELECT b FROM Booking b WHERE b.flightBooked.flightId = :flightId AND b.deleted = false")
         List<Booking> getBookingsByFlightId(@Param("flightId") String flightId);
         
+        /**
+         * Action for getTotalBookingsCount.
+         * @return long output
+         */
         @Query("SELECT COUNT(b) FROM Booking b WHERE b.deleted = false")
         long getTotalBookingsCount();
 
+        /**
+         * Action for getTotalCancelledBookingsCount.
+         * @return long output
+         */
         @Query("SELECT COUNT(b) FROM Booking b WHERE b.bookingStatus = 'CANCELLED' AND b.deleted = false")
         long getTotalCancelledBookingsCount();
     }

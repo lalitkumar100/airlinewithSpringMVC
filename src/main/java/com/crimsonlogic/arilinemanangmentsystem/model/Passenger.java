@@ -24,50 +24,89 @@ import java.util.UUID;
 @Table(name = "passenger")
 public class Passenger {
 
+    /**
+     * The passenger id.
+     */
     @Id
     @Column(name = "passenger_id", length = 20)
     private String passengerId;
 
     // Nullable if passenger is not a registered user
+    /**
+     * The user.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
+    /**
+     * The first name.
+     */
     @Column(name = "first_name", length = 50)
     private String firstName;
     
+    /**
+     * The last name.
+     */
     @Column(name = "last_name", length = 50)
     private String lastName;
     
+    /**
+     * The date of birth.
+     */
     @Column(name = "date_of_birth")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
     
+    /**
+     * The gender.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "gender", length = 20)
     private Gender gender;
 
+    /**
+     * The email.
+     */
     @Column(name = "email", length = 100)
     private String email;
     
+    /**
+     * The phone number.
+     */
     @Column(name = "phone_number", length = 15)
     private String phoneNumber;
 
+    /**
+     * The booking.
+     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booking_id")
     private Booking booking;
 
+    /**
+     * The created at.
+     */
     @Column(name = "created_at", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
     
+    /**
+     * The updated at.
+     */
     @Column(name = "updated_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
 
+    /**
+     * The deleted.
+     */
     @Column(name = "is_deleted")
     private boolean deleted;
     
+    /**
+     * The is cancelled.
+     */
     @Column(name = "is_cancelled")
     private boolean isCancelled;
 

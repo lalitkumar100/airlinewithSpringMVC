@@ -21,9 +21,16 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 
+/**
+ * Service responsible for user service impl business logic.
+ * Encapsulates core application rules and data manipulation.
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
+    /**
+     * The user mapper.
+     */
     private final UserMapper userMapper;
     private final WalletService walletService;
     private final LoyaltyAccountSerivce loyaltyAccountSerivce;
@@ -115,6 +122,11 @@ public class UserServiceImpl implements UserService {
 
 
 
+    /**
+     * Retrieves the user by email.
+     * @param email the email
+     * @return User the result of the operation
+     */
     @Override
     public User getUserByEmail(String email) {
 
@@ -135,6 +147,11 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    /**
+     * Retrieves the user by id.
+     * @param id the id
+     * @return User the result of the operation
+     */
     @Override
     public User getUserById(String id) {
 
@@ -156,6 +173,11 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    /**
+     * Checks if the object is email exists.
+     * @param email the email
+     * @return boolean the result of the operation
+     */
     @Override
     public boolean isEmailExists(String email) {
 
@@ -168,6 +190,11 @@ public class UserServiceImpl implements UserService {
         return user != null;
     }
 
+    /**
+     * Executes the update login time operation.
+     * @param user the user
+     * @param time the time
+     */
     @Override
     public void UpdateLoginTime(User user, LocalDateTime time) {
         if (user == null) {

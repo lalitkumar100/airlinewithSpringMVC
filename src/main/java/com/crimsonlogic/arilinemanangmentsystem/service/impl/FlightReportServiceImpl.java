@@ -16,12 +16,22 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Service responsible for flight report service impl business logic.
+ * Encapsulates core application rules and data manipulation.
+ */
 @Service
 public class FlightReportServiceImpl implements FlightReportService {
 
+    /**
+     * The flight service.
+     */
     private final FlightService flightService;
     private final BookingService bookingService;
     private final PaymentService paymentService;
+    /**
+     * The refund service.
+     */
     private final RefundService refundService;
 
     private final com.crimsonlogic.arilinemanangmentsystem.dao.BookingMapper bookingMapper;
@@ -38,6 +48,11 @@ public class FlightReportServiceImpl implements FlightReportService {
         this.refundMapper = refundMapper;
     }
 
+    /**
+     * Calculates and returns the revenue report for a specific flight.
+     * @param flightId the ID of the flight to calculate revenue for
+     * @return RevenueReport containing the calculated flight revenue
+     */
     @Override
     public RevenueReport getFlightRevenueReport(String flightId) {
 
@@ -85,6 +100,12 @@ public class FlightReportServiceImpl implements FlightReportService {
         );
     }
 
+    /**
+     * Calculates the number of available seats for a specific flight and seat class.
+     * @param flightId the ID of the flight
+     * @param seatClass the seat class to check availability for
+     * @return int representing the number of available seats
+     */
     @Override
     public int getAvailableSeats(String flightId, SeatClass seatClass) {
 
@@ -113,6 +134,10 @@ public class FlightReportServiceImpl implements FlightReportService {
         return Math.max(0, classCapacity - bookedSeats);
     }
     
+    /**
+     * Generates an overall revenue report for the entire airline.
+     * @return AirlineRevenueDTO containing total bookings, cancellations, amounts, and net revenue
+     */
     @Override
     public com.crimsonlogic.arilinemanangmentsystem.dto.AirlineRevenueDTO getOverallRevenueReport() {
         long totalBookings = bookingMapper.getTotalBookingsCount();

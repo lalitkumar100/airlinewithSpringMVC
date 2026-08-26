@@ -8,5 +8,10 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
+    /**
+     * Action for findByEmailAndDeletedFalse.
+     * @param email input parameter
+     * @return Optional<User> output
+     */
     Optional<User> findByEmailAndDeletedFalse(String email);
 }

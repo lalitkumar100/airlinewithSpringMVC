@@ -12,10 +12,17 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+/**
+ * REST/MVC Controller for managing user rest controller operations.
+ * Handles HTTP requests and delegates to the appropriate services.
+ */
 @RestController
 @RequestMapping("/api/v1/user")
 public class UserRestController {
 
+    /**
+     * The auth service.
+     */
     private final AuthService authService;
     private final WalletService walletService;
 
@@ -24,6 +31,11 @@ public class UserRestController {
         this.walletService = walletService;
     }
 
+    /**
+     * Retrieves the user profile.
+     * @param request the request
+     * @return ResponseEntity<ApiResponse<UserDTO>> the result of the operation
+     */
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<UserDTO>> getUserProfile(HttpServletRequest request) {
         User user = authService.getAuthenticatedUser(request);

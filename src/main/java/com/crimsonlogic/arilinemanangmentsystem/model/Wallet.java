@@ -25,33 +25,57 @@ import java.time.LocalDateTime;
 @Table(name = "wallet")
 public class Wallet {
 
+    /**
+     * The wallet id.
+     */
     @Id
     @Column(name = "wallet_id", length = 20)
     private String walletId;
 
+    /**
+     * The user.
+     */
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
 
+    /**
+     * The balance.
+     */
     @Column(name = "balance")
     private double balance;
     
+    /**
+     * The currency.
+     */
     @Column(name = "currency", length = 10)
     private String currency;
     
+    /**
+     * The status.
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 20)
     private WalletStatus status;
 
+    /**
+     * The created at.
+     */
     @Column(name = "created_at", updatable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdAt;
 
+    /**
+     * The updated at.
+     */
     @Column(name = "updated_at")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
     
+    /**
+     * The deleted.
+     */
     @Column(name = "is_deleted")
     private boolean deleted;
 

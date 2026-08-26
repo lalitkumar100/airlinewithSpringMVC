@@ -19,6 +19,13 @@ public class AdminJwtInterceptor implements HandlerInterceptor {
         this.jwtUtil = jwtUtil;
     }
 
+    /**
+     * Action for preHandle.
+     * @param request input parameter
+     * @param response input parameter
+     * @param handler input parameter
+     * @return boolean output
+     */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {

@@ -10,10 +10,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST/MVC Controller for managing airport rest controller operations.
+ * Handles HTTP requests and delegates to the appropriate services.
+ */
 @RestController
 @RequestMapping("/api/v1/airports")
 public class AirportRestController {
 
+    /**
+     * The airport service.
+     */
     private final AirportService airportService;
 
     public AirportRestController(AirportService airportService) {
@@ -24,6 +31,10 @@ public class AirportRestController {
     // GET ALL AIRPORTS
     // =========================================================
 
+    /**
+     * Retrieves the all airports rest.
+     * @return ResponseEntity<ApiResponse<List<AirportDTO>>> the result of the operation
+     */
     @GetMapping
     public ResponseEntity<ApiResponse<List<AirportDTO>>> getAllAirportsRest() {
 

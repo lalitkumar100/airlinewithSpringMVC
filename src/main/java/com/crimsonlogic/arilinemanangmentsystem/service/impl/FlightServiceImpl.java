@@ -16,12 +16,22 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Service responsible for flight service impl business logic.
+ * Encapsulates core application rules and data manipulation.
+ */
 @Service
 public class FlightServiceImpl implements FlightService {
 
+    /**
+     * The flight mapper.
+     */
     private final FlightMapper flightMapper;
     private final AirportService airportService;
     private final AircraftService aircraftService;
+    /**
+     * The payment service.
+     */
     private final PaymentService paymentService;
     private final RefundService refundService;
 
@@ -35,6 +45,10 @@ public class FlightServiceImpl implements FlightService {
 
 
 
+    /**
+     * Retrieves the all flights.
+     * @return List<Flight> the result of the operation
+     */
     @Override
     public List<Flight> getAllFlights() {
         List<Flight> flights = flightMapper.findAllFlights();
@@ -44,6 +58,11 @@ public class FlightServiceImpl implements FlightService {
         return flights;
     }
 
+    /**
+     * Retrieves the flight by id.
+     * @param flightId the flight id
+     * @return Flight the result of the operation
+     */
     @Override
     public Flight getFlightById(String flightId) {
 
@@ -59,18 +78,36 @@ public class FlightServiceImpl implements FlightService {
 
 
 
+    /**
+     * Updates flight schedule.
+     * @param flightId the flight id
+     * @param request the request
+     * @return boolean the result of the operation
+     */
     @Override
     public boolean updateFlightSchedule(String flightId, UpdateFlightScheduleRequest request) {
         // This is now orchestrated by FlightOrchestratorService
         throw new UnsupportedOperationException("Use FlightOrchestratorService for schedule updates");
     }
 
+    /**
+     * Updates flight status.
+     * @param flightId the flight id
+     * @param request the request
+     * @return boolean the result of the operation
+     */
     @Override
     public boolean updateFlightStatus(String flightId, UpdateFlightStatusRequest request) {
         // This is now orchestrated by FlightOrchestratorService
         throw new UnsupportedOperationException("Use FlightOrchestratorService for status updates");
     }
 
+    /**
+     * Updates status only.
+     * @param flightId the flight id
+     * @param status the status
+     * @return boolean the result of the operation
+     */
     @Override
     public boolean updateStatusOnly(String flightId, FlightStatus status) {
         if (flightMapper.updateFlightStatus(flightId, status) == 0) {
@@ -79,6 +116,12 @@ public class FlightServiceImpl implements FlightService {
         return true;
     }
 
+    /**
+     * Updates schedule only.
+     * @param flightId the flight id
+     * @param request the request
+     * @return boolean the result of the operation
+     */
     @Override
     public boolean updateScheduleOnly(String flightId, UpdateFlightScheduleRequest request) {
         if (flightMapper.updateFlightSchedule(flightId, request.getDepartureTime(), request.getArrivalTime(), request.getAircraftId()) == 0) {
@@ -89,6 +132,11 @@ public class FlightServiceImpl implements FlightService {
 
 
 
+    /**
+     * Creates or saves add new flight.
+     * @param addFlightRequest the add flight request
+     * @return FlightDTO the result of the operation
+     */
     @Override
     public FlightDTO addNewFlight(AddFlightRequest addFlightRequest) {
 
@@ -139,6 +187,13 @@ public class FlightServiceImpl implements FlightService {
         throw new RuntimeException("Failed to insert the flight into the database.");
     }
 
+    /**
+     * Executes the search flights operation.
+     * @param sourceAirport the source airport
+     * @param destinationAirport the destination airport
+     * @param departureDate the departure date
+     * @return List<Flight> the result of the operation
+     */
     @Override
     public List<Flight> searchFlights(String sourceAirport, String destinationAirport,  LocalDate departureDate) {
         if (sourceAirport == null || sourceAirport.trim().isEmpty() ||
@@ -168,6 +223,12 @@ public class FlightServiceImpl implements FlightService {
     }
 
 
+    /**
+     * Executes the calculate fare operation.
+     * @param flightId the flight id
+     * @param seatClass the seat class
+     * @return double the result of the operation
+     */
     @Override
     public double calculateFare(String flightId, SeatClass seatClass) {
         Flight flight = flightMapper.findById(flightId);
@@ -189,6 +250,11 @@ public class FlightServiceImpl implements FlightService {
 
 
 
+    /**
+     * Executes the validate flight date time operation.
+     * @param departureTime the departure time
+     * @param arrivalTime the arrival time
+     */
     private void validateFlightDateTime(LocalDateTime departureTime, LocalDateTime arrivalTime) {
         LocalDateTime now = LocalDateTime.now();
 
@@ -203,6 +269,10 @@ public class FlightServiceImpl implements FlightService {
         }
     }
 
+    /**
+     * Retrieves the all flights dto.
+     * @return List<FlightDTO> the result of the operation
+     */
     @Override
     public List<FlightDTO> getAllFlightsDTO() {
 
@@ -212,6 +282,11 @@ public class FlightServiceImpl implements FlightService {
                 .toList();
     }
 
+    /**
+     * Retrieves the flight by id dto.
+     * @param flightId the flight id
+     * @return FlightDTO the result of the operation
+     */
     @Override
     public FlightDTO getFlightByIdDTO(String flightId) {
 
@@ -222,6 +297,11 @@ public class FlightServiceImpl implements FlightService {
 
 
 
+    /**
+     * Executes the convert to flight dto operation.
+     * @param flight the flight
+     * @return FlightDTO the result of the operation
+     */
     private FlightDTO convertToFlightDTO(Flight flight) {
 
         AirportDTO sourceDTO =

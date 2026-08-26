@@ -11,9 +11,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
+/**
+ * REST/MVC Controller for managing admin controller operations.
+ * Handles HTTP requests and delegates to the appropriate services.
+ */
 @Controller
 public class AdminController {
 
+    /**
+     * The airport service.
+     */
     private final AirportService airportService;
     private final AircraftService aircraftService;
 
@@ -26,6 +33,10 @@ public class AdminController {
     // AIRPORT & AIRCRAFT
     // ==========================================
 
+    /**
+     * Executes the show airport aircraft page operation.
+     * @return String the result of the operation
+     */
     @GetMapping("/admin/airport-aircraft")
     public String showAirportAircraftPage() {
         return "Admin/airport-aircraft";
@@ -36,6 +47,10 @@ public class AdminController {
     // ADMIN FLIGHT LIST
     // ==========================================
 
+    /**
+     * Executes the show flight list operation.
+     * @return String the result of the operation
+     */
     @GetMapping("/admin/flights")
     public String showFlightList() {
 
@@ -70,6 +85,11 @@ public class AdminController {
     // ADD FLIGHT
     // ==========================================
 
+    /**
+     * Executes the show add flight page operation.
+     * @param model the model
+     * @return String the result of the operation
+     */
     @GetMapping("/admin/flights/add")
     public String showAddFlightPage(Model model) {
 
@@ -119,6 +139,10 @@ public class AdminController {
     // OVERALL REVENUE
     // ==========================================
 
+    /**
+     * Executes the show overall revenue operation.
+     * @return String the result of the operation
+     */
     @GetMapping("/admin/revenue")
     public String showOverallRevenue() {
         return "Admin/admin-revenue";
